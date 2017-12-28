@@ -1,0 +1,12 @@
+Loaner Units items
+- Scan Units
+  - scan items into Inventory
+  - scan out to customer
+  - scan out associate w/ repair
+  - scan to check FW and Mods
+  - scan new items in
+- Track Current inventory
+  - check list of items on/off Shelf
+  - search for particular unit type
+- POST API
+  - associate loaner unit w/ matt's database & repairs

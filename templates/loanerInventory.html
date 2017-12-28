@@ -1,0 +1,102 @@
+<div id="loanerInv" class="container-fluid text-center">
+
+  <div class="row text-center">
+    <h2 class="checkTitle"> Loaner Inventory </h2>
+  </div>
+
+  <div class="row text-center" ng-show="!loaded">
+    <div class="text-center">
+      <img src="RollingOrg.svg" alt="">
+      <div class="loading">
+        Loading...
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-4 col-sm-offset-4 col-xs-6 col-xs-offset-3 text-center" ng-show="loaded">
+    <form>
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-addon"><i class="fa fa-search"></i></div>
+          <input type="text" class="form-control" placeholder="Search..." ng-model="loanerSearch">
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="col-xs-12 text-center filterTitle">
+    Filters
+  </div>
+  <div class="col-xs-12 text-center">
+    <select id="unitChoice" class="loanInvSelect" name="unitSelect" value="test" ng-model="filterVariables.unitType" ng-options="x for x in loanerProducts" ng-change="removeFilter('unitFilter', filterVariables.unitType)">
+      <option value=""> Unit Type </option>
+    </select>
+    <!-- <span ng-class="{'vis-hidden': filterVariables.unitType !== ''}"><i class="fa fa-times" aria-hidden="true"></i></span> -->
+    <select id="statusChoice" class="loanInvSelect" name="unitSelect" value="test" ng-model="filterVariables.status" ng-options="x for x in loanerStatuses" ng-change="removeFilter('statusFilter', filterVariables.status)">
+      <option value=""> Status </option>
+    </select>
+    <!-- <a ng-show="filterVariables.status !== ''"><i class="fa fa-times" aria-hidden="true"></i></a> -->
+  </div>
+
+
+  <div class="col-xs-12 text-center">
+    <div style="max-width: 600px; margin: 30px auto;">
+      <table class="table table-condensed" style="max-width: 600px; margin: 30px auto 5px auto;">
+        <thead class="resTableHead">
+          <tr>
+            <th class="text-center">
+              <a ng-click="sortType = ['unit', 'serialNum'] ; sortReverse = !sortReverse">
+                Unit
+                <span ng-show="sortType[0] === 'unit' && sortReverse" class="fa fa-caret-down"></span>
+                <span ng-show="sortType[0] === 'unit' && !sortReverse" class="fa fa-caret-up"></span>
+              </a>
+            </th>
+            <th class="text-center hidden-xs" style="width: 130px;">
+              <a ng-click="sortType = 'barcode'; sortReverse = !sortReverse">
+                Barcode
+                <span ng-show="sortType === 'barcode' && sortReverse" class="fa fa-caret-down"></span>
+                <span ng-show="sortType === 'barcode' && !sortReverse" class="fa fa-caret-up"></span>
+              </a>
+            </th>
+            <th class="text-center" style="width: 138px;">
+              <a ng-click="sortType = 'status'; sortReverse = !sortReverse">
+                Status
+                <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-down"></span>
+                <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-caret-up"></span>
+              </a>
+            </th>
+            <th class="text-center hidden-xs" style="width: 112px;">
+              <a ng-click="sortType = 'timestamp'; sortReverse = !sortReverse">
+                Scan
+                <span ng-show="sortType == 'timestamp' && sortReverse" class="fa fa-caret-down"></span>
+                <span ng-show="sortType == 'timestamp' && !sortReverse" class="fa fa-caret-up"></span>
+              </a>
+            </th>
+            <th style="width: 40px"></th>
+          </tr>
+        </thead>
+      </table>
+
+      <uib-accordion>
+        <div uib-accordion-group class="customAccStyles" ng-click="getInfo(value)" is-open="status.open" ng-repeat="(key, value) in loanerArray | orderBy:sortType:sortReverse | filter:loanerSearch  | filter:filterVariables.status | filter:filterVariables.unitType">
+          <uib-accordion-heading>
+            <table class="table table-condensed" style="margin-bottom: 0px;">
+              <tbody>
+                <tr class="results">
+                  <td class="text-left" style="border: none; width: 187px;">
+                    <span class="tableUnit">{{value.unit}}</span> s/n <span class="tableUnit">{{value.serialNum}}</span>
+                  </td>
+                  <td class="text-center hidden-xs" style="width: 130px; border: none;"> PCS{{value.unitBarcode}} </td>
+                  <td class="text-center" style="width: 138px; border: none;" ng-class="value.status"> {{value.status}} </td>
+                  <td class="text-center hidden-xs" style="width: 112px; border: none;"> {{value.timestamp  | date:'shortDate'}} </td>
+                  <td style="border: none;">  <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i> </td>
+                </tr>
+              </tbody>
+            </table>
+          </uib-accordion-heading>
+          {{value.firmware}}
+        </div>
+      </uib-accordion>
+    </div>
+
+  </div>
+</div>

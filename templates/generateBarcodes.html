@@ -1,0 +1,51 @@
+<div class="container">
+  <div class="row text-center">
+    <h2 class="tab-title"> Generate Barcodes </h2>
+  </div>
+  <div class="row text-center">
+    <div class="col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1 entry-container">
+      <div class="col-xs-12 no-padding">
+        <div class="col-sm-6">
+          <div class="col-xs-12">
+            Unit Type
+          </div>
+          <div class="col-xs-12">
+            <select class="prodEntry" name="unitSelect" value="test" ng-model="chosenItems.unitSelect" ng-options="x for x in products" ng-change="update()"> </select>
+          </div>
+        </div>
+        <div class="col-sm-6 text-center">
+          <div class="col-xs-12">
+            Serial Number
+          </div>
+          <div class="col-xs-12">
+            <input class="numEntry" ng-enter="addBarcode(chosenItems.unitSelect, chosenItems.serialNum)" ng-model="chosenItems.serialNum" />
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 text-center" style="margin-top: 30px;">
+        <a class="addEntry" ng-click="addBarcode(chosenItems.unitSelect, chosenItems.serialNum)"> Add <span class="hidden-xs"> (or press enter) </span> </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 20px;">
+    <div class="col-sm-8 col-sm-offset-2 col-xs-12 enteredItems" ng-repeat="item in barcodes">
+      <div class="col-xs-4">
+        {{item.unit}}
+      </div>
+      <div class="col-xs-4">
+        {{item.num}}
+      </div>
+      <div class="col-xs-4">
+        <button class="removeButton" ng-click="removeItem(item)">Remove</button>
+      </div>
+    </div>
+    <div class="col-xs-12 text-center" style="margin-top: 20px;" ng-show="barcodes.length">
+      <a class="removeAll" ng-click="removeAll()">Remove all items</a>
+    </div>
+  </div>
+  <div class="row text-center btn-container">
+      <a ng-show="barcodes.length" class="generateBars"  ui-sref="generated({obj: barcodes})" target="_blank">Generate Barcodes</a>
+      <a ng-show="!barcodes.length" class='noBars' ng-click="checkForItems()"  href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_self">Generate Barcodes</a>
+  </div>
+</div>
