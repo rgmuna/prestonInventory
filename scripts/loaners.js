@@ -32,8 +32,8 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
 
   $scope.loaners.$loaded().then(function() {
     $scope.loaded = true;
+    console.log($scope.loanerArray)
     $scope.fixStatuses();
-    // console.log($scope.loanerArray)
   });
 
   //scanned input
@@ -93,7 +93,7 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
               }
               //for all non-motors, properly sort out firmware
               else{
-                $scope.getFirmware($scope.pendingLoaners[numbers]);
+                $scope.getFirmware('', $scope.pendingLoaners[numbers], 'checkInOut');
               }
             }
             //if item isn't in loaner database
@@ -389,7 +389,10 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   }
 
   //get firmware from API
-  $scope.getFirmware = function(unit){
+    //key = key of loaner array (used only for inventory purposes, not check in/out)
+    //unit = particular unit object
+    //source = where the call was made (check in/out vs inventory)
+  $scope.getFirmware = function(key, unit, source){
     var unitType = unit.unit;
     var serialNum = unit.serialNum;
     var barcode = unit.unitBarcode;
@@ -424,33 +427,78 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
     var generatedUrl = "https://secure-ocean-3120.herokuapp.com/api/v1/products/search?item=" + apiUnitType + "&serial=" + serialNum;
     $http.get(generatedUrl)
     .then(function(response){
-      //if response is a motor, don't display FW
-      if(response.data == null){
-        alert("Unit not in internal database. Enter into database then redo check in of unit.");
-        delete $scope.pendingLoaners[unit.unitBarcode];
+      //if getting API info for the check in/out page
+      if(source==='checkInOut'){
+        $scope.checkApiResponse(unit, response);
       }
+      //if getting API info for the inventory page
       else{
-        var noRadio = ["LR2", "DMF3", "DMF2"];
-        var all = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC"];
-        var hasRadio = (all.indexOf(unitType)!==-1);
-
-        //if unit doesn't have a radio
-        if(!hasRadio){
-          $scope.pendingLoaners[unit.unitBarcode].radio = "NA";
-          hasRadio = false;
-        }
-        //else if unit does have a radio
-        else{
-          $scope.pendingLoaners[unit.unitBarcode].radio = response.data.radio_fw_latest ? response.data.radio_fw_latest : false;
-          hasRadio = $scope.pendingLoaners[unit.unitBarcode].radio;
-        }
-        //update firmware and mods info for unit
-        $scope.pendingLoaners[unit.unitBarcode].firmware = response.data.main_fw_latest ? response.data.main_fw_latest : false;
-        $scope.pendingLoaners[unit.unitBarcode].mods = response.data.mods_latest ? response.data.mods_latest : false;
-        $scope.setStatus(unit, hasRadio);
+        $scope.invApiResponse(key, unit, response);
       }
     });
   }
+
+  $scope.checkApiResponse = function(unit, response){
+    var unitType = unit.unit;
+    //if response is a motor, don't display FW
+    if(response.data == null){
+      alert("Unit not in internal database. Enter into database then redo check in of unit.");
+      delete $scope.pendingLoaners[unit.unitBarcode];
+    }
+    else{
+      var noRadio = ["LR2", "DMF3", "DMF2"];
+      var all = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC"];
+      var hasRadio = (all.indexOf(unitType)!==-1);
+
+      //if unit doesn't have a radio
+      if(!hasRadio){
+        $scope.pendingLoaners[unit.unitBarcode].radio = "NA";
+        hasRadio = false;
+      }
+      //else if unit does have a radio
+      else{
+        $scope.pendingLoaners[unit.unitBarcode].radio = response.data.radio_fw_latest ? response.data.radio_fw_latest : false;
+        hasRadio = $scope.pendingLoaners[unit.unitBarcode].radio;
+      }
+      //update firmware and mods info for unit
+      $scope.pendingLoaners[unit.unitBarcode].firmware = response.data.main_fw_latest ? response.data.main_fw_latest : false;
+      $scope.pendingLoaners[unit.unitBarcode].mods = response.data.mods_latest ? response.data.mods_latest : false;
+      $scope.setStatus(unit, hasRadio);
+    }
+  };
+
+  $scope.invApiResponse = function(key, value, response){
+    var unitType = $scope.loanerArray[key].unit;
+    if(response.data === null){
+      if(unitType === 'DM1X' || unitType === 'DM2X' || unitType === 'DM2' || unitType === 'DM5' || unitType === 'DM4'){
+      }
+      else{
+        alert("Unit not in internal database. Enter into database then redo check in of unit.");
+      }
+      $scope.loanerArray[key].firmware = 'NA';
+      $scope.loanerArray[key].mods = 'NA';
+      $scope.loanerArray[key].radio = 'NA';
+    }
+    else{
+      var noRadio = ["LR2", "DMF3", "DMF2"];
+      var all = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC"];
+      var hasRadio = (all.indexOf(unitType)!==-1);
+
+      if(!hasRadio){
+        $scope.loanerArray[key].radio = "NA";
+        hasRadio = false;
+      }
+      //else if unit does have a radio
+      else{
+        $scope.loanerArray[key].radio = response.data.radio_fw_latest ? response.data.radio_fw_latest : false;
+        hasRadio = $scope.loanerArray[key].radio;
+      }
+      //update firmware and mods info for unit
+      $scope.loanerArray[key].firmware = response.data.main_fw_latest ? response.data.main_fw_latest : false;
+      $scope.loanerArray[key].mods = response.data.mods_latest ? response.data.mods_latest : false;
+      // $scope.setStatus(unit, hasRadio);
+    }
+  };
 
 
 // status: 'checked out' | 'needs QA' | 'ready'
@@ -522,10 +570,6 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
         $scope.loanerArray[item].status = 'in house';
       }
     }
-  }
-
-  $scope.getInfo = function(stuff){
-    console.log(stuff)
   }
 
 

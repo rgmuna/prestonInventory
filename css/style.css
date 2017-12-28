@@ -766,7 +766,10 @@ tbody{
 }
 
 
-
+.loanerInvResults{
+  font-size: 20px;
+  color: white;
+}
 
 .panel-group .panel-heading + .panel-collapse > .list-group, .panel-group .panel-heading + .panel-collapse > .panel-body{
   border-top: none;
