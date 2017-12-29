@@ -792,6 +792,17 @@ tbody{
   display: inline-block;
 }
 
+.custInfoInv{
+  color: white;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.custInfoInvTitle{
+  font-size: 20px;
+  font-weight: 600;
+}
+
 /*animations------------------------------------------------------------------*/
 
 

@@ -32,7 +32,6 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
 
   $scope.loaners.$loaded().then(function() {
     $scope.loaded = true;
-    console.log($scope.loanerArray)
     $scope.fixStatuses();
   });
 
@@ -397,6 +396,12 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
     var serialNum = unit.serialNum;
     var barcode = unit.unitBarcode;
 
+    if(source!=='checkInOut'){
+      $scope.loanerArray[key].firmware = 'pending';
+      $scope.loanerArray[key].mods = 'pending';
+      $scope.loanerArray[key].radio = 'pending';
+    }
+
     //prepare unit type for api
     if(unitType === 'FI'){
       apiUnitType = 'F/I';
@@ -468,7 +473,6 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   };
 
   $scope.invApiResponse = function(key, value, response){
-    console.log(value);
     var unitType = $scope.loanerArray[key].unit;
     if(response.data === null){
       if(unitType === 'DM1X' || unitType === 'DM2X' || unitType === 'DM2' || unitType === 'DM5' || unitType === 'DM4'){
