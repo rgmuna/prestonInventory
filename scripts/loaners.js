@@ -468,6 +468,7 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   };
 
   $scope.invApiResponse = function(key, value, response){
+    console.log(value);
     var unitType = $scope.loanerArray[key].unit;
     if(response.data === null){
       if(unitType === 'DM1X' || unitType === 'DM2X' || unitType === 'DM2' || unitType === 'DM5' || unitType === 'DM4'){
