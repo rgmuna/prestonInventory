@@ -475,7 +475,7 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   $scope.invApiResponse = function(key, value, response){
     var unitType = $scope.loanerArray[key].unit;
     if(response.data === null){
-      if(unitType === 'DM1X' || unitType === 'DM2X' || unitType === 'DM2' || unitType === 'DM5' || unitType === 'DM4'){
+      if(unitType === 'DM1X' || unitType === 'DM2X' || unitType === 'DM2' || unitType === 'DM5' || unitType === 'DM4' || unitType === 'DM4X'){
       }
       else{
         alert("Unit not in internal database. Enter into database then redo check in of unit.");

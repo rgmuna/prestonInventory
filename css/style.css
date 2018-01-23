@@ -726,6 +726,10 @@ tbody{
   color: #FF6600;
 }
 
+#loanerInv .results:hover{
+  background-color: #323232;
+}
+
 .wholeSerial{
   color: #FF6600;
   cursor: pointer;
@@ -765,6 +769,12 @@ tbody{
   border: 1px solid #FF6600;
 }
 
+ .customAccStyles a:focus{
+  text-decoration: none;
+}
+ .customAccStyles a:hover{
+  text-decoration: none;
+}
 
 .loanerInvResults{
   font-size: 20px;

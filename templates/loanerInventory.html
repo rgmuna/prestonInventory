@@ -94,7 +94,7 @@
             </table>
           </uib-accordion-heading>
 
-          <div ng-show="value.unit !== 'DM1X' && value.unit !== 'DM2X' && value.unit !== 'DM2' && value.unit !== 'DM5' && value.unit !== 'DM4'">
+          <div ng-show="value.unit !== 'DM1X' && value.unit !== 'DM2X' && value.unit !== 'DM2' && value.unit !== 'DM5' && value.unit !== 'DM4' && value.unit !== 'DM4X'">
             <div ng-show="value.firmware === 'pending'">
               <div class="loading">
                 Loading...
@@ -108,7 +108,7 @@
             </div>
           </div>
 
-          <div class="loanerInvResults" ng-show="value.unit === 'DM1X' || value.unit === 'DM2X' || value.unit === 'DM2' || value.unit === 'DM5' || value.unit === 'DM4'">
+          <div class="loanerInvResults" ng-show="value.unit === 'DM1X' || value.unit === 'DM2X' || value.unit === 'DM2' || value.unit === 'DM5' || value.unit === 'DM4' || value.unit === 'DM4X'">
             No firmware to check
           </div>
 
