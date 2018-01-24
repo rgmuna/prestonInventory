@@ -25,6 +25,8 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   };
   //-------------------------------
 
+  $scope.customerArray = ['reset'];
+
   //firebase loaner load
   $scope.loanerInfo = firebase.database().ref().child('loaners');
   $scope.loaners = $firebaseObject($scope.loanerInfo);
@@ -33,6 +35,7 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   $scope.loaners.$loaded().then(function() {
     $scope.loaded = true;
     $scope.fixStatuses();
+    $scope.createCustArray();
   });
 
   //scanned input
@@ -64,6 +67,32 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
 
   //keeps tracked of scanned inputs
   $scope.pendingLoaners = {};
+
+  $scope.createCustArray = function(){
+    //for each item in loaner array
+    for(var item in $scope.loanerArray){
+      //find units that are checked out
+      if($scope.loanerArray[item].status === 'checked out'){
+        //if object is NOT already in customer array
+        if($scope.objNotInArray($scope.loanerArray[item].customerInfo, $scope.customerArray)){
+          //add customer to customer array
+          $scope.customerArray.push($scope.loanerArray[item].customerInfo);
+        }
+      }
+    }
+  }
+
+  //checks if object is NOT in an array
+  $scope.objNotInArray = function(obj, arr){
+    for(var i in arr){
+      if(obj.name === arr[i].name){
+        return false;
+      }
+    }
+    return true;
+  }
+
+
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
 //--------------------------MAIN WATCHER FOR SCANNED INPUT-----------------------------------------------------------------------------------
@@ -539,6 +568,43 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
     }
     else if (unitStatus === 'checked Out'){
       $scope.pendingLoaners[unit.unitBarcode].status = "Ready to be checked in";
+    }
+  }
+
+
+  // $scope.custImport = function(input){
+  //   console.log(input)
+  // }
+
+  $scope.custImport = function(unit, custInfo){
+    var singleLoaner = $scope.pendingLoaners[unit.unitBarcode].customerInfo;
+
+    if(custInfo === 'reset'){
+      singleLoaner.name = '';
+      singleLoaner.phoneNum = '';
+      singleLoaner.email = '';
+      singleLoaner.repairNum = '';
+      singleLoaner.shippingAddress = '';
+      singleLoaner.notes = '';
+    }
+
+    if(custInfo.name){
+      singleLoaner.name = custInfo.name;
+    }
+    if(custInfo.phoneNum){
+      singleLoaner.phoneNum = custInfo.phoneNum;
+    }
+    if(custInfo.email){
+      singleLoaner.email = custInfo.email;
+    }
+    if(custInfo.repairNum){
+      singleLoaner.repairNum = custInfo.repairNum;
+    }
+    if(custInfo.shippingAddress){
+      singleLoaner.shippingAddress = custInfo.shippingAddress;
+    }
+    if(custInfo.notes){
+      singleLoaner.notes = custInfo.notes;
     }
   }
 

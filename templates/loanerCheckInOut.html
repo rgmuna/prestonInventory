@@ -88,12 +88,13 @@
         <div ng-show="unit.status==='Ready to loan' || unit.location==='checked out' || unit.status==='Needs QA'">
           <div class="col-xs-12 sectionTitle no-padding" style="margin-top: 50px;">
             Customer Info
+            <span class="custImportInfo"> Add to Customer: &nbsp <select class="custInfoSelect" value="test" ng-model="importSelect" ng-options="x.name for x in customerArray" ng-change="custImport(unit, importSelect)"> </select> </span>
           </div>
           <div class="col-sm-6 col-xs-12">
             <span class="loanerTitle"> Name: </span> <input class="customerEntry" placeholder="required" ng-model="unit.customerInfo.name"/>
           </div>
           <div class="col-sm-6 col-xs-12">
-            <span class="loanerTitle"> Phone Number: </span> <input class="customerEntry" placeholder="required" ng-model="unit.customerInfo.phoneNum"/>
+            <span class="loanerTitle"> Phone #: </span> <input class="customerEntry" placeholder="required" ng-model="unit.customerInfo.phoneNum"/>
           </div>
           <div class="col-sm-6 col-xs-12">
             <span class="loanerTitle"> Email: </span> <input class="customerEntry" placeholder="required" ng-model="unit.customerInfo.email"/>
