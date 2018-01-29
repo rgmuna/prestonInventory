@@ -3,6 +3,7 @@
   font-family: 'Rajdhani', sans-serif;
 }
 
+
 body{
   background-image: url(../hexabump.png)
 }
@@ -739,8 +740,8 @@ tbody{
   color: #FF6600;
 }
 
-#loanerInv .results:hover{
-  background-color: #323232;
+.customAccStyles:hover{
+  border: 1px solid white;
 }
 
 .wholeSerial{
@@ -826,6 +827,11 @@ tbody{
   font-weight: 600;
 }
 
+.customerResults{
+  color: white;
+  font-weight :300;
+  
+}
 
 
 
