@@ -34,12 +34,10 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   $scope.showUnitList = true;
 
   $scope.loaners.$loaded().then(function() {
-    console.log($scope.loanerArray);
-    console.log($scope.loaners);
     $scope.loaded = true;
     $scope.fixStatuses();
-    // $scope.createCustArray();
-    // $scope.populateCustomers();
+    $scope.createCustArray();
+    $scope.populateCustomers();
   });
 
   //scanned input
@@ -443,7 +441,6 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
     $http.get(generatedUrl)
     .then(function(response){
       //if getting API info for the check in/out page
-      // console.log(response)
       if(source==='checkInOut'){
         $scope.checkApiResponse(unit, response);
       }
@@ -523,8 +520,6 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
 
 // status: 'checked out' | 'needs QA' | 'ready'
   $scope.setStatus = function(unit, hasRadio){
-    // console.log($scope.pendingLoaners);
-    // console.log(hasRadio)
     var unitStatus = unit.status;
     var updateStatus = "";
 
@@ -556,11 +551,6 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
       $scope.pendingLoaners[unit.unitBarcode].status = "Ready to be checked in";
     }
   }
-
-
-  // $scope.custImport = function(input){
-  //   console.log(input)
-  // }
 
   $scope.custImport = function(unit, custInfo){
     var singleLoaner = $scope.pendingLoaners[unit.unitBarcode].customerInfo;
@@ -609,8 +599,6 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   $scope.loanerStatuses = ['in house', 'needs QA', 'checked out'];
 
   $scope.removeFilter = function(item, selection){
-    // console.log('remove filter result:')
-    // console.log($scope.loanerArray);
     if(item === "unitFilter"){
       if(!selection){
         $scope.filterVariables.unitType = "";
@@ -665,63 +653,62 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   }
 
 
-  // $scope.populateCustomers = function(){
-  //   //instantiate customer object where items will be stored
-  //   $scope.customerObj = {};
-  //
-  //   for(var loaner in $scope.loanerArray){
-  //
-  //     //particular item
-  //     var loanerItem = $scope.loanerArray[loaner];
-  //
-  //     //if item has customer info
-  //     if(loanerItem.customerInfo){
-  //
-  //       //if customer info has a name (i.e. is populated)
-  //       if(loanerItem.customerInfo.name){
-  //         //remove all symbols and spaces
-  //         var formatName = loanerItem.customerInfo.name.replace(/[^a-zA-Z0-9]/g, '');
-  //
-  //         //if customer is in the customer obj
-  //         if($scope.customerObj.hasOwnProperty(formatName)){
-  //           $scope.customerObj[formatName].units[loanerItem.unitBarcode] =
-  //           { unitBarcode: loanerItem.unitBarcode,
-  //             firmware: loanerItem.firmware,
-  //             location: loanerItem.location,
-  //             mods: loanerItem.mods,
-  //             notes: loanerItem.notes,
-  //             radio: loanerItem.radio,
-  //             serialNum: loanerItem.serialNum,
-  //             status: loanerItem.status,
-  //             timeStamp: loanerItem.timeStamp,
-  //             unit: loanerItem.unit,
-  //           };
-  //           $scope.customerObj[formatName].numUnits++;
-  //         }
-  //         else{
-  //           //create new item in customer object w/ customer info and units
-  //           $scope.customerObj[formatName] = { customerInfo: "", units: {}, numUnits: 1 };
-  //           //populate customer info
-  //           $scope.customerObj[formatName].customerInfo = loanerItem.customerInfo;
-  //           //populate units
-  //           $scope.customerObj[formatName].units[loanerItem.unitBarcode] =
-  //           { unitBarcode: loanerItem.unitBarcode,
-  //             firmware: loanerItem.firmware,
-  //             location: loanerItem.location,
-  //             mods: loanerItem.mods,
-  //             notes: loanerItem.notes,
-  //             radio: loanerItem.radio,
-  //             serialNum: loanerItem.serialNum,
-  //             status: loanerItem.status,
-  //             timeStamp: loanerItem.timestamp,
-  //             unit: loanerItem.unit,
-  //           };
-  //         }
-  //       }
-  //     }
-  //   }
-  //   console.log($scope.customerObj)
-  // }
+  $scope.populateCustomers = function(){
+    //instantiate customer object where items will be stored
+    $scope.customerObj = {};
+
+    for(var loaner in $scope.loanerArray){
+
+      //particular item
+      var loanerItem = $scope.loanerArray[loaner];
+
+      //if item has customer info
+      if(loanerItem.customerInfo){
+
+        //if customer info has a name (i.e. is populated)
+        if(loanerItem.customerInfo.name){
+          //remove all symbols and spaces
+          var formatName = loanerItem.customerInfo.name.replace(/[^a-zA-Z0-9]/g, '');
+
+          //if customer is in the customer obj
+          if($scope.customerObj.hasOwnProperty(formatName)){
+            $scope.customerObj[formatName].units[loanerItem.unitBarcode] =
+            { unitBarcode: loanerItem.unitBarcode,
+              firmware: loanerItem.firmware,
+              location: loanerItem.location,
+              mods: loanerItem.mods,
+              notes: loanerItem.notes,
+              radio: loanerItem.radio,
+              serialNum: loanerItem.serialNum,
+              status: loanerItem.status,
+              timeStamp: loanerItem.timeStamp,
+              unit: loanerItem.unit,
+            };
+            $scope.customerObj[formatName].numUnits++;
+          }
+          else{
+            //create new item in customer object w/ customer info and units
+            $scope.customerObj[formatName] = { customerInfo: "", units: {}, numUnits: 1 };
+            //populate customer info
+            $scope.customerObj[formatName].customerInfo = loanerItem.customerInfo;
+            //populate units
+            $scope.customerObj[formatName].units[loanerItem.unitBarcode] =
+            { unitBarcode: loanerItem.unitBarcode,
+              firmware: loanerItem.firmware,
+              location: loanerItem.location,
+              mods: loanerItem.mods,
+              notes: loanerItem.notes,
+              radio: loanerItem.radio,
+              serialNum: loanerItem.serialNum,
+              status: loanerItem.status,
+              timeStamp: loanerItem.timestamp,
+              unit: loanerItem.unit,
+            };
+          }
+        }
+      }
+    }
+  }
 
 
 }]);

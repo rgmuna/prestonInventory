@@ -753,6 +753,16 @@ tbody{
   text-decoration: none;
 }
 
+.listSelector{
+  background-color: transparent;
+  border: none;
+  color: #ff6600;
+}
+
+.listSelector.activeList{
+  border-bottom: 2px solid #ff6600;
+}
+
 .panel-group .panel{
   border-radius: 0px;
 }
@@ -830,7 +840,15 @@ tbody{
 .customerResults{
   color: white;
   font-weight :300;
-  
+}
+.customerResultsHeaders{
+  font-size: 15px;
+  font-weight: 300;
+  border-bottom: 1px solid white;
+  color: white;
+}
+.customerResultsHeaders > td{
+  border-top: none !important;
 }
 
 
