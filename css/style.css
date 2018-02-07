@@ -763,6 +763,10 @@ tbody{
   border-bottom: 2px solid #ff6600;
 }
 
+.listSelector:focus{
+  outline: none;
+}
+
 .panel-group .panel{
   border-radius: 0px;
 }
@@ -832,6 +836,13 @@ tbody{
   margin-top: 10px;
 }
 
+.custInfoCustSec{
+  color: white;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 300;
+}
+
 .custInfoInvTitle{
   font-size: 20px;
   font-weight: 600;
@@ -849,6 +860,14 @@ tbody{
 }
 .customerResultsHeaders > td{
   border-top: none !important;
+}
+
+.custInfoButton{
+  border: none;
+  border-radius: 5px;
+  font-size: 20px;
+  width: 100px;
+  padding: 10px 0px;
 }
 
 

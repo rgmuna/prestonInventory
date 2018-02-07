@@ -320,7 +320,7 @@ var barcodeApp = angular.module('barcodeApp', [
           $scope.playAudio('scanned');
         }
         else{
-          $scope.playAudio('wrong');
+          $scope.playAudio('alanna');
           // alert('Please enter a real product barcode');
           $scope.barcodeRead.barcodeNum = '';
         }
@@ -510,6 +510,9 @@ var barcodeApp = angular.module('barcodeApp', [
       }
       else if(sound === "removeThemAll"){
         var audio = new Audio('audio/explosion.wav');
+      }
+      else if (sound === "alanna"){
+        var audio = new Audio('audio/alanna.wav');
       }
       audio.play();
     };

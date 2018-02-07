@@ -13,8 +13,15 @@
     </div>
   </div>
 
+  <div class="row" style="margin-bottom: 30px;" ng-show="loaded">
+    <div class="col-xs-12">
+      <button ng-click="showUnitList = true" class="listSelector" ng-class="{ 'activeList' : showUnitList }"> By Unit</button>
+      <button ng-click="showUnitList = false" class="listSelector" ng-class="{ 'activeList' : !showUnitList }"> By Customer</button>
+    </div>
+  </div>
+
   <div class="row text-center">
-    <div class="center-block" style="width: 300px;" ng-show="loaded">
+    <div class="center-block" style="width: 300px;" ng-show="loaded && showUnitList">
       <form>
         <div class="form-group">
           <div class="input-group">
@@ -26,14 +33,7 @@
     </div>
   </div>
 
-  <div class="row" style="margin-bottom: 30px;">
-    <div class="col-xs-12">
-      <button ng-click="showUnitList = true" class="listSelector" ng-class="{ 'activeList' : showUnitList }"> By Unit</button>
-      <button ng-click="showUnitList = false" class="listSelector" ng-class="{ 'activeList' : !showUnitList }"> By Customer</button>
-    </div>
-  </div>
-
-  <div class="row" ng-show="showUnitList">
+  <div class="row" ng-show="showUnitList && loaded">
     <div class="col-xs-12 text-center filterTitle">
       Filters
     </div>
@@ -50,7 +50,7 @@
     </div>
   </div>
 
-  <div class="row" ng-show="showUnitList">
+  <div class="row" ng-show="showUnitList && loaded">
     <div class="col-xs-12 text-center">
       <div style="max-width: 600px; margin: 30px auto;">
         <table class="table table-condensed" style="max-width: 600px; margin: 30px auto 5px auto;">
@@ -164,6 +164,14 @@
               </uib-accordion-heading>
 
               <uib-accordion-group>
+                <div class="custInfoCustSec">
+                  <div class="custInfoInvTitle">Customer Info</div>
+                  <div ng-if="value.customerInfo.name">Name: {{value.customerInfo.name}}</div>
+                  <div ng-if="value.customerInfo.email">Email: {{value.customerInfo.email}}</div>
+                  <div ng-if="value.customerInfo.phoneNum">Phone: {{value.customerInfo.phoneNum}}</div>
+                  <div ng-if="value.customerInfo.repairNum">Repair: {{value.customerInfo.repairNum}}</div>
+                  <div ng-if="value.customerInfo.notes">Notes: {{value.customerInfo.notes}}</div>
+                </div>
                 <table class="table table-condensed" style="margin-bottom: 0px;">
                   <tbody>
                     <tr class="customerResultsHeaders">
@@ -185,6 +193,12 @@
                     </tr>
                   </tbody>
                 </table>
+
+                <!-- <div style="margin-top: 20px;">
+                  <button style="background-color: #00ffff" class="custInfoButton" ng-click="editInfo(value)"> Edit </button>
+                  <button style="background-color: #00ff00" class="custInfoButton" ng-click="generatePage(value)"> Print </button>
+                </div> -->
+
               </uib-accordion-group>
 
             </div>
