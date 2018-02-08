@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  <div class="col-xs-12 text-center" ng-show="loaded" >
+  <div id="printList" class="col-xs-12 text-center" ng-show="loaded" >
     <table class="table table-condensed tableBorder table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
       <thead class="tableHead">
         <tr>
@@ -34,6 +34,10 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="col-xs-12">
+    <button ng-click="printDiv('testStuff')">Print List</button>
   </div>
 
   <div id="listOfUnits" class="col-xs-12 text-center" ng-show="displayUnitInfo">
@@ -86,6 +90,12 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <div id="testStuff" ng-show="false">
+    <div class="col-xs-12" ng-repeat="unit in shelfUnits">
+      <i class="far fa-square"></i> {{unit.barcode}}
+    </div>
   </div>
 
 </div>

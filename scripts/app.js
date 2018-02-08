@@ -291,6 +291,7 @@ var barcodeApp = angular.module('barcodeApp', [
     $scope.barcodedUnits.$loaded().then(function() {
       $scope.loaded = true;
       $scope.loadTable();
+      $scope.makeShelfList();
       // console.log($scope.barcodedUnits)
     });
 
@@ -765,6 +766,38 @@ var barcodeApp = angular.module('barcodeApp', [
 
     var unitArray = unitType + 'Inv';
     $scope.displayInformation = $scope[unitArray];
+  }
+
+
+  $scope.makeShelfList = function(){
+    $scope.shelfUnits = [];
+    var listCounter = 0;
+
+    for(var unit in $scope.barcodedUnits){
+      if($scope.barcodedUnits[unit].status === "on shelf"){
+        $scope.shelfUnits.push($scope.barcodedUnits[unit]);
+      }
+
+      listCounter++;
+
+      if(listCounter === $scope.barcodedUnits.length){
+        console.log('finished');
+      }
+    }
+  }
+
+
+  $scope.printDiv = function(divName) {
+    var printContents = document.getElementById(divName).innerHTML;
+    var popupWin = window.open('', '_blank', 'width=300,height=300');
+    popupWin.document.open();
+    popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /></head><body onload="window.print()">' + printContents + '</body></html>');
+    popupWin.document.close();
+
+
+  }
+
+  $scope.runPrinter = function(divName){
 
   }
 
