@@ -89,7 +89,7 @@
           <tr class="results" ng-repeat="key in displayInformation | orderBy:sortType:sortReverse | filter:searchUnit">
             <td class="text-center"> {{key.barcode}} </td>
             <td class="text-center"> {{key.status}} </td>
-            <td class="text-center"> {{key.timestamp  | date:'medium'}} </td>
+            <td class="text-center"> {{key.timestamp | date:'medium'}} </td>
           </tr>
         </tbody>
       </table>
@@ -99,14 +99,18 @@
   <!-- inventory checker -->
 
   <div id="inventoryCheck" class="row" ng-show="!inventoryList" style="max-width: 600px; margin: 0 auto;">
-    <div class="row text-center" hl-sticky="" offset-top="100">
-      <input id="scanInput" class="barcode-input" ng-model="barcodeChecker.barcodeNum" ng-model-options="{debounce : 300}" autofocus/>
-    </div>
-    <div class="row text-center hideContainer">
-      <input class="hideCheckbox" id="checkBox" type="checkbox" ng-model="hideFound"> Hide Scanned Units
+
+    <div  hl-sticky="" offset-top="100">
+      <div class="row text-center">
+        <input id="scanInput" class="barcode-input" ng-model="barcodeChecker.barcodeNum" ng-model-options="{debounce : 300}" autofocus/>
+      </div>
+      <div class="row text-center hideContainer">
+        <input class="hideCheckbox" id="checkBox" type="checkbox" ng-model="hideFound"> Hide Scanned Units
+      </div>
     </div>
 
-    <div ng-repeat="unitType in products">
+
+    <div class="row" ng-repeat="unitType in products">
       <div ng-attr-id="{{ 'unitType-' + unitType }}" class="col-xs-12 invCheckLabels">
         {{unitType}}
       </div>
@@ -114,6 +118,19 @@
         <span ng-class="{'found': unit.status}">{{unit.barcode}}</span>
       </div>
     </div>
+
+    <div id="notInSystem" class="row">
+      <div ng-show="unlistedUnits.length">
+        <div class="col-xs-12 invCheckLabels">
+          Not In System
+        </div>
+        <div class="col-xs-3" ng-repeat="barcode in unlistedUnits" style="color: white;">
+          {{barcode}}
+        </div>
+      </div>
+    </div>
+
+
   </div>
 
 </div>

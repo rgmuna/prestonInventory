@@ -624,16 +624,14 @@ var barcodeApp = angular.module('barcodeApp', [
   $scope.barcodeChecker = {
     barcodeNum: ''
   };
+  $scope.unlistedUnits = [];
 
   $scope.$watch('barcodeChecker.barcodeNum', function(newValue, oldValue) {
     if($scope.barcodeChecker.barcodeNum){
       if($scope.authenticateInput($scope.barcodeChecker.barcodeNum, 'invChecker')){
 
-        $scope.checkInv($scope.barcodeChecker.barcodeNum);
+        $scope.checkInv(newValue);
         $scope.barcodeChecker.barcodeNum = '';
-
-        $scope.scrollToElement(newValue)
-
         $scope.playAudio('scanned');
       }
       else{
@@ -796,12 +794,30 @@ var barcodeApp = angular.module('barcodeApp', [
     }
   }
 
-  $scope.scrollToElement = function(elem){
+  $scope.scrollToElement = function(elem, inSystem){
     var type = $scope.getTypeFromBarcode(elem);
+    var id;
 
-    var id = 'unitType-' + type;
-    var someElement = angular.element(document.getElementById(id));
-    $document.scrollToElementAnimated(someElement, 150);
+    //if unit is a VOU
+    if(elem.indexOf('VOU')>-1){
+      var id = 'unitType-' + type + ' VIU';
+    }
+    else if (elem.indexOf('LR2 s/n LR')>-1){
+      var id = 'unitType-' + type + ' Sensor';
+    }
+    else{
+      var id = 'unitType-' + type;
+    }
+
+    if(!inSystem){
+      var someElement = angular.element(document.getElementById('notInSystem'));
+      $document.scrollToElementAnimated(someElement, 150);
+    }
+    else{
+      var someElement = angular.element(document.getElementById(id));
+      $document.scrollToElementAnimated(someElement, 150);
+    }
+
   }
 
   $scope.revealStoredUnits = function(unitType){
@@ -857,10 +873,22 @@ var barcodeApp = angular.module('barcodeApp', [
   };
 
   $scope.checkInv = function(barcode){
+    var inArray = false;
     for(var i in $scope.shelfUnits){
       if($scope.shelfUnits[i].barcode === barcode){
         $scope.shelfUnits[i].status = true;
+        inArray = true;
       }
+    }
+
+    if(!inArray){
+      if($scope.unlistedUnits.indexOf(barcode)===-1){
+        $scope.unlistedUnits.push(barcode);
+      }
+      $scope.scrollToElement(barcode, false);
+    }
+    else{
+      $scope.scrollToElement(barcode, true);
     }
   }
 

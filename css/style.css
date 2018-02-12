@@ -542,6 +542,8 @@ tbody{
 
 .found{
   color: #00ff00;
+  transition: color 2s ease;
+  font-weight: 600;
 }
 .hideCheckbox{
   background-color: red;
