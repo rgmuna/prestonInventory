@@ -5,7 +5,10 @@ var barcodeApp = angular.module('barcodeApp', [
   'ngSanitize',
   'ui.router',
   'firebase',
+  'duScroll',
+  'hl.sticky',
   'duScroll'
+
 ])
 
 
@@ -328,7 +331,7 @@ var barcodeApp = angular.module('barcodeApp', [
       }
     });
 
-    $scope.authenticateInput = function(input){
+    $scope.authenticateInput = function(input, src){
       var barcodeLetters = ['FI', 'HU3', 'MDR3', 'MDR4', 'LR2', 'DMF3', 'RMF', 'VF3', 'DM1X', 'DM2X', 'DM5'];
       var parsedItem = input.split(" ");
       var unitType = parsedItem[0];
@@ -350,7 +353,9 @@ var barcodeApp = angular.module('barcodeApp', [
         var checkNums = $scope.checkSerialNum(unitType, parsedItem[2]);
 
         if(unitTrue && serialLabelTrue && checkNums){
-          $scope.getFirmware(unitType, parsedItem[2]);
+          if(src != 'invChecker'){
+            $scope.getFirmware(unitType, parsedItem[2]);
+          }
           return true;
         }
         else{
@@ -615,9 +620,28 @@ var barcodeApp = angular.module('barcodeApp', [
   //--------------------controller for inventory---------------------------------------------------------------------------------------------
   //--------------------------------------------------------------------------------------------------------------------------------------------
 
-  // var someElement = angular.element(document.getElementById('listOfUnits'));
-  // $document.scrollToElementAnimated(someElement);
+  $scope.inventoryList = true;
+  $scope.barcodeChecker = {
+    barcodeNum: ''
+  };
 
+  $scope.$watch('barcodeChecker.barcodeNum', function(newValue, oldValue) {
+    if($scope.barcodeChecker.barcodeNum){
+      if($scope.authenticateInput($scope.barcodeChecker.barcodeNum, 'invChecker')){
+
+        $scope.checkInv($scope.barcodeChecker.barcodeNum);
+        $scope.barcodeChecker.barcodeNum = '';
+
+        $scope.scrollToElement(newValue)
+
+        $scope.playAudio('scanned');
+      }
+      else{
+        $scope.barcodeChecker.barcodeNum = '';
+        $scope.playAudio('alanna');
+      }
+    }
+  });
   //not including LR items due to weirdness of labels
   $scope.unitList = ['fi', 'hu3', 'mdr3', 'mdr4', 'dmf3', 'rmf', 'vf3', 'dm1x', 'dm2x', 'dm5'];
   $scope.displayUnitInfo = false;
@@ -760,6 +784,26 @@ var barcodeApp = angular.module('barcodeApp', [
     }
   }
 
+  $scope.getTypeFromBarcode = function(barcode){
+    var unitType = '';
+    for(var i=0; i<barcode.length; i++){
+      if(barcode[i] !== ' '){
+        unitType = unitType + barcode[i];
+      }
+      else{
+        return unitType;
+      }
+    }
+  }
+
+  $scope.scrollToElement = function(elem){
+    var type = $scope.getTypeFromBarcode(elem);
+
+    var id = 'unitType-' + type;
+    var someElement = angular.element(document.getElementById(id));
+    $document.scrollToElementAnimated(someElement, 150);
+  }
+
   $scope.revealStoredUnits = function(unitType){
     $scope.displayUnitInfo = true;
     $scope.revealedUnit = unitType;
@@ -775,31 +819,51 @@ var barcodeApp = angular.module('barcodeApp', [
 
     for(var unit in $scope.barcodedUnits){
       if($scope.barcodedUnits[unit].status === "on shelf"){
-        $scope.shelfUnits.push($scope.barcodedUnits[unit]);
+        // var newObj = {};
+        var newObj =
+          {checked: false,
+            barcode: $scope.barcodedUnits[unit].barcode
+          };
+        $scope.shelfUnits.push(newObj);
       }
-
       listCounter++;
-
       if(listCounter === $scope.barcodedUnits.length){
-        console.log('finished');
+        // console.log($scope.shelfUnits);
       }
     }
   }
 
+  $scope.categorySort = function(unitType) {
 
-  $scope.printDiv = function(divName) {
-    var printContents = document.getElementById(divName).innerHTML;
-    var popupWin = window.open('', '_blank', 'width=300,height=300');
-    popupWin.document.open();
-    popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /></head><body onload="window.print()">' + printContents + '</body></html>');
-    popupWin.document.close();
+    return function(unit) {
+      var barcode = unit.barcode;
+      if(unitType === "LR2 Sensor"){
+        if(barcode.includes("s/n LR")){
+          return unit;
+        }
+      }
+      else if(unitType === "LR2 VIU"){
+        if(barcode.includes("s/n VOU")){
+          return unit;
+        }
+      }
+      else if(barcode.includes(unitType)){
+        return unit;
+      }
+      else{
+        return false;
+      }
+   }
+  };
 
-
+  $scope.checkInv = function(barcode){
+    for(var i in $scope.shelfUnits){
+      if($scope.shelfUnits[i].barcode === barcode){
+        $scope.shelfUnits[i].status = true;
+      }
+    }
   }
 
-  $scope.runPrinter = function(divName){
-
-  }
 
   $scope.sortType     = 'name'; // set the default sort type
   $scope.sortReverse  = false;  // set the default sort order

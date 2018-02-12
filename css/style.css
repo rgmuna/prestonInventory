@@ -517,6 +517,38 @@ tbody{
   font-weight: 300;
 }
 
+.listSelector.inventorySelect{
+  color: #ff00cc;
+  margin-bottom: 30px;
+}
+
+.listSelector.inventorySelect.activeList{
+  border-bottom: 2px solid #ff00cc;
+}
+
+#inventoryCheck .barcode-input{
+  color: #ff00cc;
+  border: 1px solid #ff00cc;
+
+}
+
+.invCheckLabels{
+  text-align: left;
+  color: #ff00cc;
+  font-size: 30px;
+  border-bottom: 1px solid #ff00cc;
+  margin-top: 20px;
+}
+
+.found{
+  color: #00ff00;
+}
+.hideCheckbox{
+  background-color: red;
+}
+.hideContainer{
+  color: #ff00cc;
+}
 /*=========================================fifth tab items=======================================*/
 #loanerCheck .checkTitle{
   color: #CCFF00;

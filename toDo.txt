@@ -1,4 +1,11 @@
 - Add filters to regular inventory
 - fix design to loaners scan
-- figure out matt's radio api stuff
 - remove items from inventory that are purchased and older than X days
+
+
+Loaners:
+- add edit to customer info
+- add print button and PDF
+
+Inventory:
+- inventory checker system
