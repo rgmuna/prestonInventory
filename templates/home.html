@@ -99,6 +99,9 @@
   <!-- inventory checker -->
 
   <div id="inventoryCheck" class="row" ng-show="!inventoryList" style="max-width: 600px; margin: 0 auto;">
+    <div class="row text-center">
+      <button class="resetButton" ng-click="resetScans()" href="">Reset</button>
+    </div>
 
     <div  hl-sticky="" offset-top="100">
       <div class="row text-center">
@@ -121,7 +124,7 @@
 
     <div id="notInSystem" class="row">
       <div ng-show="unlistedUnits.length">
-        <div class="col-xs-12 invCheckLabels">
+        <div class="col-xs-12 invCheckLabels" style="color: red; border-bottom: 1px solid red;">
           Not In System
         </div>
         <div class="col-xs-3" ng-repeat="barcode in unlistedUnits" style="color: white;">

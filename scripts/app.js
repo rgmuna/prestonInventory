@@ -892,6 +892,15 @@ var barcodeApp = angular.module('barcodeApp', [
     }
   }
 
+  $scope.resetScans = function(){
+    if (confirm("You sure you want to reset all your scans?")) {
+      for(var i in $scope.shelfUnits){
+        $scope.shelfUnits[i].status = false;
+      }
+      $scope.unlistedUnits = [];
+    }
+  }
+
 
   $scope.sortType     = 'name'; // set the default sort type
   $scope.sortReverse  = false;  // set the default sort order

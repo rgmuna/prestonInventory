@@ -551,6 +551,20 @@ tbody{
 .hideContainer{
   color: #ff00cc;
 }
+
+.resetButton{
+  border: 1px solid #ff00cc;
+  background-color: black;
+  color: #ff00cc;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+.resetButton:hover{
+  background-color: #ff00cc;
+  color: black;
+}
 /*=========================================fifth tab items=======================================*/
 #loanerCheck .checkTitle{
   color: #CCFF00;
