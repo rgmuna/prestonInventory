@@ -7,5 +7,5 @@ Loaners:
 - add edit to customer info
 - add print button and PDF
 
-Inventory:
-- inventory checker system
+Inventory Checker:
+- add test recorder

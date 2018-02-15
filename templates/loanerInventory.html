@@ -166,11 +166,12 @@
               <uib-accordion-group>
                 <div class="custInfoCustSec">
                   <div class="custInfoInvTitle">Customer Info</div>
-                  <div ng-if="value.customerInfo.name">Name: {{value.customerInfo.name}}</div>
-                  <div ng-if="value.customerInfo.email">Email: {{value.customerInfo.email}}</div>
-                  <div ng-if="value.customerInfo.phoneNum">Phone: {{value.customerInfo.phoneNum}}</div>
-                  <div ng-if="value.customerInfo.repairNum">Repair: {{value.customerInfo.repairNum}}</div>
-                  <div ng-if="value.customerInfo.notes">Notes: {{value.customerInfo.notes}}</div>
+                  <div ng-if="value.customerInfo.name"><b>Name:</b> {{value.customerInfo.name}}</div>
+                  <div ng-if="value.customerInfo.email"><b>Email:</b> {{value.customerInfo.email}}</div>
+                  <div ng-if="value.customerInfo.phoneNum"><b>Phone:</b> {{value.customerInfo.phoneNum}}</div>
+                  <div ng-if="value.customerInfo.shippingAddress"><b>Shipping:</b> {{value.customerInfo.shippingAddress}}</div>
+                  <div ng-if="value.customerInfo.repairNum"><b>Repair:</b> {{value.customerInfo.repairNum}}</div>
+                  <div ng-if="value.customerInfo.notes"><b>Notes:</b> {{value.customerInfo.notes}}</div>
                 </div>
                 <table class="table table-condensed" style="margin-bottom: 0px;">
                   <tbody>
@@ -194,10 +195,10 @@
                   </tbody>
                 </table>
 
-                <!-- <div style="margin-top: 20px;">
-                  <button style="background-color: #00ffff" class="custInfoButton" ng-click="editInfo(value)"> Edit </button>
+                <div style="margin-top: 20px;">
+                  <!-- <button style="background-color: #00ffff" class="custInfoButton" ng-click="editInfo(value)"> Edit </button> -->
                   <button style="background-color: #00ff00" class="custInfoButton" ng-click="generatePage(value)"> Print </button>
-                </div> -->
+                </div>
 
               </uib-accordion-group>
 

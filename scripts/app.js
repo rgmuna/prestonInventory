@@ -898,6 +898,7 @@ var barcodeApp = angular.module('barcodeApp', [
         $scope.shelfUnits[i].status = false;
       }
       $scope.unlistedUnits = [];
+      $scope.playAudio('alanna');
     }
   }
 
