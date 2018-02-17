@@ -918,6 +918,28 @@ tbody{
 }
 
 
+.editInfo{
+  font-size: 15px;
+  text-align: left;
+  color: white;
+}
+
+.infoTitle{
+  width: 60px;
+  font-weight: bold;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.editContainer{
+  margin-bottom: 10px;
+}
+
+.inputStyle{
+  background-color: black;
+  border: 1px solid white;
+  display: inline-block;
+}
 
 /*animations------------------------------------------------------------------*/
 

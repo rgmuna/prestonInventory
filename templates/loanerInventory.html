@@ -164,7 +164,7 @@
               </uib-accordion-heading>
 
               <uib-accordion-group>
-                <div class="custInfoCustSec">
+                <div class="custInfoCustSec" ng-show="!editing && !saving">
                   <div class="custInfoInvTitle">Customer Info</div>
                   <div ng-if="value.customerInfo.name"><b>Name:</b> {{value.customerInfo.name}}</div>
                   <div ng-if="value.customerInfo.email"><b>Email:</b> {{value.customerInfo.email}}</div>
@@ -173,7 +173,33 @@
                   <div ng-if="value.customerInfo.repairNum"><b>Repair:</b> {{value.customerInfo.repairNum}}</div>
                   <div ng-if="value.customerInfo.notes"><b>Notes:</b> {{value.customerInfo.notes}}</div>
                 </div>
-                <table class="table table-condensed" style="margin-bottom: 0px;">
+
+                <div ng-show="editing && !saving">
+                  <div class="custInfoInvTitle text-center" style="color: white;">Customer Info</div>
+                  <div class="editInfo">
+                    <div class="col-sm-6 col-xs-12 editContainer">
+                      <div class="infoTitle">Name:</div> <input class="inputStyle" type="text" ng-model="value.customerInfo.name" />
+                    </div>
+                    <div class="col-sm-6 col-xs-12 editContainer">
+                      <div class="infoTitle">Email:</div> <input class="inputStyle" type="text" ng-model="value.customerInfo.email" />
+                    </div>
+                    <div class="col-sm-6 col-xs-12 editContainer">
+                      <div class="infoTitle">Phone:</div> <input class="inputStyle" type="text" ng-model="value.customerInfo.phoneNum" />
+                    </div>
+                    <div class="col-sm-6 col-xs-12 editContainer">
+                      <div class="infoTitle">Repair #:</div> <input class="inputStyle" type="text" ng-model="value.customerInfo.repairNum" />
+                    </div>
+                    <div class="col-sm-6 col-xs-12 editContainer">
+                      <div class="infoTitle">Shipping:</div> <textarea class="inputStyle" rows="4" ng-model="value.customerInfo.shippingAddress"></textarea>
+                    </div>
+
+                    <div class="col-sm-6 col-xs-12 editContainer">
+                      <div class="infoTitle">Notes:</div> <textarea class="inputStyle" rows="4" ng-model="value.customerInfo.notes"></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <table ng-show="!saving" class="table table-condensed" style="margin-bottom: 0px;">
                   <tbody>
                     <tr class="customerResultsHeaders">
                       <td>Unit</td>
@@ -195,10 +221,23 @@
                   </tbody>
                 </table>
 
-                <div style="margin-top: 20px;">
-                  <!-- <button style="background-color: #00ffff" class="custInfoButton" ng-click="editInfo(value)"> Edit </button> -->
-                  <button style="background-color: #00ff00" class="custInfoButton" ng-click="generatePage(value)"> Print </button>
+                <h1 ng-show="saved" style="color: #00ff00;">Saved!</h1>
+
+                <div ng-show="!saving" style="margin-top: 20px;">
+                  <button ng-show="!editing" style="background-color: #00ffff" class="custInfoButton" ng-click="editInfo(value, 'edit')"> Edit </button>
+                  <button ng-show="editing" style="background-color: #00ffff" class="custInfoButton" ng-click="editInfo(value, 'save')"> Save </button>
+                  <button ng-show="!editing" style="background-color: #00ff00" class="custInfoButton" ng-click="generatePage(value)"> Print </button>
                 </div>
+
+                <div class="row text-center" ng-show="saving">
+                  <div class="text-center">
+                    <img src="RollingOrg.svg" alt="">
+                    <div>
+                      Saving...
+                    </div>
+                  </div>
+                </div>
+
 
               </uib-accordion-group>
 

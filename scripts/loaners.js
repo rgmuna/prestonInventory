@@ -254,7 +254,6 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
     .then(function(builds){
       $scope.pendingLoaners[unit.unitBarcode].status = "Submitted";
       $timeout(function(){
-        // $scope.$apply();
         delete $scope.pendingLoaners[unit.unitBarcode];
         if(angular.equals($scope.pendingBarcodes, {})){
         }
@@ -595,6 +594,9 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
     unitType: '',
     status: ''
   }
+  $scope.editing = false;
+  $scope.saving = false;
+  $scope.saved = false;
 
   $scope.loanerStatuses = ['in house', 'needs QA', 'checked out'];
 
@@ -711,30 +713,49 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   }
 
 
-  $scope.editInfo = function(value){
+  $scope.editInfo = function(value, status){
+    if(status==='edit'){
+      $scope.editing = true;
+    }
+    else if (status==='save'){
+      $scope.saving = true;
+      $scope.editing = false;
 
+      for(var i in  value.units){
+        var barcode = value.units[i].unitBarcode;
+        $scope.loanerInfo.child(barcode).child('customerInfo').set(
+          value.customerInfo
+        )
+        .then(function(builds){
+          $timeout(function(){
+            $scope.saved = true
+            $scope.saving = false;
+          }, 500);
+          $timeout(function(){
+            $scope.saved = false;
+          }, 2500);
+        })
+        .catch(function(error){
+          alert(error + " try saving again");
+          $scope.editing = true;
+        });
+      }
+    }
   }
 
 
 
   $scope.generatePage = function(value){
-    console.log(value);
-
+    // console.log(value);
     var date = new Date();
     var formattedDate = $filter('date')(date, "MMM d, y");
-
-
     var customerInfo = value.customerInfo;
-
-
-
     var columns = [
       {title: 'Barcode', dataKey: 'barcode'},
       {title: 's/n', dataKey: 'serial'},
       {title: 'Unit', dataKey: 'unit'},
       {title: 'Unit Notes', dataKey: 'notes'},
     ];
-
     var rows = [];
 
     for(var unit in value.units){
@@ -744,22 +765,16 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
     }
 
     var doc = new jsPDF('p', 'pt', 'letter' );
-
     doc.setDrawColor(220,220,220);
     doc.setLineWidth(.25);
     doc.line(30, 75, 590, 75);
-    // doc.line(10, 30, 205, 30);
-
     doc.setFont("helvetica");
-
     doc.setTextColor(35,50,55);
     doc.setFontSize(20);
     doc.setFontType("bold");
     doc.text(30, 67, 'Equipment Loan');
-
     doc.setFontSize(10);
     doc.text(590, 68, formattedDate, null, null, 'right')
-
     doc.setTextColor(130);
     doc.setFontSize(10);
     doc.setFontType("normal")
@@ -767,25 +782,21 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
     doc.text(30, 105, '(310) 453-1852');
     doc.text(590, 90, '1659 11th St, Suite 100', null, null, 'right');
     doc.text(590, 105, 'Santa Monica, CA 90404', null, null, 'right');
-
     doc.setTextColor(35,50,55);
     doc.setFontSize(12)
     doc.setFontType('bold')
     doc.text(30, 220, 'Customer Info');
     doc.text(30, 340, 'Units');
-
     doc.setFontSize(10);
     doc.text(30, 245, 'Name: ');
     doc.text(30, 275, 'Shipping: ');
     doc.setFontType('normal');
     doc.text(90, 245, customerInfo.name);
     doc.text(90, 275, customerInfo.shippingAddress);
-
     doc.setDrawColor(35,50,55);
     doc.setLineWidth(2);
     doc.line(30, 225, 590, 225);
     doc.line(30, 345, 590, 345);
-
     doc.autoTable(columns, rows, {
         theme: 'striped',
         styles: {},
