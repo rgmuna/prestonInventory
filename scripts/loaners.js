@@ -714,8 +714,24 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
 
 
   $scope.editInfo = function(value, status){
+    // $scope.oldValue = value;
+    var oldValue = value.customerInfo;
+    // console.log(value);
+    // console.log($scope.customerObj);
+    // console.log(oldValue)
     if(status==='edit'){
+      $scope.editValues = {
+        name: oldValue.name,
+        email: oldValue.email,
+        phoneNum: oldValue.phoneNum,
+        repairNum: oldValue.repairNum,
+        shippingAddress: oldValue.shippingAddress,
+        notes: oldValue.notes
+      }
       $scope.editing = true;
+    }
+    else if(status==='cancel'){
+      $scope.editing = false;
     }
     else if (status==='save'){
       $scope.saving = true;
@@ -724,9 +740,12 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
       for(var i in  value.units){
         var barcode = value.units[i].unitBarcode;
         $scope.loanerInfo.child(barcode).child('customerInfo').set(
-          value.customerInfo
+          $scope.editValues
         )
         .then(function(builds){
+
+          value.customerInfo = $scope.editValues;
+
           $timeout(function(){
             $scope.saved = true
             $scope.saving = false;

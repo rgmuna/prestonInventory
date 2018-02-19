@@ -145,7 +145,7 @@
       <div class="tableUnit" style="max-width: 600px; margin: 30px auto;">
 
           <uib-accordion>
-            <div uib-accordion-group class="customAccStyles" is-open="status.open" ng-repeat="value in customerObj">
+            <div uib-accordion-group class="customAccStyles" is-open="status.open" ng-repeat="value in customerObj" is-disabled="editing">
 
               <uib-accordion-heading>
                 <table class="table table-condensed" style="margin-bottom: 0px;">
@@ -178,23 +178,23 @@
                   <div class="custInfoInvTitle text-center" style="color: white;">Customer Info</div>
                   <div class="editInfo">
                     <div class="col-sm-6 col-xs-12 editContainer">
-                      <div class="infoTitle">Name:</div> <input class="inputStyle" type="text" ng-model="value.customerInfo.name" />
+                      <div class="infoTitle">Name:</div> <input class="inputStyle" type="text" ng-model="editValues.name" />
                     </div>
                     <div class="col-sm-6 col-xs-12 editContainer">
-                      <div class="infoTitle">Email:</div> <input class="inputStyle" type="text" ng-model="value.customerInfo.email" />
+                      <div class="infoTitle">Email:</div> <input class="inputStyle" type="text" ng-model="editValues.email" />
                     </div>
                     <div class="col-sm-6 col-xs-12 editContainer">
-                      <div class="infoTitle">Phone:</div> <input class="inputStyle" type="text" ng-model="value.customerInfo.phoneNum" />
+                      <div class="infoTitle">Phone:</div> <input class="inputStyle" type="text" ng-model="editValues.phoneNum" />
                     </div>
                     <div class="col-sm-6 col-xs-12 editContainer">
-                      <div class="infoTitle">Repair #:</div> <input class="inputStyle" type="text" ng-model="value.customerInfo.repairNum" />
+                      <div class="infoTitle">Repair #:</div> <input class="inputStyle" type="text" ng-model="editValues.repairNum" />
                     </div>
                     <div class="col-sm-6 col-xs-12 editContainer">
-                      <div class="infoTitle">Shipping:</div> <textarea class="inputStyle" rows="4" ng-model="value.customerInfo.shippingAddress"></textarea>
+                      <div class="infoTitle">Shipping:</div> <textarea class="inputStyle" rows="4" ng-model="editValues.shippingAddress"></textarea>
                     </div>
 
                     <div class="col-sm-6 col-xs-12 editContainer">
-                      <div class="infoTitle">Notes:</div> <textarea class="inputStyle" rows="4" ng-model="value.customerInfo.notes"></textarea>
+                      <div class="infoTitle">Notes:</div> <textarea class="inputStyle" rows="4" ng-model="editValues.notes"></textarea>
                     </div>
                   </div>
                 </div>
@@ -225,8 +225,9 @@
 
                 <div ng-show="!saving" style="margin-top: 20px;">
                   <button ng-show="!editing" style="background-color: #00ffff" class="custInfoButton" ng-click="editInfo(value, 'edit')"> Edit </button>
-                  <button ng-show="editing" style="background-color: #00ffff" class="custInfoButton" ng-click="editInfo(value, 'save')"> Save </button>
                   <button ng-show="!editing" style="background-color: #00ff00" class="custInfoButton" ng-click="generatePage(value)"> Print </button>
+                  <button ng-show="editing" style="background-color: red;" class="custInfoButton" ng-click="editInfo(value, 'cancel')"> Cancel </button>
+                  <button ng-show="editing" style="background-color: #00ffff" class="custInfoButton" ng-click="editInfo(value, 'save')"> Save </button>
                 </div>
 
                 <div class="row text-center" ng-show="saving">
