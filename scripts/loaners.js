@@ -665,7 +665,7 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
       var loanerItem = $scope.loanerArray[loaner];
 
       //if item has customer info
-      if(loanerItem.customerInfo){
+      if(loanerItem.customerInfo && loanerItem.status === "checked out"){
 
         //if customer info has a name (i.e. is populated)
         if(loanerItem.customerInfo.name){
@@ -714,11 +714,8 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
 
 
   $scope.editInfo = function(value, status){
-    // $scope.oldValue = value;
     var oldValue = value.customerInfo;
-    // console.log(value);
-    // console.log($scope.customerObj);
-    // console.log(oldValue)
+
     if(status==='edit'){
       $scope.editValues = {
         name: oldValue.name,
@@ -765,7 +762,6 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
 
 
   $scope.generatePage = function(value){
-    // console.log(value);
     var date = new Date();
     var formattedDate = $filter('date')(date, "MMM d, y");
     var customerInfo = value.customerInfo;

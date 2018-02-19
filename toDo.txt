@@ -4,8 +4,5 @@
 
 
 Loaners:
-- add edit to customer info
-- add print button and PDF
-
-Inventory Checker:
-- add test recorder
+- save old loaner sheets
+- 
