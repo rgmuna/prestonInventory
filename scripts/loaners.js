@@ -1,5 +1,7 @@
 barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseArray',  '$firebaseObject', '$timeout', '$http', '$firebaseAuth', '$window', '$filter', function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $filter) {
 
+  $scope.counterTest = 0;
+
   //authentication stuff-------------
   if($window.localStorage.authenticated === 'true'){
     $scope.authenticated = true;
@@ -31,6 +33,7 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   $scope.loanerInfo = firebase.database().ref().child('loaners');
   $scope.loaners = $firebaseObject($scope.loanerInfo);
   $scope.loanerArray = $firebaseArray($scope.loanerInfo);
+
   $scope.showUnitList = true;
 
   $scope.loaners.$loaded().then(function() {
@@ -84,11 +87,12 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
             var barcode = $scope.loanerScan.barcodeNum;
             var letters = barcode.substring(0,3);
             var numbers = Number(barcode.substring(3));
-
-            //if item is stored in loaner database
+            // if item is stored in loaner database
+            console.log($scope.loaners[numbers])
             if($scope.loaners[numbers]){
               // create loaner in pending obj
-              $scope.pendingLoaners[numbers] = $scope.loaners[numbers];
+              $scope.pendingLoaners[numbers] = deepObjCopy($scope.loaners[numbers]);
+              // $scope.pendingLoaners[numbers] = $scope.loaners[numbers];
               //if unit is motor, hide fw stuff
               if($scope.isMotor($scope.pendingLoaners[numbers].unit)){
                 $scope.pendingLoaners[numbers].firmware = "NA";
@@ -125,6 +129,16 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
 //--------------------------MAIN WATCHER FOR SCANNED INPUT---------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------------------------------------
 
+
+  var deepObjCopy = function(obj){
+    var secondObj = {};
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+          secondObj[prop] = obj[prop];
+      }
+    }
+    return secondObj;
+  }
 
 
 // FUNCTIONS FOR NEW UNITS===============================================================================================================
@@ -451,6 +465,7 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
   }
 
   $scope.checkApiResponse = function(unit, response){
+
     var unitType = unit.unit;
     //if response is a motor, don't display FW
     if(response.data == null){
@@ -478,6 +493,44 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
       $scope.setStatus(unit, hasRadio);
     }
   };
+
+
+// status: 'checked out' | 'needs QA' | 'ready'
+  $scope.setStatus = function(unit, hasRadio){
+    // $scope.counterTest++;
+
+    var unitStatus = unit.status;
+    var updateStatus = "";
+
+    if(unitStatus === "ready"){
+      //if unit is a motor
+      if($scope.isMotor(unit.unit)){
+        $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
+      }
+      //if unit has a radio and is up to date or doesn't have a radio
+      else if(((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods){
+        $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
+      }
+      else{
+        $scope.pendingLoaners[unit.unitBarcode].status = "Needs updates";
+        // console.log()
+      }
+    }
+    else if (unitStatus === 'needs QA'){
+      if($scope.isMotor(unit.unit)){
+        $scope.pendingLoaners[unit.unitBarcode].status = "Needs QA";
+      }
+      else if(((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods){
+        $scope.pendingLoaners[unit.unitBarcode].status = "Needs QA";
+      }
+      else{
+        $scope.pendingLoaners[unit.unitBarcode].status = "Needs updates & QA";
+      }
+    }
+    else if (unitStatus === 'checked Out'){
+      $scope.pendingLoaners[unit.unitBarcode].status = "Ready to be checked in";
+    }
+  }
 
   $scope.invApiResponse = function(unit, response){
 
@@ -516,40 +569,6 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
     }
   };
 
-
-// status: 'checked out' | 'needs QA' | 'ready'
-  $scope.setStatus = function(unit, hasRadio){
-    var unitStatus = unit.status;
-    var updateStatus = "";
-
-    if(unitStatus === "ready"){
-      //if unit is a motor
-      if($scope.isMotor(unit.unit)){
-        $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
-      }
-      //if unit has a radio and is up to date or doesn't have a radio
-      else if(((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods){
-        $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
-      }
-      else{
-        $scope.pendingLoaners[unit.unitBarcode].status = "Needs updates";
-      }
-    }
-    else if (unitStatus === 'needs QA'){
-      if($scope.isMotor(unit.unit)){
-        $scope.pendingLoaners[unit.unitBarcode].status = "Needs QA";
-      }
-      else if(((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods){
-        $scope.pendingLoaners[unit.unitBarcode].status = "Needs QA";
-      }
-      else{
-        $scope.pendingLoaners[unit.unitBarcode].status = "Needs updates & QA";
-      }
-    }
-    else if (unitStatus === 'checked Out'){
-      $scope.pendingLoaners[unit.unitBarcode].status = "Ready to be checked in";
-    }
-  }
 
   $scope.custImport = function(unit, custInfo){
     var singleLoaner = $scope.pendingLoaners[unit.unitBarcode].customerInfo;

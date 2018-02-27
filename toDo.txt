@@ -5,4 +5,8 @@
 
 Loaners:
 - save old loaner sheets
-- 
+- add dates to customer entries
+
+Inventory check
+- send email after test is done
+- record that test was done
