@@ -43,7 +43,7 @@ var barcodeApp = angular.module('barcodeApp', [
 
 
 
-.controller('BarcodeController', ['authService', '$scope', '$firebaseArray',  '$firebaseObject', '$timeout', '$http', '$firebaseAuth', '$window', '$document', function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document) {
+.controller('BarcodeController', ['authService', '$scope', '$firebaseArray',  '$firebaseObject', '$timeout', '$http', '$firebaseAuth', '$window', '$document', '$filter', function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter) {
 
   $scope.isNavCollapsed = false;
 
@@ -295,7 +295,6 @@ var barcodeApp = angular.module('barcodeApp', [
       $scope.loaded = true;
       $scope.loadTable();
       $scope.makeShelfList();
-      // console.log($scope.barcodedUnits)
     });
 
     $scope.$watch('barcodedUnits', function(newValue, oldValue) {
@@ -629,7 +628,6 @@ var barcodeApp = angular.module('barcodeApp', [
   $scope.$watch('barcodeChecker.barcodeNum', function(newValue, oldValue) {
     if($scope.barcodeChecker.barcodeNum){
       if($scope.authenticateInput($scope.barcodeChecker.barcodeNum, 'invChecker')){
-
         $scope.checkInv(newValue);
         $scope.barcodeChecker.barcodeNum = '';
         $scope.playAudio('scanned');
@@ -831,26 +829,19 @@ var barcodeApp = angular.module('barcodeApp', [
 
   $scope.makeShelfList = function(){
     $scope.shelfUnits = [];
-    var listCounter = 0;
-
     for(var unit in $scope.barcodedUnits){
       if($scope.barcodedUnits[unit].status === "on shelf"){
         // var newObj = {};
         var newObj =
-          {checked: false,
+          {status: false,
             barcode: $scope.barcodedUnits[unit].barcode
           };
         $scope.shelfUnits.push(newObj);
-      }
-      listCounter++;
-      if(listCounter === $scope.barcodedUnits.length){
-        // console.log($scope.shelfUnits);
       }
     }
   }
 
   $scope.categorySort = function(unitType) {
-
     return function(unit) {
       var barcode = unit.barcode;
       if(unitType === "LR2 Sensor"){
@@ -869,7 +860,7 @@ var barcodeApp = angular.module('barcodeApp', [
       else{
         return false;
       }
-   }
+    }
   };
 
   $scope.checkInv = function(barcode){
@@ -880,7 +871,6 @@ var barcodeApp = angular.module('barcodeApp', [
         inArray = true;
       }
     }
-
     if(!inArray){
       if($scope.unlistedUnits.indexOf(barcode)===-1){
         $scope.unlistedUnits.push(barcode);
@@ -902,11 +892,41 @@ var barcodeApp = angular.module('barcodeApp', [
     }
   }
 
-
   $scope.sortType     = 'name'; // set the default sort type
   $scope.sortReverse  = false;  // set the default sort order
   $scope.searchUnits   = '';     // set the default search/filter term
 
+
+  //submit test to firebase
+  $scope.submitTest = function(){
+    var submissionDate = $filter('date')(new Date(), 'medium');
+    var submitObj = {
+      date: submissionDate
+    };
+    for(var i in $scope.shelfUnits){
+      if(!$scope.shelfUnits[i].status){
+        submitObj['unit' + i] = angular.copy($scope.shelfUnits[i]);
+      }
+    }
+
+    // submit to firebase
+    var testProperty = Date.now().toString();
+    var testsRef = firebase.database().ref().child('tests');
+    var testsObj = $firebaseObject(testsRef);
+
+    console.log(submitObj)
+    testsObj.$loaded().then(function() {
+      testsRef.child(testProperty).set(
+        submitObj
+      )
+      .then(function(builds){
+        console.log('submitted!');
+      });
+
+    })
+
+
+  }
 
 }])
 //end of controller
