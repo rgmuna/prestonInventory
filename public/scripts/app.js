@@ -46,7 +46,7 @@ var barcodeApp = angular.module('barcodeApp', [
 .controller('BarcodeController', ['authService', '$scope', '$firebaseArray',  '$firebaseObject', '$timeout', '$http', '$firebaseAuth', '$window', '$document', '$filter', function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter) {
 
   $scope.isNavCollapsed = false;
-
+  
   if($window.localStorage.authenticated === 'true'){
     $scope.authenticated = true;
   }

@@ -5,13 +5,16 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 admin.initializeApp(functions.config().firebase);
 
+// var email = config.ADMIN_EMAIL;
+// var pw = config.ADMIN_PASS;
+
 // const gmailEmail = functions.config().gmail.email;
 // const gmailPassword = functions.config().gmail.password;
 const mailTransport = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: "tech.prestoncinema@gmail.com",
-    pass: "followFocus4life!",
+    user: 'test@test.com',
+    pass: 'asdfasdf'
   }
 });
 
