@@ -1,0 +1,27 @@
+{
+  "name": "public",
+  "version": "1.0.0",
+  "description": "\"# prestonInventory\"",
+  "main": "index.js",
+  "dependencies": {
+    "angular-sticky-plugin": "^0.4.2",
+    "angular-barcode": "^2.0.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-webserver": "^0.9.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rgmuna/prestonInventory.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rgmuna/prestonInventory/issues"
+  },
+  "homepage": "https://github.com/rgmuna/prestonInventory#readme"
+}

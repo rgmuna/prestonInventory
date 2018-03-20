@@ -1,0 +1,20 @@
+- Add filters to regular inventory
+- fix design to loaners scan
+- remove items from inventory that are purchased and older than X days
+
+
+Loaners:
+- save old loaner sheets
+- add dates to customer entries
+
+Inventory check
+- send email after test is done
+- record that test was done
+
+Send Email when Test is performed
+- Press Submit
+-- Stores test in folder w/ date
+-- New test triggers cloud function
+--- Send test result to email
+--- cleans up database
+---- puts all purchased items older than a month in folder

@@ -1,27 +1,16 @@
 {
-  "name": "public",
-  "version": "1.0.0",
-  "description": "\"# prestonInventory\"",
+  "name": "roque",
+  "version": "3.9.5",
+  "description": "",
   "main": "index.js",
-  "dependencies": {
-    "angular-sticky-plugin": "^0.4.2",
-    "angular-barcode": "^2.0.1"
-  },
-  "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-webserver": "^0.9.1"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rgmuna/prestonInventory.git"
-  },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/rgmuna/prestonInventory/issues"
-  },
-  "homepage": "https://github.com/rgmuna/prestonInventory#readme"
+  "dependencies": {
+    "angular-barcode": "^2.0.1",
+    "firebase-admin": "^5.9.1",
+    "firebase-functions": "^0.8.1"
+  }
 }
