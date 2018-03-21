@@ -5,16 +5,15 @@ const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 admin.initializeApp(functions.config().firebase);
 
-// var email = config.ADMIN_EMAIL;
-// var pw = config.ADMIN_PASS;
+//email config variables
+var gmailemail = functions.config().gmailconfig.email;
+var gmailpassword = functions.config().gmailconfig.password;
 
-// const gmailEmail = functions.config().gmail.email;
-// const gmailPassword = functions.config().gmail.password;
 const mailTransport = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'test@test.com',
-    pass: 'asdfasdf'
+    user: gmailemail,
+    pass: gmailpassword
   }
 });
 
@@ -28,7 +27,9 @@ exports.testSubmitted = functions.database
   // console.log('triggered!', event.params.pushId, original);
   // You must return a Promise when performing asynchronous tasks inside a Functions such as
   // writing to the Firebase Realtime Database.
-  return sendTestEmail('roque@prestoncinema.com');
+  console.log(functions.config().gmailconfig.password);
+  return functions.config().gmailconfig.password;
+  // return sendTestEmail('roque@prestoncinema.com');
 
 
 });
@@ -38,7 +39,7 @@ exports.testSubmitted = functions.database
 function sendTestEmail(email) {
   const mailOptions = {
     from: '"Test Submission"<noreply@example.com>',
-    to: email,
+    to: "roque@prestcinema.com",
     subject: 'Test Submitted',
     text: 'hello world'
   };

@@ -46,7 +46,7 @@ var barcodeApp = angular.module('barcodeApp', [
 .controller('BarcodeController', ['authService', '$scope', '$firebaseArray',  '$firebaseObject', '$timeout', '$http', '$firebaseAuth', '$window', '$document', '$filter', function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter) {
 
   $scope.isNavCollapsed = false;
-  
+
   if($window.localStorage.authenticated === 'true'){
     $scope.authenticated = true;
   }
@@ -278,7 +278,7 @@ var barcodeApp = angular.module('barcodeApp', [
     //--------------------------------------------------------------------------------------------------------------------------------------------
     //--------------------controller for check in/out---------------------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------------------------------------------------------------------
-    $scope.barcodedUnitInfo = firebase.database().ref();
+    $scope.barcodedUnitInfo = firebase.database().ref().child('inventory');
     $scope.barcodedUnits = $firebaseArray($scope.barcodedUnitInfo);
 
     //initilizations
