@@ -11,7 +11,27 @@ var barcodeApp = angular.module('barcodeApp', [
 
 ])
 
+//returns true/false if unit scan is older than 30 days old
+.filter('filterOldies', function() {
+    return function(input) {
+      var number = parseInt(input.timestamp, 10);
+      var currDate = (new Date()).getTime();
+      var thirtyDaysAgo = currDate - 2592000000;
 
+      //is unit younger than 30 days?
+      var youngEnough = number > thirtyDaysAgo;
+      //is unit NOT checked out for purchase?
+      var isNotPurchased = input.status !== "checked out - purchase";
+
+      if(youngEnough || isNotPurchased){
+        return true;
+      }
+      else{
+        return false;
+      }
+
+    };
+})
 
 .directive('ngEnter', function () {
   return function (scope, element, attrs) {
@@ -409,6 +429,9 @@ var barcodeApp = angular.module('barcodeApp', [
           var constructedName = unitType + ' s/n ' + serialNum;
           var pendingBarcodeName = $scope.simplifyKey(constructedName);
           $scope.pendingBarcodes[pendingBarcodeName].notMotor = false;
+          $scope.pendingBarcodes[pendingBarcodeName].notes = response.data.notes;
+          console.log(response);
+
         }
 
         else{
@@ -426,6 +449,7 @@ var barcodeApp = angular.module('barcodeApp', [
           $scope.pendingBarcodes[pendingBarcodeName].modsLatest = response.data.mods_latest ? response.data.mods_latest : false ;
           $scope.pendingBarcodes[pendingBarcodeName].fwLink = "https://secure-ocean-3120.herokuapp.com" +  response.data.url;
           $scope.pendingBarcodes[pendingBarcodeName].infoPulled = true;
+          $scope.pendingBarcodes[pendingBarcodeName].notes = response.data.notes;
           $scope.pendingBarcodes[pendingBarcodeName].hasRadio = $scope.includesRadio(unitType);
         }
 
@@ -619,6 +643,9 @@ var barcodeApp = angular.module('barcodeApp', [
   //--------------------------------------------------------------------------------------------------------------------------------------------
   //--------------------controller for inventory---------------------------------------------------------------------------------------------
   //--------------------------------------------------------------------------------------------------------------------------------------------
+
+  $scope.currDate = firebase.database.ServerValue.TIMESTAMP;
+  $scope.dateLimiter = $scope.currDate - 2592000;
 
   $scope.inventoryList = true;
   $scope.barcodeChecker = {

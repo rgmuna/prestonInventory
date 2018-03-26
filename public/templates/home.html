@@ -54,6 +54,7 @@
                 <input type="text" class="form-control" placeholder="Search {{revealedUnit | uppercase}}s..." ng-model="searchUnit">
               </div>
             </div>
+            <input id="checkBox" type="checkbox" ng-model="showAll"><span style="color: white;"> Show units older than 30 days old</span> 
           </form>
         </div>
       </div>
@@ -86,7 +87,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="results" ng-repeat="key in displayInformation | orderBy:sortType:sortReverse | filter:searchUnit">
+          <tr class="results" ng-repeat="key in displayInformation | orderBy:sortType:sortReverse | filter:searchUnit" ng-show="(key|filterOldies) || showAll">
             <td class="text-center"> {{key.barcode}} </td>
             <td class="text-center"> {{key.status}} </td>
             <td class="text-center"> {{key.timestamp | date:'medium'}} </td>

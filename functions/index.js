@@ -1,15 +1,20 @@
 //firebase deploy --only functions
 
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
+const firebase = require('firebase-admin');
 const nodemailer = require('nodemailer');
+const express = require('express');
 
 //grab config files from firebase and intialize app
-admin.initializeApp(functions.config().firebase);
+const firebaseApp = firebase.initializeApp(
+  functions.config().firebase
+);
 
 //email config variables stored on server
 var gmailemail = functions.config().gmailconfig.email;
 var gmailpassword = functions.config().gmailconfig.password;
+
+//get access to database
 
 //setup mail transport
 let transporter = nodemailer.createTransport({
@@ -36,10 +41,11 @@ exports.testSubmitted = functions.database
     // Grab the current value of what was written to the Realtime Database.
     const original = event.data.val();
     console.log('triggered!');
-    console.log(original);
+
+    // console.log(admin.database().ref('/tests'));
 
     //uncomment below for sending emails
-    // return sendTestEmail();
+    return sendTestEmail();
 });
 
 

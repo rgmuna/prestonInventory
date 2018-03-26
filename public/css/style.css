@@ -342,6 +342,12 @@ li>#loanerCheck.activeState:after {
   color: #00FFFF;
 }
 
+.unitNotes{
+  font-size: 18px;
+  color: white;
+  text-align: left;
+}
+
 .checkInBtn{
   background-color: #33FF00;
   width: 137px;
