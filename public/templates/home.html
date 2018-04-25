@@ -20,6 +20,7 @@
   </div>
 
   <div ng-show="inventoryList">
+
     <div class="col-xs-12 text-center" ng-show="loaded" >
       <table class="table table-condensed tableBorder table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
         <thead class="tableHead">
@@ -27,6 +28,7 @@
             <th class="text-center">  Unit </th>
             <th class="text-center">  On Shelf </th>
             <th class="text-center">  Checked Out - Other </th>
+            <th class="text-center">  In Stock? </th>
           </tr>
         </thead>
         <tbody>
@@ -38,6 +40,8 @@
               </th>
               <td class="onShelf text-center"> {{value.onShelf ? value.onShelf : '-' }} </td>
               <td class="outOther  text-center"> {{value.outOther ? value.outOther : '-'}} </td>
+              <td class="text-center" ng-if="value.onShelf < minThreshold[key]"> <i style="color: #FF0000" class="fa fa-window-close"></i> </td>
+              <td class="text-center" ng-if="value.onShelf > minThreshold[key]"> <i style="color: #33FF00" class="fa fa-check-square"></i> </td>
           </tr>
         </tbody>
       </table>
@@ -54,7 +58,7 @@
                 <input type="text" class="form-control" placeholder="Search {{revealedUnit | uppercase}}s..." ng-model="searchUnit">
               </div>
             </div>
-            <input id="checkBox" type="checkbox" ng-model="showAll"><span style="color: white;"> Show units older than 30 days old</span> 
+            <input id="checkBox" type="checkbox" ng-model="showAll"><span style="color: white;"> Show units older than 30 days old</span>
           </form>
         </div>
       </div>

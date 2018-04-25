@@ -113,7 +113,8 @@ var barcodeApp = angular.module('barcodeApp', [
       'VF3',
       'DM1X',
       'DM2X',
-      'DM5'
+      'DM5',
+      'BM'
     ];
 
     //add barcode to array and update local storage-------
@@ -153,7 +154,7 @@ var barcodeApp = angular.module('barcodeApp', [
 
     //checks that inputted serial number is correctly formatted -------
     $scope.checkSerialNum = function(item, serial){
-      var shortBarcode = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5'];
+      var shortBarcode = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'BM'];
       //if the item is one of the short barcode items
       if(shortBarcode.indexOf(item) >= 0){
         if(!isNaN(serial) && (serial.length === 4) && (item != 'DM5')){
@@ -317,9 +318,11 @@ var barcodeApp = angular.module('barcodeApp', [
       $scope.makeShelfList();
     });
 
-    $scope.$watch('barcodedUnits', function(newValue, oldValue) {
-      $scope.loadTable();
-    }, true)
+    // $scope.$watch('barcodedUnits', function(newValue, oldValue) {
+    //   if($scope.loaded){
+    //
+    //   }
+    // }, true)
 
     //object keeping track of scanned barcodes
     $scope.pendingBarcodes = {};
@@ -351,7 +354,7 @@ var barcodeApp = angular.module('barcodeApp', [
     });
 
     $scope.authenticateInput = function(input, src){
-      var barcodeLetters = ['FI', 'HU3', 'MDR3', 'MDR4', 'LR2', 'DMF3', 'RMF', 'VF3', 'DM1X', 'DM2X', 'DM5'];
+      var barcodeLetters = ['FI', 'HU3', 'MDR3', 'MDR4', 'LR2', 'DMF3', 'RMF', 'VF3', 'DM1X', 'DM2X', 'DM5', 'BM'];
       var parsedItem = input.split(" ");
       var unitType = parsedItem[0];
 
@@ -403,6 +406,9 @@ var barcodeApp = angular.module('barcodeApp', [
       else if(unitType === 'VF3'){
         apiUnitType = 'VF3';
       }
+      else if(unitType === 'BM'){
+        apiUnitType = 'Updater';
+      }
       else{
         apiUnitType = unitType;
       }
@@ -452,7 +458,6 @@ var barcodeApp = angular.module('barcodeApp', [
           $scope.pendingBarcodes[pendingBarcodeName].notes = response.data.notes;
           $scope.pendingBarcodes[pendingBarcodeName].hasRadio = $scope.includesRadio(unitType);
         }
-
       });
     }
 
@@ -653,6 +658,8 @@ var barcodeApp = angular.module('barcodeApp', [
   };
   $scope.unlistedUnits = [];
 
+  $scope.viewOption = false;
+
   $scope.$watch('barcodeChecker.barcodeNum', function(newValue, oldValue) {
     if($scope.barcodeChecker.barcodeNum){
       if($scope.authenticateInput($scope.barcodeChecker.barcodeNum, 'invChecker')){
@@ -667,9 +674,24 @@ var barcodeApp = angular.module('barcodeApp', [
     }
   });
   //not including LR items due to weirdness of labels
-  $scope.unitList = ['fi', 'hu3', 'mdr3', 'mdr4', 'dmf3', 'rmf', 'vf3', 'dm1x', 'dm2x', 'dm5'];
+  $scope.unitList = ['fi', 'hu3', 'mdr3', 'mdr4', 'dmf3', 'rmf', 'vf3', 'dm1x', 'dm2x', 'dm5', 'bm'];
   $scope.displayUnitInfo = false;
 
+  $scope.minThreshold = {
+    fi: 8,
+    hu3: 8,
+    mdr3: 9,
+    mdr4: 5,
+    lr: 6,
+    vou: 6,
+    dmf3: 8,
+    rmf: 3,
+    vf3: 1,
+    dm2x: 23,
+    dm1x: 15,
+    dm5: 12,
+    bm: 10
+  }
 
   // make objects for each unit type
   $scope.loadTable = function(){
@@ -686,6 +708,7 @@ var barcodeApp = angular.module('barcodeApp', [
     $scope.dm1xInv = [];
     $scope.dm2xInv = [];
     $scope.dm5Inv = [];
+    $scope.bmInv = [];
 
     $scope.allUnits = {
       fi: {
@@ -747,6 +770,11 @@ var barcodeApp = angular.module('barcodeApp', [
         onShelf : 0,
         outOther: 0,
         outPurchase: 0
+      },
+      bm: {
+        onShelf : 0,
+        outOther: 0,
+        outPurchase: 0
       }
     }
 
@@ -788,7 +816,6 @@ var barcodeApp = angular.module('barcodeApp', [
           else if($scope.barcodedUnits[i].status === "on shelf"){
             $scope.allUnits.lr.onShelf += 1;
           }
-
         }
         else if(parsedItem[2][0] === 'V'){
           //add unit to the correct unit array
@@ -807,6 +834,17 @@ var barcodeApp = angular.module('barcodeApp', [
       }
     }
   }
+
+  $scope.$watch('viewOption', function(newValue, oldValue) {
+    //if true, show all units
+    if($scope.viewOption){
+      console.log($scope.allUnits)
+    }
+    //if not true, show min threshold
+    else{
+
+    }
+  })
 
   $scope.getTypeFromBarcode = function(barcode){
     var unitType = '';
@@ -859,7 +897,6 @@ var barcodeApp = angular.module('barcodeApp', [
     $scope.shelfUnits = [];
     for(var unit in $scope.barcodedUnits){
       if($scope.barcodedUnits[unit].status === "on shelf"){
-        // var newObj = {};
         var newObj =
           {status: false,
             barcode: $scope.barcodedUnits[unit].barcode
@@ -942,7 +979,6 @@ var barcodeApp = angular.module('barcodeApp', [
     var testsRef = firebase.database().ref().child('tests');
     var testsObj = $firebaseObject(testsRef);
 
-    console.log(submitObj)
     testsObj.$loaded().then(function() {
       testsRef.child(testProperty).set(
         submitObj
@@ -968,9 +1004,9 @@ var barcodeApp = angular.module('barcodeApp', [
   //barcode sizes
   var vm = this;
   vm.options = {
-      width: 2,
+      width: 1.5,
       height: 80,
-      quite: 10,
+      // quite: 10,
       displayValue: true,
       font: "monospace",
       textAlign: "center",

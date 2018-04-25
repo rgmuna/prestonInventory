@@ -67,7 +67,8 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
     'DM5',
     'DM4X',
     'DM2',
-    'VLC'
+    'VLC',
+    'BM'
   ];
 
   //keeps tracked of scanned inputs
@@ -277,7 +278,7 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
 
   //serial number check
   $scope.checkSerialNum = function(item, serial){
-    var shortBarcode = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'DM2', 'DM4X', 'MDR2'];
+    var shortBarcode = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'DM2', 'DM4X', 'MDR2', 'BM'];
     //if the item is one of the short barcode items
     if(shortBarcode.indexOf(item) >= 0){
       if(!isNaN(serial) && (serial.length === 4) && (item != 'DM5')){
@@ -445,6 +446,9 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
     else if(unitType === 'VF3'){
       apiUnitType = 'VF3';
     }
+    else if(unitType === 'BM'){
+      apiUnitType = 'Updater';
+    }
     else{
       apiUnitType = unitType;
     }
@@ -473,7 +477,7 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
       delete $scope.pendingLoaners[unit.unitBarcode];
     }
     else{
-      var noRadio = ["LR2", "DMF3", "DMF2"];
+      var noRadio = ["LR2", "DMF3", "DMF2", "BM"];
       var all = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC"];
       var hasRadio = (all.indexOf(unitType)!==-1);
 
@@ -550,7 +554,7 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
       $scope.loanerArray[unitIndex].radio = 'NA';
     }
     else{
-      var noRadio = ["LR2", "DMF3", "DMF2"];
+      var noRadio = ["LR2", "DMF3", "DMF2", "BM"];
       var all = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC"];
       var hasRadio = (all.indexOf(unitType)!==-1);
 
@@ -844,7 +848,7 @@ barcodeApp.controller('LoanerController', ['authService', '$scope', '$firebaseAr
 
     doc.text(30, 750, 'Prepared By:________________________________');
     doc.text(300, 750, 'Received By:________________________________');
-    doc.save('test.pdf');
+    doc.save('loaner_receipt.pdf');
   }
 
 

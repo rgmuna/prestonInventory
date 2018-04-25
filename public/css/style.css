@@ -949,7 +949,6 @@ tbody{
 
 /*animations------------------------------------------------------------------*/
 
-
 /* The typing effect */
 @keyframes authTyping {
   from { width: 0 }
@@ -965,8 +964,6 @@ tbody{
   from, to { border-color: transparent }
   50% { border-color: inherit; }
 }
-
-
 
 /*media queries---------------------------------------------------------------*/
 @media (min-device-width: 768px) {
