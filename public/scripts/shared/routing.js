@@ -18,7 +18,7 @@ barcodeApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvid
       views: {
 
               main: {templateUrl: '/templates/generateBarcodes.html',
-                      controller: 'BarcodeController'
+                      controller: 'Generate_Barcode_Ctrl'
                     }
             }
     })
@@ -27,7 +27,7 @@ barcodeApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvid
       views: {
 
               main: {templateUrl: '/templates/checkInOut.html',
-                      controller: 'BarcodeController'
+                      controller: 'Inv_CheckInOut_Ctrl'
                     }
             }
     })

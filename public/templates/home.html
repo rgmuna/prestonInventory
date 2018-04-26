@@ -41,7 +41,7 @@
               <td class="onShelf text-center"> {{value.onShelf ? value.onShelf : '-' }} </td>
               <td class="outOther  text-center"> {{value.outOther ? value.outOther : '-'}} </td>
               <td class="text-center" ng-if="value.onShelf < minThreshold[key]"> <i style="color: #FF0000" class="fa fa-window-close"></i> </td>
-              <td class="text-center" ng-if="value.onShelf > minThreshold[key]"> <i style="color: #33FF00" class="fa fa-check-square"></i> </td>
+              <td class="text-center" ng-if="value.onShelf >= minThreshold[key]"> <i style="color: #33FF00" class="fa fa-check-square"></i> </td>
           </tr>
         </tbody>
       </table>
