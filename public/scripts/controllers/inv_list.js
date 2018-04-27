@@ -1,4 +1,4 @@
-barcodeApp.controller('BarcodeController', [
+barcodeApp.controller('Inv_List_Ctrl', [
   'authService',
   '$scope',
   '$firebaseArray',

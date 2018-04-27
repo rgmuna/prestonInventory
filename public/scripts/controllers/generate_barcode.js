@@ -15,7 +15,7 @@ barcodeApp.controller('Generate_Barcode_Ctrl', [
       'FI',
       'HU3',
       'MDR3',
-      'MDR4',
+      'MDR4', 
       'LR2 Sensor',
       'LR2 VIU',
       'DMF3',

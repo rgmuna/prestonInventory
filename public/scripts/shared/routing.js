@@ -9,7 +9,7 @@ barcodeApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvid
       views: {
 
               main: {templateUrl: '/templates/home.html',
-                      controller: 'BarcodeController'
+                      controller: 'Inv_List_Ctrl'
                     }
             },
     })
@@ -36,7 +36,7 @@ barcodeApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvid
       views: {
 
               main: {templateUrl: '/templates/loanerInventory.html',
-                      controller: 'LoanerController'
+                      controller: 'Loaner_List_Ctrl'
                     }
             }
     })
@@ -45,7 +45,7 @@ barcodeApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvid
       views: {
 
               main: {templateUrl: '/templates/loanerCheckInOut.html',
-                      controller: 'LoanerController'
+                      controller: 'Loaner_CheckInOut_Ctrl'
                     }
             }
     })
