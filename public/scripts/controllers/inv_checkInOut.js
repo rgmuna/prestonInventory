@@ -11,6 +11,8 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
   '$filter',
   function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter) {
 
+    //------------- Oauth -------------
+
     if($window.localStorage.authenticated === 'true'){
       $scope.authenticated = true;
     }
@@ -32,8 +34,22 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
       $scope.authenticated = false;
     };
 
+    //------------- Import Firebase Information -------------
+
+    //product invnetory from Firebase
     $scope.barcodedUnitInfo = firebase.database().ref().child('inventory');
     $scope.barcodedUnits = $firebaseArray($scope.barcodedUnitInfo);
+
+    //cable invnetory from Firebase
+    $scope.barcodedCableInfo = firebase.database().ref().child('cableInventory');
+    $scope.barcodedCables = $firebaseArray($scope.barcodedCableInfo);
+
+    //accessory invnetory from Firebase
+    $scope.barcodedAccessoryInfo = firebase.database().ref().child('accessoryInventory');
+    $scope.barcodedAccessories = $firebaseArray($scope.barcodedAccessoryInfo);
+
+
+    //------------- For Scanning Items -------------
 
     //initilizations
     $scope.barcodeEntered = false;
@@ -44,7 +60,7 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
       barcodeNum: ''
     };
 
-    //checks when firebase items are loaded ------
+    //checks when firebase items are loaded
     $scope.barcodedUnits.$loaded().then(function() {
       $scope.loaded = true;
     });
@@ -52,7 +68,7 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
     //object keeping track of scanned barcodes
     $scope.pendingBarcodes = {};
 
-    //watches for when a unit is scanned -----------
+    //watches for when a unit is scanned
     $scope.$watch('barcodeRead.barcodeNum', function() {
       if($scope.barcodeRead.barcodeNum){
         //makes subtitles visible
@@ -72,11 +88,12 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
         }
         else{
           $scope.playAudio('alanna');
-          // alert('Please enter a real product barcode');
           $scope.barcodeRead.barcodeNum = '';
         }
       }
     });
+
+    //------------- Unit Authentication -------------
 
     $scope.checkSerialNum = function(item, serial){
       var shortBarcode = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'BM'];
@@ -180,17 +197,30 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
     }
 
     $scope.authenticateInput = function(input, src){
-      var barcodeLetters = ['FI', 'HU3', 'MDR3', 'MDR4', 'LR2', 'DMF3', 'RMF', 'VF3', 'DM1X', 'DM2X', 'DM5', 'BM'];
       var parsedItem = input.split(" ");
-      var unitType = parsedItem[0];
 
-      var unitTrue = barcodeLetters.indexOf(unitType)>=0;
-      var serialLabelTrue = (parsedItem[1] === 's/n');
-      if(parsedItem.length < 3){
-        alert('Please enter a real product barcode');
-        return false;
+      //accessory or cable
+      if(parsedItem.length === 1){
+        var identifier = parsedItem[0].toUpperCase();
+
+        //if cable...
+        if(identifier === "C"){
+          //look in firebase array
+
+          //if you find this cable in the firebase array, prepare to add/subtract from in stock
+
+          //if you do NOT find this cable in the firebase array, show "add new cable" 
+        }
+
       }
-      else{
+
+      //product
+      else if (parsedItem.length === 3) {
+        var barcodeLetters = ['FI', 'HU3', 'MDR3', 'MDR4', 'LR2', 'DMF3', 'RMF', 'VF3', 'DM1X', 'DM2X', 'DM5', 'BM'];
+        var unitType = parsedItem[0];
+        var unitTrue = barcodeLetters.indexOf(unitType)>=0;
+        var serialLabelTrue = (parsedItem[1] === 's/n');
+
         if(parsedItem[2][0]==="L"){
           unitType = 'LR2 Sensor';
         }
@@ -210,7 +240,14 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
           return false;
         }
       }
+      //not a real barcode
+      else {
+        alert('Please enter a real product barcode');
+        return false;
+      }
     };
+
+    //------------- Get firmware from API (units only)-------------
 
     $scope.getFirmware = function(unitType, serialNum){
       //prepare unit type for api

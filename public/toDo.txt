@@ -1,11 +1,7 @@
-- Add filters to regular inventory
-- fix design to loaners scan
-- remove items from inventory that are purchased and older than X days
 
 
-Loaners:
-- save old loaner sheets
-- add dates to customer entries
+
+
 
 Inventory check
 - send email after test is done
@@ -18,3 +14,12 @@ Send Email when Test is performed
 --- Send test result to email
 --- cleans up database
 ---- puts all purchased items older than a month in folder
+
+
+Cables and Accessories
+- Scan in cable or accessory barcode
+- looks if cable or accessory is store in firebase
+- if it is, show pop up that allows you to add/subtract from firebase number
+- if it is NOT, show popup that allows you to add a new cable or accessory
+
+- show table of everything in stock on main page
