@@ -1,5 +1,4 @@
 var barcodeApp = angular.module('barcodeApp', [
-  'barcode',
   'ui.bootstrap',
   'ngAnimate',
   'ngSanitize',

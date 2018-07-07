@@ -19,7 +19,6 @@
 
       <!-- JS libraries -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.3/angular.min.js"></script>
-      <script type="text/javascript" src="scripts/angular-barcode.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.3/angular-animate.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.3/angular-sanitize.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-scroll/1.0.2/angular-scroll.min.js"></script>
@@ -30,6 +29,7 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-scroll/1.0.2/angular-scroll.js"></script>
       <script src="scripts/js/angular-sticky.min.js"></script>
+      <script src="scripts/js/barcode.min.js"></script>
       <link rel="stylesheet" href="./node_modules/angular-keypad/dist/angular-keypad.css">
       <!-- <script src="../node_modules/angular-keypad/dist/angular-keypad.js"></script> -->
       <script src="https://cdn.rawgit.com/benjamincharity/angular-keypad/v2.0.0/dist/angular-keypad.min.js"></script>
@@ -101,6 +101,7 @@
 
 <!-- ===============================barcodes for printing=============================== -->
 <script type="text/ng-template" id="generated.html">
-  <barcode style="display: block; background-color: white;" type="code128b" string="{{item.unit}} s/n {{item.num}}" options="vm.options" bc-options="bc" bc-class="barcode" bc-type="svg"ng-repeat="item in allBarcodes track by $index"></barcode>
-
+  <div ng-repeat="item in allBarcodes track by $index">
+    <svg id="{{item.unit}}{{item.num}}" ></svg>
+  </div>
 </script>

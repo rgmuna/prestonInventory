@@ -15,7 +15,7 @@ barcodeApp.controller('Generate_Barcode_Ctrl', [
       'FI',
       'HU3',
       'MDR3',
-      'MDR4', 
+      'MDR4',
       'LR2 Sensor',
       'LR2 VIU',
       'DMF3',
@@ -210,18 +210,13 @@ barcodeApp.controller('Generate_Barcode_Ctrl', [
 
 .controller('PrintController', ['$scope', function ($scope) {
   $scope.allBarcodes = JSON.parse(localStorage.getItem('barcodes'));
-  //barcode sizes
-  var vm = this;
-  vm.options = {
-      width: 1.5,
-      height: 80,
-      // quite: 10,
-      displayValue: true,
-      font: "monospace",
-      textAlign: "center",
-      fontSize: 12,
-      backgroundColor: "",
-      lineColor: "#000"
-  };
+
+  setTimeout(function(){
+    for (var i in $scope.allBarcodes) {
+      var id =  "#" + $scope.allBarcodes[i].unit + $scope.allBarcodes[i].num;
+      var text = $scope.allBarcodes[i].unit + " s/n " + $scope.allBarcodes[i].num;
+      JsBarcode(id, text);
+    }
+  }, 0)
 
 }])
