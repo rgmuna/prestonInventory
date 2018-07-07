@@ -42,7 +42,7 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
 
     //cable invnetory from Firebase
     $scope.barcodedCableInfo = firebase.database().ref().child('cableInventory');
-    $scope.barcodedCables = $firebaseArray($scope.barcodedCableInfo);
+    $scope.barcodedCablesObj = $firebaseObject($scope.barcodedCableInfo);
 
     //accessory invnetory from Firebase
     $scope.barcodedAccessoryInfo = firebase.database().ref().child('accessoryInventory');
@@ -75,12 +75,19 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
         if($scope.authenticateInput($scope.barcodeRead.barcodeNum)){
           $scope.barcodeEntered = true;
 
-          //make correctly formatted object key
-          var simplifiedKey = $scope.simplifyKey($scope.barcodeRead.barcodeNum);
-          var ogKey = $scope.barcodeRead.barcodeNum;
+          //if unit, make correctly formatted object key
+          if($scope.barcodeRead.barcodeNum.split(" ").length > 1){
+            var simplifiedKey = $scope.simplifyKey($scope.barcodeRead.barcodeNum);
+            var ogKey = $scope.barcodeRead.barcodeNum;
+            //run check against firebase to get stored status and make new object
+            $scope.runCheck(simplifiedKey, ogKey);
+          }
+          //if cable or accessory, run the add to pending barcodes
+          else {
+            $scope.addCableAcessory($scope.barcodeRead.barcodeNum);
+          }
 
-          //run check against firebase to get stored status and make new object
-          $scope.runCheck(simplifiedKey, ogKey);
+
 
           //reset input to empty
           $scope.barcodeRead.barcodeNum = '';
@@ -198,20 +205,12 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
 
     $scope.authenticateInput = function(input, src){
       var parsedItem = input.split(" ");
-
       //accessory or cable
       if(parsedItem.length === 1){
         var identifier = parsedItem[0].toUpperCase();
-
-        //if cable...
-        if(identifier === "C"){
-          //look in firebase array
-
-          //if you find this cable in the firebase array, prepare to add/subtract from in stock
-
-          //if you do NOT find this cable in the firebase array, show "add new cable" 
+        if( (identifier[0] === "C" || identifier[0] === "A") && identifier.length >= 5 ){
+          return true;
         }
-
       }
 
       //product
@@ -291,7 +290,7 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
       .then(function(response){
         //if response is a motor, don't display FW
         if(response.data == null){
-          console.log("not in database")
+          alert("not in database")
         }
 
         else if(response.data.item === 'DM1X' || response.data.item === 'DM2X' || response.data.item === 'DM5'){
@@ -299,12 +298,9 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
           var pendingBarcodeName = $scope.simplifyKey(constructedName);
           $scope.pendingBarcodes[pendingBarcodeName].notMotor = false;
           $scope.pendingBarcodes[pendingBarcodeName].notes = response.data.notes;
-          console.log(response);
-
         }
 
         else{
-          console.log(response);
           if(unitType === 'LR2 Sensor' || unitType === 'LR2 VIU'){
             var constructedName = 'LR2 s/n ' + serialNum;
           }
@@ -380,6 +376,26 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
         }
       }
     };
+
+    $scope.addCableAcessory = function(item){
+      alert('Cables and accessory feature coming soon!')
+      // var parsedItem = item.split(" ");
+      // var barcode = parsedItem[0].toUpperCase();
+      //
+      // //if cable...
+      // if(barcode[0] === "C"){
+      //   //if cable is already in firebase
+      //   if($scope.barcodedCablesObj[barcode]){
+      //     $scope.pendingBarcodes[barcode] =  $scope.barcodedCablesObj[barcode]
+      //     console.log($scope.pendingBarcodes);
+      //   }
+      // }
+      //
+      // //if accessory
+      // else if (barcode[0] === "A"){
+      //
+      // }
+    }
 
     //parses out barcode to correct label
     $scope.simplifyKey = function(item){

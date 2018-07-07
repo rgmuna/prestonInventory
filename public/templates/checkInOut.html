@@ -29,38 +29,65 @@
 
   <div class="row" ng-show="loaded">
     <div class="col-xs-12 unit-container no-padding" ng-repeat="unit in pendingBarcodes">
-      <span class="removeTest" ng-click="remove(unit)" ng-if="unit.status !== 'Checked In' && unit.status !== 'Checked Out'"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
-      <div class="col-xs-12 pendingItems no-padding">
-        <div class="col-xs-6 pendingCode">
-          {{unit.barcode}}
-        </div>
-        <div class="col-xs-6 pendingStatus" ng-class="unit.status">
-          {{unit.status}}
-        </div>
-        <div class="col-xs-12 unitNotes" ng-if="unit.notes">
-          QA Notes: {{unit.notes}}
-        </div>
-      </div>
-      <div class="col-xs-12 no-padding bottomContainer" ng-if="unit.status !== 'Checked In' && unit.status !== 'Checked Out'">
-        <div class="col-xs-6 no-padding text-center test" style="color: white;">
-          <div ng-show="!unit.infoPulled && notMotor"> Not in database </div>
-          <div ng-show="unit.infoPulled">
-            <a style="color: white;" href="{{unit.fwLink}}" target="_blank">
-              Firmware: <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="unit.latestMainFW"></i> <i ng-if="!unit.latestMainFW" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i>&nbsp;&nbsp;
-              <span ng-show="unit.hasRadio">Radio: <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="unit.latestRadioFW"></i> <i ng-if="!unit.latestRadioFW" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i> </span>&nbsp;&nbsp;
-              Mods: <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="unit.modsLatest"></i> <i ng-if="!unit.modsLatest" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i> &nbsp;&nbsp;
-            </a>
+      <!-- if unit -->
+      <div ng-if="!unit.type">
+        <span class="removeTest" ng-click="remove(unit)" ng-if="unit.status !== 'Checked In' && unit.status !== 'Checked Out'"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
+        <div class="col-xs-12 pendingItems no-padding">
+          <div class="col-xs-6 pendingCode">
+            {{unit.barcode}}
+          </div>
+          <div class="col-xs-6 pendingStatus" ng-class="unit.status">
+            {{unit.status}}
+          </div>
+          <div class="col-xs-12 unitNotes" ng-if="unit.notes">
+            QA Notes: {{unit.notes}}
           </div>
         </div>
-        <div class="col-xs-6 text-center test2" ng-show="!unit.checkInClicked">
-          <div class="col-xs-12 text-center no-padding">
-            <div class="col-xs-12 checkOutTitle" ng-show="unit.status==='on shelf'"> Check Out</div>
-            <button class="checkInBtn" ng-click="checkIn(unit)" ng-show="(unit.status==='checked out - purchase' || unit.status==='unchecked' || unit.status==='checked out - other')">Check In</button>
-            <button class="checkOutOptions" ng-click="checkOut(unit, 'other')" ng-show="unit.status==='on shelf'">Other</button>
-            <button class="checkOutOptions" ng-click="checkOut(unit, 'purchase')" ng-show="unit.status==='on shelf'">Purchase</button>
+        <div class="col-xs-12 no-padding bottomContainer" ng-if="unit.status !== 'Checked In' && unit.status !== 'Checked Out'">
+          <div class="col-xs-6 no-padding text-center test" style="color: white;">
+            <div ng-show="!unit.infoPulled && notMotor"> Not in database </div>
+            <div ng-show="unit.infoPulled">
+              <a style="color: white;" href="{{unit.fwLink}}" target="_blank">
+                Firmware: <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="unit.latestMainFW"></i> <i ng-if="!unit.latestMainFW" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i>&nbsp;&nbsp;
+                <span ng-show="unit.hasRadio">Radio: <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="unit.latestRadioFW"></i> <i ng-if="!unit.latestRadioFW" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i> </span>&nbsp;&nbsp;
+                Mods: <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="unit.modsLatest"></i> <i ng-if="!unit.modsLatest" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i> &nbsp;&nbsp;
+              </a>
+            </div>
+          </div>
+          <div class="col-xs-6 text-center" ng-show="!unit.checkInClicked">
+            <div class="col-xs-12 text-center no-padding">
+              <div class="col-xs-12 checkOutTitle" ng-show="unit.status==='on shelf'"> Check Out</div>
+              <button class="checkInBtn" ng-click="checkIn(unit)" ng-show="(unit.status==='checked out - purchase' || unit.status==='unchecked' || unit.status==='checked out - other')">Check In</button>
+              <button class="checkOutOptions" ng-click="checkOut(unit, 'other')" ng-show="unit.status==='on shelf'">Other</button>
+              <button class="checkOutOptions" ng-click="checkOut(unit, 'purchase')" ng-show="unit.status==='on shelf'">Purchase</button>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- if unit is a cable or accessory -->
+      <div ng-if="unit.type === 'cable'">
+        <span class="removeTest" ng-click="remove(unit)"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
+        <div class="col-xs-12 pendingItems no-padding">
+          <div class="col-xs-6 pendingCode">
+            {{unit.barcode}}
+          </div>
+        </div>
+
+        <div class="col-xs-12 no-padding bottomContainer">
+          <div class="col-xs-6 no-padding text-center test" style="color: white;">
+            <span>{{ vm.numbers }}</span>
+
+<!-- Define the keypad: -->
+<bc-keypad bc-number-model="vm.numbers"></bc-keypad>
+
+          </div>
+          <div class="col-xs-6 text-center">
+
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 

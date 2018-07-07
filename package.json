@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "angular-barcode": "^2.0.1",
+    "angular-keypad": "^2.0.4",
     "bluebird": "^3.5.1",
     "email-templates": "^3.5.2",
     "express": "^4.16.3",

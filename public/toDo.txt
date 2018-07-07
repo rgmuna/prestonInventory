@@ -23,3 +23,4 @@ Cables and Accessories
 - if it is NOT, show popup that allows you to add a new cable or accessory
 
 - show table of everything in stock on main page
+g

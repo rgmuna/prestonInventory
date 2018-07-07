@@ -7,5 +7,5 @@ var barcodeApp = angular.module('barcodeApp', [
   'firebase',
   'duScroll',
   'hl.sticky',
-  'duScroll'
+  'bc.AngularKeypad'
 ])
