@@ -9,7 +9,8 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
   '$window',
   '$document',
   '$filter',
-  function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter) {
+  '$uibModal',
+  function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter, $uibModal) {
 
     //------------- Oauth -------------
 
@@ -324,6 +325,7 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
     $scope.$watch('pendingBarcodes', function(newValue, oldValue) {
       var keys = Object.keys($scope.pendingBarcodes);
       $scope.numPending = keys.length;
+      console.log($scope.pendingBarcodes);
     }, true);
 
     //function determines if unit has a radio or not
@@ -377,25 +379,55 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
       }
     };
 
-    $scope.addCableAcessory = function(item){
-      alert('Cables and accessory feature coming soon!')
-      // var parsedItem = item.split(" ");
-      // var barcode = parsedItem[0].toUpperCase();
-      //
-      // //if cable...
-      // if(barcode[0] === "C"){
-      //   //if cable is already in firebase
-      //   if($scope.barcodedCablesObj[barcode]){
-      //     $scope.pendingBarcodes[barcode] =  $scope.barcodedCablesObj[barcode]
-      //     console.log($scope.pendingBarcodes);
-      //   }
-      // }
-      //
-      // //if accessory
-      // else if (barcode[0] === "A"){
-      //
-      // }
+    function keypadModal(item, number) {
+      return modalInstance = $uibModal.open({
+        controller  : 'KeypadModalCtrl',
+        templateUrl : '../templates/keypadModal.tpl.html',
+        size        : 'md',
+        resolve     : {
+          item : function() {
+            return item;
+          },
+          prevNumber : function() {
+            return number;
+          }
+        }
+      });
+    };
+
+    $scope.editNumber = function(barcode) {
+      var prevNumber = $scope.pendingBarcodes[barcode].newNumber;
+
+      keypadModal(barcode, prevNumber).result.then(function(response){
+        $scope.pendingBarcodes[barcode].newNumber = parseInt(response);
+      }, function () {
+        console.log('got here');
+      })
     }
+
+    $scope.addCableAcessory = function(item){
+      var parsedItem = item.split(" ");
+      var barcode = parsedItem[0].toUpperCase();
+
+      //if cable...
+      if (barcode[0] === "C") {
+        //if cable is already in firebase
+        if ($scope.barcodedCablesObj[barcode]) {
+          $scope.pendingBarcodes[barcode] =  $scope.barcodedCablesObj[barcode]
+        }
+      }
+
+      //if accessory
+      else if (barcode[0] === "A") {
+
+      }
+
+      keypadModal(barcode).result.then(function(response){
+        $scope.pendingBarcodes[barcode].newNumber = parseInt(response);
+      })
+    }
+
+
 
     //parses out barcode to correct label
     $scope.simplifyKey = function(item){
@@ -524,4 +556,34 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
       $scope.playAudio('removeThemAll');
       $scope.pendingBarcodes = {};
     }
-}]);
+}])
+.controller('KeypadModalCtrl', ['$scope', '$uibModalInstance', 'item', 'prevNumber', function($scope, $uibModalInstance, item, prevNumber){
+
+  $scope.model = '';
+
+  $scope.item = item;
+
+  $scope.numberClicked = function(number) {
+    if ($scope.model.length >= 8) {
+      alert('You may not enter more than 8 digits.');
+      return;
+    }
+    $scope.model = $scope.model + number;
+  };
+
+  $scope.delete = function() {
+    $scope.model = $scope.model.slice(0, -1);
+  };
+
+  $scope.enter = function() {
+    $uibModalInstance.close($scope.model);
+  };
+
+  $scope.cancel = function() {
+    if (prevNumber) {
+      $uibModalInstance.close(prevNumber);
+    } else {
+      $uibModalInstance.close(0);
+    }
+  };
+}])

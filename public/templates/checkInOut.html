@@ -69,21 +69,24 @@
       <div ng-if="unit.type === 'cable'">
         <span class="removeTest" ng-click="remove(unit)"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
         <div class="col-xs-12 pendingItems no-padding">
-          <div class="col-xs-6 pendingCode">
+          <div class="col-xs-3 pendingCode">
             {{unit.barcode}}
+          </div>
+          <div class="col-xs-9 text-right">
+            <a style="margin-right: 30px; color: white;" ng-click="editNumber(unit.barcode)"> Edit Number </a>
           </div>
         </div>
 
         <div class="col-xs-12 no-padding bottomContainer">
-          <div class="col-xs-6 no-padding text-center test" style="color: white;">
-            <span>{{ vm.numbers }}</span>
-
-<!-- Define the keypad: -->
-<bc-keypad bc-number-model="vm.numbers"></bc-keypad>
-
+          <div class="col-xs-3" style="font-size: 20px; color: white;">
+            # Checking In/Out:
           </div>
-          <div class="col-xs-6 text-center">
-
+          <div class="col-xs-2 no-padding text-left newNumber">
+           {{unit.newNumber}}
+          </div>
+          <div class="col-xs-7 text-right">
+            <button class="checkInBtn"> Check In </button>
+            <button class="checkOutOptions"> Check Out </button>
           </div>
         </div>
       </div>

@@ -1,0 +1,36 @@
+<div class="text-center">
+
+  <h3 style="margin: 20px; font-weight: 600;">How many {{item}} would you like to check in or out? </h3>
+
+  <div class="col-xs-12 text-center">
+    <div class="numberEntry">{{model}}</div>
+  </div>
+
+  <table class="keypad">
+    <tr>
+      <td> <button ng-click="numberClicked('1')"> 1 </button></td>
+      <td> <button ng-click="numberClicked('2')"> 2 </button></td>
+      <td> <button ng-click="numberClicked('3')"> 3 </button></td>
+    </tr>
+    <tr>
+      <td> <button ng-click="numberClicked('4')"> 4 </button></td>
+      <td> <button ng-click="numberClicked('5')"> 5 </button></td>
+      <td> <button ng-click="numberClicked('6')"> 6 </button></td>
+    </tr>
+    <tr>
+      <td> <button ng-click="numberClicked('7')"> 7 </button></td>
+      <td> <button ng-click="numberClicked('8')"> 8 </button></td>
+      <td> <button ng-click="numberClicked('9')"> 9 </button></td>
+    </tr>
+    <tr>
+      <td> <button style="padding: 15px 18px;" ng-click="delete()">DEL</button> </td>
+      <td> <button ng-click="numberClicked('0')"> 0 </button></td>
+      <td></td>
+    </tr>
+  </table>
+
+  <div class="keypad">
+    <button id="cancel" class="entryBtn" ng-click="cancel()">Cancel</button>
+    <button id="enter" class="entryBtn" ng-click="enter()">Enter</button>
+  </div>
+</div>
