@@ -207,9 +207,9 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
     $scope.authenticateInput = function(input, src){
       var parsedItem = input.split(" ");
       //accessory or cable
-      if(parsedItem.length === 1){
+      if (parsedItem.length === 1) {
         var identifier = parsedItem[0].toUpperCase();
-        if( (identifier[0] === "C" || identifier[0] === "A") && identifier.length >= 5 ){
+        if (identifier[0] === "C" || identifier[0] === "A") {
           return true;
         }
       }
@@ -379,7 +379,7 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
       }
     };
 
-    function keypadModal(item, number) {
+    function keypadModal(item, inDatabase, number) {
       return modalInstance = $uibModal.open({
         controller  : 'KeypadModalCtrl',
         templateUrl : '../templates/keypadModal.tpl.html',
@@ -390,20 +390,23 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
           },
           prevNumber : function() {
             return number;
+          },
+          inDatabase : function() {
+            return inDatabase;
           }
         }
       });
     };
 
+    //edits number on cable/accessoryInventory
     $scope.editNumber = function(barcode) {
       var prevNumber = $scope.pendingBarcodes[barcode].newNumber;
+      var inDatabase = $scope.barcodedCablesObj[barcode] || false;
 
-      keypadModal(barcode, prevNumber).result.then(function(response){
+      keypadModal(barcode, inDatabase, prevNumber).result.then(function(response){
         $scope.pendingBarcodes[barcode].newNumber = parseInt(response);
-      }, function () {
-        console.log('got here');
-      })
-    }
+      });
+    };
 
     $scope.addCableAcessory = function(item){
       var parsedItem = item.split(" ");
@@ -413,7 +416,26 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
       if (barcode[0] === "C") {
         //if cable is already in firebase
         if ($scope.barcodedCablesObj[barcode]) {
-          $scope.pendingBarcodes[barcode] =  $scope.barcodedCablesObj[barcode]
+          $scope.pendingBarcodes[barcode] =  $scope.barcodedCablesObj[barcode];
+          keypadModal(barcode, true).result.then(function(response){
+            $scope.pendingBarcodes[barcode].newNumber = parseInt(response);
+          })
+        }
+        //if cable is NOT in firebaseio
+        else {
+          var id = barcode.substr(1);
+
+          $scope.pendingBarcodes[barcode] = {
+            barcode: barcode,
+            inStock: 0,
+            id: id,
+            type: "cable",
+            status: 'unchecked'
+          }
+
+          keypadModal(barcode, false).result.then(function(response){
+            $scope.pendingBarcodes[barcode].newNumber = parseInt(response);
+          })
         }
       }
 
@@ -421,10 +443,6 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
       else if (barcode[0] === "A") {
 
       }
-
-      keypadModal(barcode).result.then(function(response){
-        $scope.pendingBarcodes[barcode].newNumber = parseInt(response);
-      })
     }
 
 
@@ -470,39 +488,67 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
         alert('Please login before checking items in or out!')
       }
       else{
-
         $scope.setFocus();
 
-        $scope.playAudio('checkedIn')
-        $scope.pendingBarcodes[unit.name].checkInClicked = true;
+        $scope.playAudio('checkedIn');
 
-        //create object components
-        var unitBarcode = unit.barcode;
-        var unitSerial = unit.name;
-        var unitStatus = 'on shelf';
-        var unitType = unitBarcode.split(" ")[0].toLowerCase();
+        if (!unit.type) {
+          $scope.pendingBarcodes[unit.name].checkInClicked = true;
 
-        //set object in firebase
-        $scope.barcodedUnitInfo.child(unitSerial).set({
-          barcode: unitBarcode,
-          serial: unitSerial,
-          status: unitStatus,
-          unit: unitType,
-          timestamp: firebase.database.ServerValue.TIMESTAMP
-        })
-        .then(function(builds){
-          $scope.pendingBarcodes[unit.name].status = "Checked In";
-          $scope.$apply();
+          //create object components
+          var unitBarcode = unit.barcode;
+          var unitSerial = unit.name;
+          var unitStatus = 'on shelf';
+          var unitType = unitBarcode.split(" ")[0].toLowerCase();
 
-          $timeout(function(){
-            delete $scope.pendingBarcodes[unit.name];
-            if(angular.equals($scope.pendingBarcodes, {})){
-              $scope.barcodeEntered = false;
-            }
-          }, 10000)
+          //set object in firebase
+          $scope.barcodedUnitInfo.child(unitSerial).set({
+            barcode: unitBarcode,
+            serial: unitSerial,
+            status: unitStatus,
+            unit: unitType,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+          })
+          .then(function(builds){
+            $scope.pendingBarcodes[unit.name].status = "Checked In";
+            $scope.$apply();
 
+            $timeout(function(){
+              delete $scope.pendingBarcodes[unit.name];
+              if(angular.equals($scope.pendingBarcodes, {})){
+                $scope.barcodeEntered = false;
+              }
+            }, 10000)
+          });
+        //checking in cable
+        } else if (unit.type === 'cable') {
+          $scope.pendingBarcodes[unit.barcode].checkInClicked = true;
 
-        });
+          var currentStock = unit.inStock;
+          var newAddition = unit.newNumber;
+          var unitSerial = unit.barcode;
+
+          $scope.pendingBarcodes[unit.barcode].inStock = currentStock + newAddition;
+
+          $scope.barcodedCableInfo.child(unitSerial).set({
+            barcode: unit.barcode,
+            inStock: unit.inStock,
+            id: unit.id,
+            type: "cable",
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+          })
+          .then(function(builds){
+            $scope.pendingBarcodes[unit.barcode].status = 'Checked In';
+            $scope.$apply();
+
+            $timeout(function(){
+              delete $scope.pendingBarcodes[unit.barcode];
+              if(angular.equals($scope.pendingBarcodes, {})){
+                $scope.barcodeEntered = false;
+              }
+            }, 10000)
+          });
+        }
       }
     }
 
@@ -512,7 +558,8 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
       }
       else{
         $scope.setFocus();
-        $scope.playAudio('checkedOut')
+
+        if (!unit.type) {
 
         //create object
         var unitBarcode = unit.barcode;
@@ -527,6 +574,8 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
           timestamp: firebase.database.ServerValue.TIMESTAMP
         })
         .then(function(builds){
+          $scope.playAudio('checkedOut');
+
           $scope.pendingBarcodes[unit.name].status = "Checked Out";
           $scope.pendingBarcodes[unit.name].checkInClicked = true;
           $scope.$apply();
@@ -537,13 +586,58 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
             }
           }, 10000)
         });
+
+      //check out for cables
+      } else if (unit.type === 'cable') {
+          var currentStock = unit.inStock;
+          var newSubtraction = unit.newNumber;
+          var unitSerial = unit.barcode;
+
+          $scope.pendingBarcodes[unit.barcode].inStock = currentStock - newSubtraction;
+
+          if ($scope.pendingBarcodes[unit.barcode].inStock < 0) {
+            alert('You cannot checkout more cables than what is crrently in stock (' + currentStock + ' currently in stock).');
+            $scope.pendingBarcodes[unit.barcode].inStock = currentStock;
+            $scope.playAudio('wrong'); 
+            $scope.pendingBarcodes[unit.barcode].newNumber = 0;
+            return;
+          } else {
+            $scope.pendingBarcodes[unit.barcode].checkInClicked = true;
+            $scope.barcodedCableInfo.child(unitSerial).set({
+              barcode: unit.barcode,
+              inStock: unit.inStock,
+              id: unit.id,
+              type: "cable",
+              timestamp: firebase.database.ServerValue.TIMESTAMP
+            })
+            .then(function(builds){
+              $scope.playAudio('checkedOut');
+
+              $scope.pendingBarcodes[unit.barcode].status = 'Checked Out';
+              $scope.$apply();
+
+              $timeout(function(){
+                delete $scope.pendingBarcodes[unit.barcode];
+                if(angular.equals($scope.pendingBarcodes, {})){
+                  $scope.barcodeEntered = false;
+                }
+              }, 10000)
+            });
+          }
+
+        }
       }
     }
 
     $scope.remove = function(unit){
       $scope.playAudio('removed')
       $scope.setFocus();
-      delete $scope.pendingBarcodes[unit.name];
+
+      if (unit.type) {
+        delete $scope.pendingBarcodes[unit.barcode];
+      } else {
+        delete $scope.pendingBarcodes[unit.name];
+      }
     };
 
     //sets focus on input
@@ -557,15 +651,15 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
       $scope.pendingBarcodes = {};
     }
 }])
-.controller('KeypadModalCtrl', ['$scope', '$uibModalInstance', 'item', 'prevNumber', function($scope, $uibModalInstance, item, prevNumber){
+.controller('KeypadModalCtrl', ['$scope', '$uibModalInstance', 'item', 'prevNumber', 'inDatabase', function($scope, $uibModalInstance, item, prevNumber, inDatabase){
 
   $scope.model = '';
-
+  $scope.inDatabase = inDatabase;
   $scope.item = item;
 
   $scope.numberClicked = function(number) {
-    if ($scope.model.length >= 8) {
-      alert('You may not enter more than 8 digits.');
+    if ($scope.model.length >= 3) {
+      alert('You may not enter more than 3 digits.');
       return;
     }
     $scope.model = $scope.model + number;
@@ -576,14 +670,18 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
   };
 
   $scope.enter = function() {
-    $uibModalInstance.close($scope.model);
+    if (!$scope.model) {
+      $uibModalInstance.close(0);
+    } else {
+      $uibModalInstance.close($scope.model);
+    }
   };
 
   $scope.cancel = function() {
     if (prevNumber) {
       $uibModalInstance.close(prevNumber);
     } else {
-      $uibModalInstance.close(0);
+      $uibModalInstance.close(0)
     }
   };
 }])

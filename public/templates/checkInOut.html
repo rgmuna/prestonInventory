@@ -72,12 +72,15 @@
           <div class="col-xs-3 pendingCode">
             {{unit.barcode}}
           </div>
-          <div class="col-xs-9 text-right">
-            <a style="margin-right: 30px; color: white;" ng-click="editNumber(unit.barcode)"> Edit Number </a>
+          <div class="col-xs-9 pendingStatus" ng-class="unit.status" ng-if="unit.status === 'Checked In' || unit.status === 'Checked Out'">
+            <strong> {{unit.newNumber}}x </strong> {{unit.status}}
+          </div>
+          <div class="col-xs-9 text-right" ng-show="!unit.checkInClicked">
+            <a style="margin-right: 30px; color: white;" ng-click="editNumber(unit.barcode)"> <i class="fa fa-pencil" aria-hidden="true"></i> Edit Number </a>
           </div>
         </div>
 
-        <div class="col-xs-12 no-padding bottomContainer">
+        <div class="col-xs-12 no-padding bottomContainer" ng-show="!unit.checkInClicked">
           <div class="col-xs-3" style="font-size: 20px; color: white;">
             # Checking In/Out:
           </div>
@@ -85,8 +88,8 @@
            {{unit.newNumber}}
           </div>
           <div class="col-xs-7 text-right">
-            <button class="checkInBtn"> Check In </button>
-            <button class="checkOutOptions"> Check Out </button>
+            <button class="checkInBtn" ng-click="checkIn(unit)"> Check In </button>
+            <button ng-if="unit.status !== 'unchecked'" class="checkOutOptions" ng-click="checkOut(unit)"> Check Out </button>
           </div>
         </div>
       </div>

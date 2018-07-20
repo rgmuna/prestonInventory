@@ -11,6 +11,10 @@ barcodeApp.controller('Inv_List_Ctrl', [
   '$filter',
   function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter) {
 
+  $scope.model = {
+    view : 'units'
+  };
+
   $scope.products = [
     'FI',
     'HU3',
@@ -26,6 +30,11 @@ barcodeApp.controller('Inv_List_Ctrl', [
     'DM5',
     'BM'
   ];
+
+
+  $scope.switchView = function(type) {
+    $scope.model.view = type;
+  }
 
   $scope.isNavCollapsed = false;
 
@@ -50,8 +59,21 @@ barcodeApp.controller('Inv_List_Ctrl', [
     $scope.authenticated = false;
   };
 
+  //------------- Import Firebase Information -------------
+
+  //product invnetory from Firebase
   $scope.barcodedUnitInfo = firebase.database().ref().child('inventory');
   $scope.barcodedUnits = $firebaseArray($scope.barcodedUnitInfo);
+
+  //cable invnetory from Firebase
+  $scope.barcodedCableInfo = firebase.database().ref().child('cableInventory');
+  $scope.barcodedCablesArray = $firebaseArray($scope.barcodedCableInfo);
+
+  //accessory invnetory from Firebase
+  $scope.barcodedAccessoryInfo = firebase.database().ref().child('accessoryInventory');
+  $scope.barcodedAccessories = $firebaseArray($scope.barcodedAccessoryInfo);
+
+  //----------------------------------------------------------
 
   //initilizations
   $scope.barcodeEntered = false;
@@ -77,8 +99,6 @@ barcodeApp.controller('Inv_List_Ctrl', [
     barcodeNum: ''
   };
   $scope.unlistedUnits = [];
-
-  $scope.viewOption = false;
 
   $scope.$watch('barcodeChecker.barcodeNum', function(newValue, oldValue) {
     if($scope.barcodeChecker.barcodeNum){
@@ -248,17 +268,6 @@ barcodeApp.controller('Inv_List_Ctrl', [
       }
     }
   }
-
-  $scope.$watch('viewOption', function(newValue, oldValue) {
-    //if true, show all units
-    if($scope.viewOption){
-      console.log($scope.allUnits)
-    }
-    //if not true, show min threshold
-    else{
-
-    }
-  })
 
   $scope.getTypeFromBarcode = function(barcode){
     var unitType = '';

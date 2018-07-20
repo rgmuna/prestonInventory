@@ -421,8 +421,22 @@ padding-top: 26px;
 .invTitle{
   color: #ff00cc;
   font-weight: 300;
-  font-size: 60px;
+  font-size: 40px;
   margin-top: 50px;
+  outline: none;
+}
+
+.invTitle.active{
+  color: black;
+  background-color: #ff00cc;
+  border-radius: 5px;
+}
+
+.invTitle button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+
 }
 
 .invSubtitle{
