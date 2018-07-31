@@ -1,3 +1,8 @@
+//fix issue with NaN on cable number input
+//fix try to speed up cable printing
+// limit number of lables you can make at once
+// combine cable entries into one
+
 barcodeApp.controller('Generate_Barcode_Ctrl', [
   '$scope',
   '$window',
@@ -51,6 +56,11 @@ barcodeApp.controller('Generate_Barcode_Ctrl', [
               for (var i=0; i<numItem; i++) {
                 $scope.barcodes.push({unit: item, num: serial})
                 localStorage.setItem('barcodes', JSON.stringify($scope.barcodes));
+              }
+              $scope.chosenItems = {
+                unitSelect: null,
+                serialNum: null,
+                numItems: null
               }
             }
             else {
