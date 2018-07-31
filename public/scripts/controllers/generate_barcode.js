@@ -1,10 +1,12 @@
 barcodeApp.controller('Generate_Barcode_Ctrl', [
   '$scope',
-  function ($scope) {
+  '$window',
+  function ($scope, $window) {
 
     $scope.chosenItems = {
       unitSelect: null,
-      serialNum: null
+      serialNum: null,
+      numItems: null
     }
 
     //barcode array
@@ -24,11 +26,12 @@ barcodeApp.controller('Generate_Barcode_Ctrl', [
       'DM1X',
       'DM2X',
       'DM5',
-      'BM'
+      'BM',
+      'Cable'
     ];
 
     //add barcode to array and update local storage-------
-    $scope.addBarcode = function(item, serial){
+    $scope.addBarcode = function(item, serial, numItem){
       if(!item){
         alert('Please select a unit type.');
       }
@@ -42,9 +45,25 @@ barcodeApp.controller('Generate_Barcode_Ctrl', [
           if(item === 'LR2 Sensor' || item === 'LR2 VIU'){
             item = 'LR2';
           }
-          $scope.barcodes.push({unit: item, num: serial})
-          localStorage.setItem('barcodes', JSON.stringify($scope.barcodes));
 
+          if (item === 'Cable' || item === 'Accessory') {
+            if (!isNaN(parseInt(numItem))) {
+              for (var i=0; i<numItem; i++) {
+                $scope.barcodes.push({unit: item, num: serial})
+                localStorage.setItem('barcodes', JSON.stringify($scope.barcodes));
+              }
+            }
+            else {
+              alert('Please enter a real number for how many ' + item + ' you wish to print barcodes for.');
+              return;
+            }
+          }
+          else {
+            $scope.barcodes.push({unit: item, num: serial})
+            localStorage.setItem('barcodes', JSON.stringify($scope.barcodes));
+          }
+
+          //reset input to previous barcode lettering
           var reset = '';
           for(var i=0; i<$scope.chosenItems.serialNum.length; i++){
             if($scope.chosenItems.unitSelect === "DMF3" && (i===1)){
@@ -55,7 +74,7 @@ barcodeApp.controller('Generate_Barcode_Ctrl', [
             }
             if(isNaN($scope.chosenItems.serialNum[i])){
               reset += $scope.chosenItems.serialNum[i];
-            };
+            }
           }
           $scope.chosenItems.serialNum = reset;
         }
@@ -162,6 +181,9 @@ barcodeApp.controller('Generate_Barcode_Ctrl', [
           return false;
         }
       }
+      else if (item === 'Cable' || item === 'Accessory') {
+        return true;
+      }
     }
 
     //remove item from array and update local storage -------
@@ -187,10 +209,20 @@ barcodeApp.controller('Generate_Barcode_Ctrl', [
       else if($scope.chosenItems.unitSelect==='DM2X'){
         $scope.chosenItems.serialNum = '2X';
       }
+      else if($scope.chosenItems.unitSelect==='Cable'){
+        $scope.chosenItems.serialNum = 'C';
+      }
       else {
         $scope.chosenItems.serialNum = '';
       }
+
+      $scope.setFocus();
     })
+
+    $scope.setFocus = function(){
+      var input = $window.document.getElementById('serialEntry');
+      input.focus();
+    }
 
     //removes all items preparing to be scanned ---------
     $scope.removeAll = function(){
@@ -214,7 +246,13 @@ barcodeApp.controller('Generate_Barcode_Ctrl', [
   setTimeout(function(){
     for (var i in $scope.allBarcodes) {
       var id =  "#" + $scope.allBarcodes[i].unit + $scope.allBarcodes[i].num;
-      var text = $scope.allBarcodes[i].unit + " s/n " + $scope.allBarcodes[i].num;
+
+      if ($scope.allBarcodes[i].unit === 'Cable' || $scope.allBarcodes[i].unit === 'Accessory') {
+        var text = $scope.allBarcodes[i].num;
+      }
+      else {
+        var text = $scope.allBarcodes[i].unit + " s/n " + $scope.allBarcodes[i].num;
+      }
       JsBarcode(id, text);
     }
   }, 0)

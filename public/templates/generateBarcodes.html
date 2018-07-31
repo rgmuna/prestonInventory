@@ -18,7 +18,11 @@
             Serial Number
           </div>
           <div class="col-xs-12">
-            <input class="numEntry" ng-enter="addBarcode(chosenItems.unitSelect, chosenItems.serialNum)" ng-model="chosenItems.serialNum" />
+            <input id="serialEntry" class="numEntry" ng-enter="addBarcode(chosenItems.unitSelect, chosenItems.serialNum)" ng-model="chosenItems.serialNum" />
+            <div ng-if="chosenItems.unitSelect === 'Cable' || chosenItems.unitSelect === 'Accessory'" style="margin-top: 10px">
+              How Many?
+              <input class="cableNumEntry" ng-model="chosenItems.numItems" ng-enter="addBarcode(chosenItems.unitSelect, chosenItems.serialNum, chosenItems.numItems)">
+            </div>
           </div>
         </div>
       </div>

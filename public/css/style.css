@@ -153,6 +153,19 @@ li>#loanerCheck.activeState:after {
   color: #33FF00;
 }
 
+.cableNumEntry {
+  background-color: black;
+  height: 40px;
+  font-size: 30px;
+  width: 100px;
+  border-radius: 10px;
+  text-align: center;
+  border-color: #33FF00;
+}
+
+.cableNumEntry:focus{
+  outline: none;
+}
 
 .numEntry{
   letter-spacing: 2px;
@@ -421,7 +434,7 @@ padding-top: 26px;
 .invTitle{
   color: #ff00cc;
   font-weight: 300;
-  font-size: 40px;
+  font-size: 35px;
   margin-top: 50px;
   outline: none;
 }
