@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "inventory-tracking-c3b88"
+    "default": "inventory-tracking-c3b88",
+    "staging": "inventory-staging"
   }
 }
