@@ -38,17 +38,14 @@ barcodeApp.controller('Inv_List_Ctrl', [
 
   $scope.isNavCollapsed = false;
 
-  if($window.localStorage.authenticated === 'true'){
-    $scope.authenticated = true;
-  }
-  else{
-    $scope.authenticated = false;
-  }
+  //------------- Oauth -------------
+  $scope.authenticated = authService.userLoggedIn;
 
   //login function
-  $scope.loginWithGoogle = function(runAuth){
-    authService.loginWithGoogle()
-    .then(function(result){
+  $scope.login = function(runAuth){
+    $scope.authenticating = true;
+
+    authService.login().then(function(result){
       $scope.authenticated = true;
       $scope.authenticating = false;
     });

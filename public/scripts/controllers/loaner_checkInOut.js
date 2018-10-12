@@ -10,29 +10,23 @@ barcodeApp.controller('Loaner_CheckInOut_Ctrl', [
   '$filter',
   function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $filter) {
 
-  //authentication stuff-------------
-  if($window.localStorage.authenticated === 'true'){
-    $scope.authenticated = true;
-  }
-  else{
-    $scope.authenticated = false;
-  }
+    //------------- Oauth -------------
+    $scope.authenticated = authService.userLoggedIn;
 
-  //login function
-  $scope.loginWithGoogle = function(runAuth){
-    $scope.authenticating = true;
-    authService.loginWithGoogle()
-    .then(function(result){
-      $scope.authenticated = true;
-      $scope.authenticating = false;
-    });
-  };
+    //login function
+    $scope.login = function(runAuth){
+      $scope.authenticating = true;
 
-  //logout function
-  $scope.logoutWithGoogle = function(){
-    authService.logOut();
-    $scope.authenticated = false;
-  };
+      authService.login().then(function(result){
+        $scope.authenticated = true;
+        $scope.authenticating = false;
+      });
+    };
+
+    $scope.logoutWithGoogle = function(){
+      authService.logOut();
+      $scope.authenticated = false;
+    };
   //-------------------------------
 
   $scope.customerArray = ['reset'];

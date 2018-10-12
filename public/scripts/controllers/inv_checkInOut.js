@@ -10,21 +10,17 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
   '$document',
   '$filter',
   '$uibModal',
-  function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter, $uibModal) {
+  '$q',
+  function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter, $uibModal, $q) {
 
     //------------- Oauth -------------
-
-    if($window.localStorage.authenticated === 'true'){
-      $scope.authenticated = true;
-    }
-    else{
-      $scope.authenticated = false;
-    }
+    $scope.authenticated = authService.userLoggedIn;
 
     //login function
-    $scope.loginWithGoogle = function(runAuth){
-      authService.loginWithGoogle()
-      .then(function(result){
+    $scope.login = function(runAuth){
+      $scope.authenticating = true;
+
+      authService.login().then(function(result){
         $scope.authenticated = true;
         $scope.authenticating = false;
       });
@@ -598,7 +594,7 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
           if ($scope.pendingBarcodes[unit.barcode].inStock < 0) {
             alert('You cannot checkout more cables than what is crrently in stock (' + currentStock + ' currently in stock).');
             $scope.pendingBarcodes[unit.barcode].inStock = currentStock;
-            $scope.playAudio('wrong'); 
+            $scope.playAudio('wrong');
             $scope.pendingBarcodes[unit.barcode].newNumber = 0;
             return;
           } else {
