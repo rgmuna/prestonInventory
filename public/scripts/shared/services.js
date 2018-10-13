@@ -1,5 +1,5 @@
 
-barcodeApp.service('authService', ['$http', '$rootScope', '$firebaseAuth', '$q', function ($http, $rootScope, $firebaseAuth, $q) {
+barcodeApp.service('authService', ['$firebaseAuth', '$q', function ($firebaseAuth, $q) {
   //initialize firebase auth
   var fbAuthService = $firebaseAuth();
 

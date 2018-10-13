@@ -11,25 +11,10 @@ barcodeApp.controller('Inv_CheckInOut_Ctrl', [
   '$filter',
   '$uibModal',
   '$q',
-  function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter, $uibModal, $q) {
+  function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $window, $document, $filter, $uibModal, $q) {
 
-    //------------- Oauth -------------
     $scope.authenticated = authService.userLoggedIn;
 
-    //login function
-    $scope.login = function(runAuth){
-      $scope.authenticating = true;
-
-      authService.login().then(function(result){
-        $scope.authenticated = true;
-        $scope.authenticating = false;
-      });
-    };
-
-    $scope.logoutWithGoogle = function(){
-      authService.logOut();
-      $scope.authenticated = false;
-    };
 
     //------------- Import Firebase Information -------------
 
