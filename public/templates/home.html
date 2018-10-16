@@ -28,6 +28,11 @@
         </div>
       </div>
     </div>
+  <div class="col-xs-12" ng-if="adminLoggedIn" style="margin-bottom: 10px;">
+    <button ng-if="!model.stockEditable" ng-click="model.stockEditable = true">Edit Stock List</button>
+    <button ng-if="model.stockEditable" ng-click="saveStockEdits()">Save Changes</button>
+    <button ng-if="model.stockEditable" ng-click="cancelEdit()">Cancel</button>
+  </div>
 
     <div ng-show="inventoryList">
 
@@ -39,6 +44,7 @@
               <th class="text-center">  On Shelf </th>
               <th class="text-center">  Checked Out - Other </th>
               <th class="text-center">  In Stock? </th>
+              <th class="text-center" ng-if="adminLoggedIn">  Min Threshold </th>
             </tr>
           </thead>
           <tbody>
@@ -52,6 +58,10 @@
                 <td class="outOther  text-center"> {{value.outOther ? value.outOther : '-'}} </td>
                 <td class="text-center" ng-if="value.onShelf < minThreshold[key]"> <i style="color: #FF0000" class="fa fa-window-close"></i> </td>
                 <td class="text-center" ng-if="value.onShelf >= minThreshold[key]"> <i style="color: #33FF00" class="fa fa-check-square"></i> </td>
+                <td class="text-center" ng-if="adminLoggedIn && !model.stockEditable">{{minThreshold[key]}}</td>
+                <td class="text-center" ng-if="adminLoggedIn && model.stockEditable">
+                  <input style="max-width: 60px;" ng-model="model.stockObject[key]" type="number" placeholder="{{model.stockObject[key]}}">
+                </td>
             </tr>
           </tbody>
         </table>

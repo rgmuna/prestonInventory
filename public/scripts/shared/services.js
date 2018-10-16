@@ -3,7 +3,7 @@ barcodeApp.service('authService', ['$firebaseAuth', '$q', function ($firebaseAut
   //initialize firebase auth
   var fbAuthService = $firebaseAuth();
 
-  var adminUsers = ['zVviAJYax8ZDBixjH4WmP2oSQTX2', '9qUP0HfpYlR1FdLueetfXGJR00z1'];
+  var adminUsers = ['zVviAJYax8ZDBixjH4WmP2oSQTX2', '9qUP0HfpYlR1FdLueetfXGJR00z1', '4pmBPQrAqoeOh3J39TXU0CoRHtH3'];
 
   function checkAdmin(credentials) {
     if (adminUsers.indexOf(credentials.user.uid) !== -1) {

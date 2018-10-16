@@ -12,7 +12,9 @@ barcodeApp.controller('Inv_List_Ctrl', [
   function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter) {
 
   $scope.model = {
-    view : 'units'
+    view          : 'units',
+    stockEditable : false,
+    stockObject   : {}
   };
 
   $scope.products = [
@@ -55,6 +57,12 @@ barcodeApp.controller('Inv_List_Ctrl', [
   $scope.barcodedAccessoryInfo = firebase.database().ref().child('accessoryInventory');
   $scope.barcodedAccessories = $firebaseArray($scope.barcodedAccessoryInfo);
 
+  var minThresholdInfo = firebase.database().ref().child('inventoryMinThreshold');
+  $scope.minThreshold = $firebaseObject(minThresholdInfo);
+
+  $scope.minThreshold.$loaded().then(function() {
+    $scope.model.stockObject = Object.assign({}, $scope.minThreshold);
+  });
   //----------------------------------------------------------
 
   //initilizations
@@ -65,6 +73,34 @@ barcodeApp.controller('Inv_List_Ctrl', [
   $scope.barcodeRead = {
     barcodeNum: ''
   };
+
+  $scope.saveStockEdits = function() {
+    var list = {};
+    for (var item in $scope.model.stockObject) {
+      if ($scope.model.stockObject.hasOwnProperty(item) && item[0] != '$') {
+        var input = parseInt($scope.model.stockObject[item]);
+        if (isNaN(input)) {
+          alert('Numer inputs only');
+          return;
+        } else {
+          list[item] = $scope.model.stockObject[item];
+        }
+      }
+    }
+
+    minThresholdInfo.set(list).then(function(response){
+      $scope.minThreshold = list;
+      $scope.model.stockEditable = false;
+      $scope.$apply();
+    }, function() {
+      alert('Did not save. Try again.');
+    })
+  };
+
+  $scope.cancelEdit = function() {
+    $scope.model.stockEditable = false;
+    $scope.model.stockObject = $scope.minThreshold;
+  }
 
   //checks when firebase items are loaded ------
   $scope.barcodedUnits.$loaded().then(function() {
@@ -92,22 +128,6 @@ barcodeApp.controller('Inv_List_Ctrl', [
   //not including LR items due to weirdness of labels
   $scope.unitList = ['fi', 'hu3', 'mdr3', 'mdr4', 'dmf3', 'rmf', 'vf3', 'dm1x', 'dm2x', 'dm5', 'bm'];
   $scope.displayUnitInfo = false;
-
-  $scope.minThreshold = {
-    fi: 8,
-    hu3: 8,
-    mdr3: 9,
-    mdr4: 5,
-    lr: 6,
-    vou: 6,
-    dmf3: 8,
-    rmf: 3,
-    vf3: 1,
-    dm2x: 23,
-    dm1x: 15,
-    dm5: 12,
-    bm: 10
-  }
 
   // make objects for each unit type
   $scope.loadTable = function(){
