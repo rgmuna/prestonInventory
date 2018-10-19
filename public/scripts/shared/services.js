@@ -32,7 +32,16 @@ barcodeApp.service('authService', ['$firebaseAuth', '$q', function ($firebaseAut
       return deferred.promise;
     },
     logOut        : function() {
-      return fbAuthService.$signOut();
+      var deferred = $q.defer();
+
+      fbAuthService.$signOut().then(function(result){
+        deferred.resolve(result);
+      }, function(error) {
+        alert("User didn't log out. Try again.");
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
     }
   }
 

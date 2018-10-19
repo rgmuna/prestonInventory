@@ -21,8 +21,10 @@ barcodeApp.controller('AuthController', ['$scope', '$rootScope', 'authService', 
   };
 
   $scope.logout = function(){
-    authService.logOut();
-    $scope.authenticated = false;
+    authService.logOut().then(function(){
+      $rootScope.authenticated = false;
+      $rootScope.adminLoggedIn = false;
+    });
   };
 
 }])

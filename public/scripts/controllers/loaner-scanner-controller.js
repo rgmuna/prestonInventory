@@ -1,4 +1,4 @@
-barcodeApp.controller('Loaner_CheckInOut_Ctrl', [
+barcodeApp.controller('LoanerScannerController', [
   'authService',
   '$scope',
   '$firebaseArray',

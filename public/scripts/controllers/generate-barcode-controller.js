@@ -3,7 +3,7 @@
 // limit number of lables you can make at once
 // combine cable entries into one
 
-barcodeApp.controller('Generate_Barcode_Ctrl', [
+barcodeApp.controller('GenerateBarcodeController', [
   '$scope',
   '$window',
   function ($scope, $window) {

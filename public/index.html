@@ -38,12 +38,12 @@
       <script type="text/javascript" src="./scripts/shared/routing.js"></script>
       <script type="text/javascript" src="./scripts/shared/services.js"></script>
       <!-- Controllers JS files -->
-      <script type="text/javascript" src="./scripts/controllers/generate_barcode.js"></script>
-      <script type="text/javascript" src="./scripts/controllers/inv_checkInOut.js"></script>
-      <script type="text/javascript" src="./scripts/controllers/inv_list.js"></script>
-      <script type="text/javascript" src="./scripts/controllers/loaner_checkInOut.js"></script>
-      <script type="text/javascript" src="./scripts/controllers/loaner_list.js"></script>
-      <script type="text/javascript" src="./scripts/controllers/authController.js"></script>
+      <script type="text/javascript" src="./scripts/controllers/generate-barcode-controller.js"></script>
+      <script type="text/javascript" src="./scripts/controllers/inventory-scanner-controller.js"></script>
+      <script type="text/javascript" src="./scripts/controllers/inventory-list-controller.js"></script>
+      <script type="text/javascript" src="./scripts/controllers/loaner-scanner-controller.js"></script>
+      <script type="text/javascript" src="./scripts/controllers/loaner-list-controller.js"></script>
+      <script type="text/javascript" src="./scripts/controllers/auth-controller.js"></script>
 
       <!-- style related items -->
       <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -77,11 +77,11 @@
       </div>
       <div class="collapse navbar-collapse" uib-collapse="isNavCollapsed" style="position: relative; z-index: 100;">
         <ul class="nav navbar-nav">
-          <li><a id="inventoryNav" ui-sref="home" ui-sref-active="activeState"> <i class="fa fa-cube" aria-hidden="true"></i> Inventory </a></li>
-          <li><a id="checkNav" ui-sref="checkInOut" ui-sref-active="activeState"> <i class="fa fa-cube" aria-hidden="true"></i> Check In/Out </a></li>
-          <li><a id="generateNav" ui-sref="generateBarcodes" ui-sref-active="activeState"> <i class="fa fa-cube" aria-hidden="true"></i> Generate Barcodes </a></li>
-          <li><a id="loanerInv" ui-sref="loanerInventory" ui-sref-active="activeState"> <i class="fa fa-cube" aria-hidden="true"></i> Loaner Inventory </a></li>
-          <li><a id="loanerCheck" ui-sref="loanerCheckInOut" ui-sref-active="activeState"> <i class="fa fa-cube" aria-hidden="true"></i> Loaner Check In/Out </a></li>
+          <li><a id="inventoryNav" ui-sref="inventory-list" ui-sref-active="activeState"> <i class="fa fa-cube" aria-hidden="true"></i> Inventory </a></li>
+          <li><a id="checkNav" ui-sref="inventory-scanner" ui-sref-active="activeState"> <i class="fa fa-cube" aria-hidden="true"></i> Check In/Out </a></li>
+          <li><a id="generateNav" ui-sref="barcode-generator" ui-sref-active="activeState"> <i class="fa fa-cube" aria-hidden="true"></i> Generate Barcodes </a></li>
+          <li><a id="loanerInv" ui-sref="loaner-list" ui-sref-active="activeState"> <i class="fa fa-cube" aria-hidden="true"></i> Loaner Inventory </a></li>
+          <li><a id="loanerCheck" ui-sref="loaner-scanner" ui-sref-active="activeState"> <i class="fa fa-cube" aria-hidden="true"></i> Loaner Check In/Out </a></li>
         </ul>
       </div>
     </nav>

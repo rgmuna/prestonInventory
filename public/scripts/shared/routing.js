@@ -1,51 +1,51 @@
 barcodeApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 
-  $urlRouterProvider.otherwise('/home');
+  $urlRouterProvider.otherwise('/inventory-list');
 
   $stateProvider
 
-    .state('home', {
-      url: '/home',
+    .state('inventory-list', {
+      url: '/inventory-list',
       views: {
 
-              main: {templateUrl: '/templates/home.html',
-                      controller: 'Inv_List_Ctrl'
+              main: {templateUrl: '/templates/inventory-list.html',
+                      controller: 'InventoryListController'
                     }
             },
     })
-    .state('generateBarcodes', {
-      url: '/generateBarcodes',
+    .state('barcode-generator', {
+      url: '/barcode-generator',
       views: {
 
-              main: {templateUrl: '/templates/generateBarcodes.html',
-                      controller: 'Generate_Barcode_Ctrl'
+              main: {templateUrl: '/templates/barcode-generator.html',
+                      controller: 'GenerateBarcodeController'
                     }
             }
     })
-    .state('checkInOut', {
-      url: '/checkInOut',
+    .state('inventory-scanner', {
+      url: '/inventory-scanner',
       views: {
 
-              main: {templateUrl: '/templates/checkInOut.html',
-                      controller: 'Inv_CheckInOut_Ctrl'
+              main: {templateUrl: '/templates/inventory-scanner.html',
+                      controller: 'InventoryScannerController'
                     }
             }
     })
-    .state('loanerInventory', {
-      url: '/loanerInventory',
+    .state('loaner-list', {
+      url: '/loaner-list',
       views: {
 
-              main: {templateUrl: '/templates/loanerInventory.html',
-                      controller: 'Loaner_List_Ctrl'
+              main: {templateUrl: '/templates/loaner-list.html',
+                      controller: 'LoanerListController'
                     }
             }
     })
-    .state('loanerCheckInOut', {
-      url: '/loanerCheckInOut',
+    .state('loaner-scanner', {
+      url: '/loaner-scanner',
       views: {
 
-              main: {templateUrl: '/templates/loanerCheckInOut.html',
-                      controller: 'Loaner_CheckInOut_Ctrl'
+              main: {templateUrl: '/templates/loaner-scanner.html',
+                      controller: 'LoanerScannerController'
                     }
             }
     })

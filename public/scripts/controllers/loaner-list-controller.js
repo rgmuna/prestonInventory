@@ -1,4 +1,4 @@
-barcodeApp.controller('Loaner_List_Ctrl', [
+barcodeApp.controller('LoanerListController', [
   '$scope',
   '$firebaseArray',
   '$firebaseObject',

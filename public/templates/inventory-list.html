@@ -28,7 +28,7 @@
         </div>
       </div>
     </div>
-  <div class="col-xs-12" ng-if="adminLoggedIn" style="margin-bottom: 10px;">
+  <div class="col-xs-12 stockButtons" ng-if="adminLoggedIn" style="margin-bottom: 10px;">
     <button ng-if="!model.stockEditable" ng-click="model.stockEditable = true">Edit Stock List</button>
     <button ng-if="model.stockEditable" ng-click="saveStockEdits()">Save Changes</button>
     <button ng-if="model.stockEditable" ng-click="cancelEdit()">Cancel</button>
@@ -60,7 +60,7 @@
                 <td class="text-center" ng-if="value.onShelf >= minThreshold[key]"> <i style="color: #33FF00" class="fa fa-check-square"></i> </td>
                 <td class="text-center" ng-if="adminLoggedIn && !model.stockEditable">{{minThreshold[key]}}</td>
                 <td class="text-center" ng-if="adminLoggedIn && model.stockEditable">
-                  <input style="max-width: 60px;" ng-model="model.stockObject[key]" type="number" placeholder="{{model.stockObject[key]}}">
+                  <input style="max-width: 60px; color: black" ng-model="model.stockObject[key]" type="number" placeholder="{{model.stockObject[key]}}">
                 </td>
             </tr>
           </tbody>
