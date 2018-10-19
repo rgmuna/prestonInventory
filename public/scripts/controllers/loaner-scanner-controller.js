@@ -1,6 +1,7 @@
 barcodeApp.controller('LoanerScannerController', [
   'authService',
   '$scope',
+  '$rootScope',
   '$firebaseArray',
   '$firebaseObject',
   '$timeout',
@@ -8,9 +9,7 @@ barcodeApp.controller('LoanerScannerController', [
   '$firebaseAuth',
   '$window',
   '$filter',
-  function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $filter) {
-
-  $scope.authenticated = authService.userLoggedIn;
+  function (authService, $scope, $rootScope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $filter) {
 
   $scope.customerArray = ['reset'];
 
@@ -87,7 +86,7 @@ barcodeApp.controller('LoanerScannerController', [
     if($scope.loanerScan.barcodeNum.length<7){
     }
     else{
-      if($scope.authenticated){
+      if($rootScope.authenticated){
         if($scope.loanerScan.barcodeNum){
           //if barcode is correct format
           if($scope.authenticateInput($scope.loanerScan.barcodeNum)){

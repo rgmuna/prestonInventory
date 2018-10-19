@@ -1,20 +1,15 @@
 barcodeApp.controller('InventoryScannerController', [
   'authService',
   '$scope',
+  '$rootScope',
   '$firebaseArray',
   '$firebaseObject',
   '$timeout',
   '$http',
-  '$firebaseAuth',
   '$window',
-  '$document',
-  '$filter',
   '$uibModal',
   '$q',
-  function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $window, $document, $filter, $uibModal, $q) {
-
-    $scope.authenticated = authService.userLoggedIn;
-
+  function (authService, $scope, $rootScope, $firebaseArray, $firebaseObject, $timeout, $http, $window, $uibModal, $q) {
 
     //------------- Import Firebase Information -------------
 
@@ -29,7 +24,6 @@ barcodeApp.controller('InventoryScannerController', [
     //accessory invnetory from Firebase
     $scope.barcodedAccessoryInfo = firebase.database().ref().child('accessoryInventory');
     $scope.barcodedAccessories = $firebaseArray($scope.barcodedAccessoryInfo);
-
 
     //------------- For Scanning Items -------------
 
@@ -68,8 +62,6 @@ barcodeApp.controller('InventoryScannerController', [
           else {
             $scope.addCableAcessory($scope.barcodeRead.barcodeNum);
           }
-
-
 
           //reset input to empty
           $scope.barcodeRead.barcodeNum = '';
@@ -268,8 +260,7 @@ barcodeApp.controller('InventoryScannerController', [
       }
       var pendingBarcodeName = $scope.simplifyKey(constructedName);
 
-      $http.get(generatedUrl)
-      .then(function(response){
+      $http.get(generatedUrl).then(function(response){
         //if response is a motor, don't display FW
         if(response.data == null){
           alert("not in database")
@@ -465,7 +456,7 @@ barcodeApp.controller('InventoryScannerController', [
 
   //  -------------button functions to check in/out--------------
     $scope.checkIn = function(unit){
-      if(!$scope.authenticated){
+      if(!$rootScope.authenticated){
         alert('Please login before checking items in or out!')
       }
       else{
@@ -534,7 +525,7 @@ barcodeApp.controller('InventoryScannerController', [
     }
 
     $scope.checkOut = function(unit, option){
-      if(!$scope.authenticated){
+      if(!$rootScope.authenticated){
         alert('Please login before checking items in or out!')
       }
       else{
