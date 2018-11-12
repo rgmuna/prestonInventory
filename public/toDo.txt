@@ -15,12 +15,9 @@ Send Email when Test is performed
 --- cleans up database
 ---- puts all purchased items older than a month in folder
 
-
-Cables and Accessories
-- Scan in cable or accessory barcode
-- looks if cable or accessory is store in firebase
-- if it is, show pop up that allows you to add/subtract from firebase number
-- if it is NOT, show popup that allows you to add a new cable or accessory
-
-- show table of everything in stock on main page
-g
+Product States:
+- On shelf
+- checked out - Purchased
+- checkout out - Other
+- Missing
+- Permanently Loaned

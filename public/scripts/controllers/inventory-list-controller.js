@@ -9,7 +9,8 @@ barcodeApp.controller('InventoryListController', [
   '$window',
   '$document',
   '$filter',
-  function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter) {
+  '$uibModal',
+  function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter, $uibModal) {
 
   $scope.model = {
     view          : 'units',
@@ -39,9 +40,6 @@ barcodeApp.controller('InventoryListController', [
   }
 
   $scope.isNavCollapsed = false;
-
-  $scope.authenticated = authService.userLoggedIn;
-
 
   //------------- Import Firebase Information -------------
 
@@ -440,5 +438,67 @@ barcodeApp.controller('InventoryListController', [
     audio.play();
   };
 
+
+  $scope.adminEditUnit = function(unit) {
+    function editUnitModal(unit) {
+      return modalInstance = $uibModal.open({
+        controller  : 'EditUnitController',
+        templateUrl : '../templates/edit-unit.tpl.html',
+        size        : 'md',
+        resolve     : {
+          unit : function() {
+            return unit;
+          }
+        }
+      });
+    }
+
+    editUnitModal(unit).result.then(function(status) {
+      $scope.barcodedUnitInfo.child(unit.serial).set({
+        barcode  : unit.barcode,
+        serial   : unit.serial,
+        status   : status,
+        unit     : unit.unit,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      })
+    })
+  }
+
 }])
-//end of controller
+.controller('EditUnitController', ['$scope', '$uibModalInstance', 'unit', function($scope, $uibModalInstance, unit){
+
+  //View model
+  $scope.model = {
+    unit     : unit.barcode,
+    selected : ''
+  }
+
+
+  $scope.enter = function() {
+      $uibModalInstance.close('test');
+  }
+
+  $scope.exit = function() {
+    $uibModalInstance.close();
+  }
+
+  $scope.save = function() {
+    $uibModalInstance.close(cleanStatus());
+  }
+
+  function cleanStatus() {
+    switch($scope.model.selected) {
+      case 'missing':
+          return 'confirmed - missing'
+      case 'loaned':
+          return 'permanently loaned'
+      case 'onShelf':
+        return 'on shelf'
+      case 'purchased':
+        return 'checked out - purchase'
+      case 'other':
+        return 'checked out - other'
+    }
+  }
+
+}]);

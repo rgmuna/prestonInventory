@@ -15,7 +15,7 @@
   </div>
 
   <div class="row text-center" ng-show="loaded">
-    <input id="scanInput" class="barcode-input" ng-model="barcodeRead.barcodeNum" ng-model-options="{debounce : 300} " autofocus/>
+    <input id="scanInput" class="barcode-input" ng-model="barcodeRead.barcodeNum" ng-model-options="{debounce : 300}" autofocus/>
   </div>
 
   <div class="row text-left listHeaders" ng-show="loaded && barcodeEntered && ((pendingBarcodes | json) != '{}')">
@@ -34,11 +34,11 @@
           <div class="col-xs-6 pendingStatus" ng-class="unit.status">
             {{unit.status}}
           </div>
-          <div class="col-xs-12 unitNotes" ng-if="unit.notes">
+          <div class="col-xs-12 unitNotes" ng-if="unit.notes && isNotOtherStatus(unit)">
             QA Notes: {{unit.notes}}
           </div>
         </div>
-        <div class="col-xs-12 no-padding bottomContainer" ng-if="unit.status !== 'Checked In' && unit.status !== 'Checked Out'">
+        <div class="col-xs-12 no-padding bottomContainer" ng-if="unit.status !== 'Checked In' && unit.status !== 'Checked Out' && isNotOtherStatus(unit)">
           <div class="col-xs-6 no-padding text-center test" style="color: white;">
             <div ng-show="!unit.infoPulled && notMotor"> Not in database </div>
             <div ng-show="unit.infoPulled">

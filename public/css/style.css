@@ -537,6 +537,18 @@ tbody{
   color: #FF00CC;
 }
 
+.results a {
+  color: #FF00CC;
+}
+
+.results a:hover {
+  text-decoration: none;
+}
+
+.results a:focus {
+  text-decoration: none;
+}
+
 .tableItems{
   font-size: 25px;
   font-weight: 600;
@@ -553,15 +565,10 @@ tbody{
 }
 
 .table-hover>tbody>tr.tableItems:hover{
-  font-size: 35px;
   background-color: #2F3C40;
-  transition: font-size .5s;
-  transition-timing-function: ease;
 }
 .table-hover>tbody>tr.tableItems{
   font-size: 30px;
-  transition: font-size .5s;
-  transition-timing-function: ease;
 }
 
 .itemHeader{
@@ -1028,8 +1035,21 @@ tbody{
 }
 
 .modal-content {
-  background-color: #00ffff;
+  background-color: transparent;
 }
+
+.keypad-modal {
+  background-color: #00ffff;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+.edit-unit {
+  background-color: white;
+  padding: 10px;
+  border-radius: 15px;
+}
+
 
 .keypad .entryBtn {
   font-size: 30px;
@@ -1064,6 +1084,60 @@ tbody{
   font-weight: 600;
   font-size: 50px;
   color: #33ff00;
+}
+
+.edit-unit {
+  background-color: #fff;
+}
+
+.edit-unit > ul {
+  list-style: none;
+  padding: 0px;
+}
+
+.edit-unit > ul > li > button {
+  font-size: 20px;
+  padding: 10px;
+  width: 250px;
+  margin: 5px;
+  border-radius: 10px;
+  border: 1px solid gray;
+  background-color: lightcyan;
+  font-weight: 600;
+  color: black;
+}
+
+.edit-unit > ul > li > button.active{
+  background: cyan;
+  outline: none;
+}
+
+.edit-unit ul button:hover{
+  background-color: cyan;
+}
+
+.edit-unit button {
+  font-size: 20px;
+  padding: 10px;
+  width: 160px;
+  margin: 5px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  color: white;
+}
+
+.edit-unit button:focus {
+  outline: none;
+}
+
+.edit-unit #savebutton.enabled {
+  opacity: 1;
+}
+
+.edit-unit #savebutton{
+  background-color: green;
+  opacity: 0.5;
 }
 
 /*animations------------------------------------------------------------------*/

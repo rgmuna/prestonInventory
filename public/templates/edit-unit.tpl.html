@@ -1,0 +1,25 @@
+<div class="text-center edit-unit">
+
+  <h3 style="margin: 20px; font-weight: 600;"> Set Status For: <strong>{{ model.unit }}</strong></h3>
+  <ul>
+    <li>
+      <button ng-class="{active: model.selected === 'missing'}" ng-click="model.selected = 'missing'"> Missing </button>
+    </li>
+    <li>
+      <button ng-class="{active: model.selected === 'loaned'}" ng-click="model.selected = 'loaned'"> Permanently Loaned </button>
+    </li>
+    <li>
+      <button ng-class="{active: model.selected === 'onShelf'}" ng-click="model.selected = 'onShelf'"> On shelf </button>
+    </li>
+    <li>
+      <button ng-class="{active: model.selected === 'purchased'}" ng-click="model.selected = 'purchased'"> Checked Out - Purchased </button>
+    </li>
+    <li>
+      <button ng-class="{active: model.selected === 'other'}" ng-click="model.selected = 'other'"> Checked Out - Other </button>
+    </li>
+  </ul>
+
+  <button style="background-color: gray;" ng-click="exit()"> Cancel </button>
+  <button id="savebutton" ng-disabled="model.selected === ''" ng-class="{enabled: model.selected !== ''}" ng-click="save()"> Save </button>
+
+</div>

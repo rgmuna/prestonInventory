@@ -204,7 +204,7 @@ barcodeApp.controller('InventoryScannerController', [
         var checkNums = $scope.checkSerialNum(unitType, parsedItem[2]);
 
         if(unitTrue && serialLabelTrue && checkNums){
-          if(src != 'invChecker'){
+          if(src != 'invChecker') {
             $scope.getFirmware(unitType, parsedItem[2]);
           }
           return true;
@@ -219,6 +219,14 @@ barcodeApp.controller('InventoryScannerController', [
         return false;
       }
     };
+
+    $scope.isNotOtherStatus = function(unit) {
+      if (unit.status === 'checked out - purchase' || unit.status === 'on shelf' || unit.status === 'checked out - other') {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
     //------------- Get firmware from API (units only)-------------
 
@@ -297,7 +305,6 @@ barcodeApp.controller('InventoryScannerController', [
     $scope.$watch('pendingBarcodes', function(newValue, oldValue) {
       var keys = Object.keys($scope.pendingBarcodes);
       $scope.numPending = keys.length;
-      console.log($scope.pendingBarcodes);
     }, true);
 
     //function determines if unit has a radio or not

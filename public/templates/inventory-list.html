@@ -60,7 +60,7 @@
                 <td class="text-center" ng-if="value.onShelf >= minThreshold[key]"> <i style="color: #33FF00" class="fa fa-check-square"></i> </td>
                 <td class="text-center" ng-if="adminLoggedIn && !model.stockEditable">{{minThreshold[key]}}</td>
                 <td class="text-center" ng-if="adminLoggedIn && model.stockEditable">
-                  <input style="max-width: 60px; color: black" ng-model="model.stockObject[key]" type="number" placeholder="{{model.stockObject[key]}}">
+                    <input style="max-width: 60px; color: black" ng-model="model.stockObject[key]" type="number" placeholder="{{model.stockObject[key]}}" ng-style="{color: (model.stockObject[key] == minThreshold[key]) ? 'black' : '#FF0000'}">
                 </td>
             </tr>
           </tbody>
@@ -112,7 +112,11 @@
           </thead>
           <tbody>
             <tr class="results" ng-repeat="key in displayInformation | orderBy:sortType:sortReverse | filter:searchUnit" ng-show="(key|filterOldies) || showAll">
-              <td class="text-center"> {{key.barcode}} </td>
+              <td class="text-center">
+                <a href="" ng-disabled="false" ng-click="adminEditUnit(key)">
+                  {{key.barcode}}
+                </a>
+               </td>
               <td class="text-center"> {{key.status}} </td>
               <td class="text-center"> {{key.timestamp | date:'medium'}} </td>
             </tr>
@@ -188,8 +192,8 @@
         </thead>
         <tbody>
           <tr class="tableItems" ng-repeat="cable in barcodedCablesArray" ng-if="cable.id">
-            <td class="text-center"> {{cable.barcode}} </td>
-            <td class="text-center"> {{cable.inStock}}  </td>
+            <td class="text-center" style="color: white; font-weight: 300"> {{cable.barcode}} </td>
+            <td class="text-center" style="color: white"> {{cable.inStock}}  </td>
             <td class="text-center"> {{cable.timestamp | date:'medium'}} </td>
           </tr>
         </tbody>
