@@ -453,6 +453,22 @@ padding-top: 26px;
   color: black;
 }
 
+.Saved{
+  background-color: #33FF00;
+  color: black;
+}
+
+.adminButtons button {
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+button:focus {
+  outline: none;
+}
+
 /*=========================================third tab items=======================================*/
 .invTitle{
   color: #ff00cc;

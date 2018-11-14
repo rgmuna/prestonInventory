@@ -16,6 +16,10 @@
 
   <div class="row text-center" ng-show="loaded">
     <input id="scanInput" class="barcode-input" ng-model="barcodeRead.barcodeNum" ng-model-options="{debounce : 300}" autofocus/>
+    <div ng-if="adminLoggedIn" class="adminButtons">
+      <button ng-click="barcodeRead.barcodeNum = ''"> Clear </button>
+      <button ng-click="prepareScannedInput()"> Enter </button>
+    </div>
   </div>
 
   <div class="row text-left listHeaders" ng-show="loaded && barcodeEntered && ((pendingBarcodes | json) != '{}')">
@@ -29,7 +33,7 @@
         <span class="removeTest" ng-click="remove(unit)" ng-if="unit.status !== 'Checked In' && unit.status !== 'Checked Out'"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
         <div class="col-xs-12 pendingItems no-padding">
           <div class="col-xs-6 pendingCode">
-            {{unit.barcode}}
+            <i ng-if="adminLoggedIn" style="float: left; padding-top: 10px; margin-left: -8px;" ng-click="adminEditUnit(unit)" class="fa fa-pencil-square" aria-hidden="true"></i> {{unit.barcode}}
           </div>
           <div class="col-xs-6 pendingStatus" ng-class="unit.status">
             {{unit.status}}

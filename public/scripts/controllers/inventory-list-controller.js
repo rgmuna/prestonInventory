@@ -1,4 +1,5 @@
 barcodeApp.controller('InventoryListController', [
+  '$rootScope',
   'authService',
   '$scope',
   '$firebaseArray',
@@ -10,7 +11,7 @@ barcodeApp.controller('InventoryListController', [
   '$document',
   '$filter',
   '$uibModal',
-  function (authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter, $uibModal) {
+  function ($rootScope, authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter, $uibModal) {
 
   $scope.model = {
     view          : 'units',
@@ -440,28 +441,38 @@ barcodeApp.controller('InventoryListController', [
 
 
   $scope.adminEditUnit = function(unit) {
-    function editUnitModal(unit) {
-      return modalInstance = $uibModal.open({
-        controller  : 'EditUnitController',
-        templateUrl : '../templates/edit-unit.tpl.html',
-        size        : 'md',
-        resolve     : {
-          unit : function() {
-            return unit;
+    if (!$rootScope.adminLoggedIn) {
+      return;
+    } else {
+      function editUnitModal(unit) {
+        return modalInstance = $uibModal.open({
+          controller  : 'EditUnitController',
+          templateUrl : '../templates/edit-unit.tpl.html',
+          size        : 'md',
+          resolve     : {
+            unit : function() {
+              return unit;
+            }
           }
-        }
-      });
-    }
+        });
+      }
 
-    editUnitModal(unit).result.then(function(status) {
-      $scope.barcodedUnitInfo.child(unit.serial).set({
-        barcode  : unit.barcode,
-        serial   : unit.serial,
-        status   : status,
-        unit     : unit.unit,
-        timestamp: firebase.database.ServerValue.TIMESTAMP
+      editUnitModal(unit).result.then(function(status) {
+        if (!status) {
+          return;
+        } else {
+          $scope.barcodedUnitInfo.child(unit.serial).set({
+            barcode  : unit.barcode,
+            serial   : unit.serial,
+            status   : status,
+            unit     : unit.unit,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+          })
+
+          $scope.loadTable();
+        }
       })
-    })
+    }
   }
 
 }])
