@@ -640,6 +640,20 @@ tbody{
   background-color: #ff00cc;
   color: black;
 }
+
+.invSelect{
+  text-align: center;
+  font-size: 30px;
+  background-color: black;
+  border: 1px solid #ff00cc;
+  color: #ff00cc;
+  width: 250px;
+}
+
+.invFilterTitle{
+  color: #ff00cc;
+  font-size: 30px;
+}
 /*=========================================fifth tab items=======================================*/
 #loanerCheck .checkTitle{
   color: #CCFF00;

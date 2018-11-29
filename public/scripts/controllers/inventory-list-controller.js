@@ -14,9 +14,18 @@ barcodeApp.controller('InventoryListController', [
   function ($rootScope, authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter, $uibModal) {
 
   $scope.model = {
-    view          : 'units',
-    stockEditable : false,
-    stockObject   : {}
+    view                 : 'units',
+    stockEditable        : false,
+    stockObject          : {},
+    sortType             : 'name',
+    sortReverse          : false,
+    searchUnits          : '',
+    cableSortType        : '',
+    cableSortReverse     : false,
+    accessorySortType    : '',
+    accessorySortReverse : false,
+    accessoryFilter      : '',
+    accessoryCategories  : ['motor mounts', 'gears', 'light ranger 2', 'other']
   };
 
   $scope.products = [
@@ -381,11 +390,6 @@ barcodeApp.controller('InventoryListController', [
     }
   }
 
-  $scope.sortType     = 'name'; // set the default sort type
-  $scope.sortReverse  = false;  // set the default sort order
-  $scope.searchUnits   = '';     // set the default search/filter term
-
-
   //submit test to firebase
   $scope.submitTest = function(){
     var submissionDate = $filter('date')(new Date(), 'medium');
@@ -472,6 +476,13 @@ barcodeApp.controller('InventoryListController', [
           $scope.loadTable();
         }
       })
+    }
+  }
+
+  $scope.removeFilter = function(option) {
+    if (!option) {
+      console.log('in here');
+      $scope.model.accessoryFilter = "";
     }
   }
 

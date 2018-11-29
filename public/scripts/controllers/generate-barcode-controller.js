@@ -8,6 +8,15 @@ barcodeApp.controller('GenerateBarcodeController', [
   '$window',
   function ($scope, $window) {
 
+
+    //
+    // Controller model
+    //
+
+    var model = {
+      accessoryOptions : ['A-Mount', 'A-Other', 'A-Gear', 'A-LR2']
+    };
+
     $scope.chosenItems = {
       unitSelect: null,
       serialNum: null,
@@ -32,26 +41,30 @@ barcodeApp.controller('GenerateBarcodeController', [
       'DM2X',
       'DM5',
       'BM',
-      'Cable'
+      'Cable',
+      'A-Gear',
+      'A-Mount',
+      'A-LR2',
+      'A-Other'
     ];
 
     //add barcode to array and update local storage-------
     $scope.addBarcode = function(item, serial, numItem){
-      if(!item){
+      var reset = '';
+
+      if (!item) {
         alert('Please select a unit type.');
-      }
-      else if(!serial){
+      } else if (!serial) {
         alert('Please enter a serial number');
-      }
-      else{
+      } else {
         //make sure inputted serial number is the right number of characters
-        if($scope.checkSerialNum(item, serial)){
+        if (checkSerialNum(item, serial)) {
           //check to fix long barcodes due to sensor and VIU
-          if(item === 'LR2 Sensor' || item === 'LR2 VIU'){
+          if (item === 'LR2 Sensor' || item === 'LR2 VIU') {
             item = 'LR2';
           }
 
-          if (item === 'Cable' || item === 'Accessory') {
+          if (item === 'Cable' || model.accessoryOptions.indexOf(item) !== -1) {
             if (!isNaN(parseInt(numItem))) {
               for (var i=0; i<numItem; i++) {
                 $scope.barcodes.push({unit: item, num: serial})
@@ -71,29 +84,31 @@ barcodeApp.controller('GenerateBarcodeController', [
           else {
             $scope.barcodes.push({unit: item, num: serial})
             localStorage.setItem('barcodes', JSON.stringify($scope.barcodes));
+
+            for (var i=0; i<$scope.chosenItems.serialNum.length; i++) {
+              if($scope.chosenItems.unitSelect === "DMF3" && (i===1)){
+                reset += $scope.chosenItems.serialNum[i];
+              }
+              if($scope.chosenItems.unitSelect === "DM2X" && (i===0)){
+                reset += $scope.chosenItems.serialNum[i];
+              }
+              if(isNaN($scope.chosenItems.serialNum[i])){
+                reset += $scope.chosenItems.serialNum[i];
+              }
+            }
           }
 
           //reset input to previous barcode lettering
-          var reset = '';
-          for(var i=0; i<$scope.chosenItems.serialNum.length; i++){
-            if($scope.chosenItems.unitSelect === "DMF3" && (i===1)){
-              reset += $scope.chosenItems.serialNum[i];
-            }
-            if($scope.chosenItems.unitSelect === "DM2X" && (i===0)){
-              reset += $scope.chosenItems.serialNum[i];
-            }
-            if(isNaN($scope.chosenItems.serialNum[i])){
-              reset += $scope.chosenItems.serialNum[i];
-            }
-          }
           $scope.chosenItems.serialNum = reset;
         }
       }
     }
 
     //checks that inputted serial number is correctly formatted -------
-    $scope.checkSerialNum = function(item, serial){
+    var checkSerialNum = function(item, serial){
       var shortBarcode = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'BM'];
+      var accessoryOptions = ['A-Mount', 'A-Other', 'A-Gear', 'A-LR2'];
+
       //if the item is one of the short barcode items
       if(shortBarcode.indexOf(item) >= 0){
         if(!isNaN(serial) && (serial.length === 4) && (item != 'DM5')){
@@ -191,7 +206,7 @@ barcodeApp.controller('GenerateBarcodeController', [
           return false;
         }
       }
-      else if (item === 'Cable' || item === 'Accessory') {
+      else if (item === 'Cable' || accessoryOptions.indexOf(item) !== -1) {
         return true;
       }
     }
@@ -222,6 +237,18 @@ barcodeApp.controller('GenerateBarcodeController', [
       else if($scope.chosenItems.unitSelect==='Cable'){
         $scope.chosenItems.serialNum = 'C';
       }
+      else if($scope.chosenItems.unitSelect==='A-LR2'){
+        $scope.chosenItems.serialNum = 'L';
+      }
+      else if($scope.chosenItems.unitSelect==='A-Mount'){
+        $scope.chosenItems.serialNum = 'M';
+      }
+      else if($scope.chosenItems.unitSelect==='A-Gear'){
+        $scope.chosenItems.serialNum = 'G';
+      }
+      else if($scope.chosenItems.unitSelect==='A-Other'){
+        $scope.chosenItems.serialNum = 'A';
+      }
       else {
         $scope.chosenItems.serialNum = '';
       }
@@ -248,16 +275,25 @@ barcodeApp.controller('GenerateBarcodeController', [
       }
     }
 
+    $scope.showHowMany = function(unit) {
+      if (unit.unitSelect === 'Cable' || model.accessoryOptions.indexOf(unit.unitSelect) !== -1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
 }])
 
 .controller('PrintController', ['$scope', function ($scope) {
-  $scope.allBarcodes = JSON.parse(localStorage.getItem('barcodes'));
+  $scope.allBarcodes   = JSON.parse(localStorage.getItem('barcodes'));
+  var accessoryOptions = ['A-Mount', 'A-Other', 'A-Gear', 'A-LR2'];
 
   setTimeout(function(){
     for (var i in $scope.allBarcodes) {
       var id =  "#" + $scope.allBarcodes[i].unit + $scope.allBarcodes[i].num;
 
-      if ($scope.allBarcodes[i].unit === 'Cable' || $scope.allBarcodes[i].unit === 'Accessory') {
+      if ($scope.allBarcodes[i].unit === 'Cable' || accessoryOptions.indexOf($scope.allBarcodes[i].unit) !== -1) {
         var text = $scope.allBarcodes[i].num;
       }
       else {

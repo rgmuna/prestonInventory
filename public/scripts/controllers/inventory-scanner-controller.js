@@ -11,6 +11,14 @@ barcodeApp.controller('InventoryScannerController', [
   '$q',
   function (authService, $scope, $rootScope, $firebaseArray, $firebaseObject, $timeout, $http, $window, $uibModal, $q) {
 
+    //
+    // Controller model
+    //
+
+    var model = {
+      accessoryCategories : ['A', 'B', 'G', 'L']
+    }
+
   //------------- Import Firebase Information -------------
 
   //product invnetory from Firebase
@@ -23,7 +31,7 @@ barcodeApp.controller('InventoryScannerController', [
 
   //accessory invnetory from Firebase
   $scope.barcodedAccessoryInfo = firebase.database().ref().child('accessoryInventory');
-  $scope.barcodedAccessories = $firebaseArray($scope.barcodedAccessoryInfo);
+  $scope.barcodedAccessoriesObj = $firebaseObject($scope.barcodedAccessoryInfo);
 
   //------------- For Scanning Items -------------
 
@@ -54,29 +62,26 @@ barcodeApp.controller('InventoryScannerController', [
   });
 
   $scope.prepareScannedInput = function() {
-    if($scope.authenticateInput($scope.barcodeRead.barcodeNum)){
+    if ($scope.authenticateInput($scope.barcodeRead.barcodeNum)) {
       $scope.barcodeEntered = true;
 
       //if unit, make correctly formatted object key
-      if($scope.barcodeRead.barcodeNum.split(" ").length > 1){
+      if ($scope.barcodeRead.barcodeNum.split(" ").length > 1) {
         var simplifiedKey = $scope.simplifyKey($scope.barcodeRead.barcodeNum);
         var ogKey = $scope.barcodeRead.barcodeNum;
         //run check against firebase to get stored status and make new object
         runCheck(simplifiedKey, ogKey);
-      }
-      //if cable or accessory, run the add to pending barcodes
-      else {
+      } else {
         $scope.addCableAcessory($scope.barcodeRead.barcodeNum);
       }
 
-      //reset input to empty
-      $scope.barcodeRead.barcodeNum = '';
       $scope.playAudio('scanned');
-    }
-    else{
+    } else {
       $scope.playAudio('alanna');
-      $scope.barcodeRead.barcodeNum = '';
+      alert('Barcode Incorrect. Try again.');
     }
+
+    $scope.barcodeRead.barcodeNum = '';
   }
 
   $scope.adminEditUnit = function(unit) {
@@ -231,7 +236,7 @@ barcodeApp.controller('InventoryScannerController', [
     //accessory or cable
     if (parsedItem.length === 1) {
       var identifier = parsedItem[0].toUpperCase();
-      if (identifier[0] === "C" || identifier[0] === "A") {
+      if (identifier[0] === "C" || model.accessoryCategories.indexOf(identifier[0]) !== -1) {
         return true;
       }
     }
@@ -367,10 +372,8 @@ barcodeApp.controller('InventoryScannerController', [
     }
   }
 
-  //possible statuses: 'unchecked', 'checked out - purchase', 'checked out - other',' on shelf'
   //check status against firebase
   var runCheck = function(item, ogKey){
-    //make new object with scanned item
     for(var i = 0; i<$scope.barcodedUnits.length; i++){
       //if item is already stored in database
       if($scope.barcodedUnits[i].$id === item){
@@ -433,7 +436,7 @@ barcodeApp.controller('InventoryScannerController', [
   //edits number on cable/accessoryInventory
   $scope.editNumber = function(barcode) {
     var prevNumber = $scope.pendingBarcodes[barcode].newNumber;
-    var inDatabase = $scope.barcodedCablesObj[barcode] || false;
+    var inDatabase = $scope.barcodedCablesObj[barcode] || $scope.barcodedAccessoriesObj[barcode] || false;
 
     keypadModal(barcode, inDatabase, prevNumber).result.then(function(response){
       $scope.pendingBarcodes[barcode].newNumber = parseInt(response);
@@ -442,9 +445,8 @@ barcodeApp.controller('InventoryScannerController', [
 
   $scope.addCableAcessory = function(item){
     var parsedItem = item.split(" ");
-    var barcode = parsedItem[0].toUpperCase();
+    var barcode    = parsedItem[0].toUpperCase();
 
-    //if cable...
     if (barcode[0] === "C") {
       //if cable is already in firebase
       if ($scope.barcodedCablesObj[barcode]) {
@@ -452,28 +454,63 @@ barcodeApp.controller('InventoryScannerController', [
         keypadModal(barcode, true).result.then(function(response){
           $scope.pendingBarcodes[barcode].newNumber = parseInt(response);
         })
-      }
-      //if cable is NOT in firebaseio
-      else {
-        var id = barcode.substr(1);
+      } else {
+        var id = barcode.substring(1);
 
         $scope.pendingBarcodes[barcode] = {
           barcode: barcode,
           inStock: 0,
-          id: id,
-          type: "cable",
-          status: 'unchecked'
+          id     : id,
+          type   : "cable",
+          status : 'unchecked'
+        }
+
+        keypadModal(barcode, false).result.then(function(response){
+          $scope.pendingBarcodes[barcode].newNumber = parseInt(response);
+        });
+      }
+    } else if (model.accessoryCategories.indexOf(barcode[0]) !== -1) {
+      //if accessory is already in firebase
+      if ($scope.barcodedAccessoriesObj[barcode]) {
+        $scope.pendingBarcodes[barcode] =  $scope.barcodedAccessoriesObj[barcode];
+        keypadModal(barcode, true).result.then(function(response){
+          $scope.pendingBarcodes[barcode].newNumber = parseInt(response);
+        })
+      } else {
+        var id = barcode.substring(1);
+
+        $scope.pendingBarcodes[barcode] = {
+          barcode  : barcode,
+          inStock  : 0,
+          id       : id,
+          type     : 'accessory',
+          status   : 'unchecked',
+          category : returnAccessoryType(barcode)
         }
 
         keypadModal(barcode, false).result.then(function(response){
           $scope.pendingBarcodes[barcode].newNumber = parseInt(response);
         })
       }
+    } else {
+      alert('Barcode incorrect');
+    }
+  }
+
+  function returnAccessoryType(barcode) {
+    if (model.accessoryCategories.indexOf(barcode[0]) === -1) {
+      return;
     }
 
-    //if accessory
-    else if (barcode[0] === "A") {
-
+    switch(barcode[0]) {
+      case 'A':
+          return 'other'
+      case 'B':
+          return 'motor mounts'
+      case 'G':
+          return 'gears'
+      case 'L':
+          return 'light ranger 2'
     }
   }
 
@@ -567,8 +604,34 @@ barcodeApp.controller('InventoryScannerController', [
           id       : unit.id,
           type     : "cable",
           timestamp: firebase.database.ServerValue.TIMESTAMP
-        })
-        .then(function(builds){
+        }).then(function(builds){
+          $scope.pendingBarcodes[unit.barcode].status = 'Checked In';
+          $scope.$apply();
+
+          $timeout(function(){
+            delete $scope.pendingBarcodes[unit.barcode];
+            if(angular.equals($scope.pendingBarcodes, {})){
+              $scope.barcodeEntered = false;
+            }
+          }, 3000)
+        });
+      } else if (unit.type === 'accessory') {
+        $scope.pendingBarcodes[unit.barcode].checkInClicked = true;
+
+        var currentStock = unit.inStock;
+        var newAddition  = unit.newNumber;
+        var unitSerial   = unit.barcode;
+
+        $scope.pendingBarcodes[unit.barcode].inStock = currentStock + newAddition;
+
+        $scope.barcodedAccessoryInfo.child(unitSerial).set({
+          barcode   : unit.barcode,
+          inStock   : unit.inStock,
+          id        : unit.id,
+          type      : "accessory",
+          timestamp : firebase.database.ServerValue.TIMESTAMP,
+          category  : unit.category
+        }).then(function(builds){
           $scope.pendingBarcodes[unit.barcode].status = 'Checked In';
           $scope.$apply();
 
@@ -604,8 +667,7 @@ barcodeApp.controller('InventoryScannerController', [
         status   : unitStatus,
         unit     : unitType,
         timestamp: firebase.database.ServerValue.TIMESTAMP
-      })
-      .then(function(builds){
+      }).then(function(builds){
         $scope.playAudio('checkedOut');
 
         $scope.pendingBarcodes[unit.serial].status = "Checked Out";
@@ -641,8 +703,7 @@ barcodeApp.controller('InventoryScannerController', [
             id       : unit.id,
             type     : "cable",
             timestamp: firebase.database.ServerValue.TIMESTAMP
-          })
-          .then(function(builds){
+          }).then(function(builds){
             $scope.playAudio('checkedOut');
 
             $scope.pendingBarcodes[unit.barcode].status = 'Checked Out';
@@ -656,8 +717,43 @@ barcodeApp.controller('InventoryScannerController', [
             }, 3000)
           });
         }
+      } else if (unit.type === 'accessory') {
+          var currentStock   = unit.inStock;
+          var newSubtraction = unit.newNumber;
+          var unitSerial     = unit.barcode;
 
-      }
+          $scope.pendingBarcodes[unit.barcode].inStock = currentStock - newSubtraction;
+
+          if ($scope.pendingBarcodes[unit.barcode].inStock < 0) {
+            alert('You cannot checkout more accessories than what is crrently in stock (' + currentStock + ' currently in stock).');
+            $scope.pendingBarcodes[unit.barcode].inStock = currentStock;
+            $scope.playAudio('wrong');
+            $scope.pendingBarcodes[unit.barcode].newNumber = 0;
+            return;
+          } else {
+            $scope.pendingBarcodes[unit.barcode].checkInClicked = true;
+            $scope.barcodedAccessoryInfo.child(unitSerial).set({
+              barcode  : unit.barcode,
+              inStock  : unit.inStock,
+              id       : unit.id,
+              type     : "accessory",
+              timestamp: firebase.database.ServerValue.TIMESTAMP,
+              category  : unit.category
+            }).then(function(builds){
+              $scope.playAudio('checkedOut');
+
+              $scope.pendingBarcodes[unit.barcode].status = 'Checked Out';
+              $scope.$apply();
+
+              $timeout(function(){
+                delete $scope.pendingBarcodes[unit.barcode];
+                if(angular.equals($scope.pendingBarcodes, {})){
+                  $scope.barcodeEntered = false;
+                }
+              }, 3000)
+            });
+          }
+        }
     }
   }
 

@@ -65,7 +65,7 @@
       </div>
 
       <!-- if unit is a cable or accessory -->
-      <div ng-if="unit.type === 'cable'">
+      <div ng-if="unit.type === 'cable' || unit.type === 'accessory'">
         <span class="removeTest" ng-click="remove(unit)"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
         <div class="col-xs-12 pendingItems no-padding">
           <div class="col-xs-3 pendingCode">

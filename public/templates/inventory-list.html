@@ -75,7 +75,7 @@
               <div class="form-group">
                 <div class="input-group">
                   <div class="input-group-addon"><i class="fa fa-search"></i></div>
-                  <input type="text" class="form-control" placeholder="Search {{revealedUnit | uppercase}}s..." ng-model="searchUnit">
+                  <input type="text" class="form-control" placeholder="Search {{revealedUnit | uppercase}}s..." ng-model="model.searchUnit">
                 </div>
               </div>
               <input id="checkBox" type="checkbox" ng-model="showAll"><span style="color: white;"> Show units older than 30 days old</span>
@@ -87,31 +87,31 @@
           <thead class="resTableHead">
             <tr>
               <th class="text-center">
-                <a ng-click="sortType = 'barcode'; sortReverse = !sortReverse">
+                <a ng-click="model.sortType = 'barcode'; model.sortReverse = !model.sortReverse">
                   Barcode
-                  <span ng-show="sortType == 'barcode' && sortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="sortType == 'barcode' && !sortReverse" class="fa fa-caret-up"></span>
+                  <span ng-show="model.sortType == 'barcode' && model.sortReverse" class="fa fa-caret-down"></span>
+                  <span ng-show="model.sortType == 'barcode' && !model.sortReverse" class="fa fa-caret-up"></span>
                 </a>
               </th>
               <th class="text-center">
-                <a ng-click="sortType = 'status'; sortReverse = !sortReverse">
+                <a ng-click="model.sortType = 'status'; model.sortReverse = !model.sortReverse">
                   Status
-                  <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-caret-up"></span>
+                  <span ng-show="model.sortType == 'status' && model.sortReverse" class="fa fa-caret-down"></span>
+                  <span ng-show="model.sortType == 'status' && !model.sortReverse" class="fa fa-caret-up"></span>
                 </a>
               </th>
               <th class="text-center">
-                <a ng-click="sortType = 'timestamp'; sortReverse = !sortReverse">
+                <a ng-click="model.sortType = 'timestamp'; model.sortReverse = !model.sortReverse">
                   Last Scan
-                  <span ng-show="sortType == 'timestamp' && sortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="sortType == 'timestamp' && !sortReverse" class="fa fa-caret-up"></span>
+                  <span ng-show="model.sortType == 'timestamp' && model.sortReverse" class="fa fa-caret-down"></span>
+                  <span ng-show="model.sortType == 'timestamp' && !model.sortReverse" class="fa fa-caret-up"></span>
                 </a>
               </th>
 
             </tr>
           </thead>
           <tbody>
-            <tr class="results" ng-repeat="key in displayInformation | orderBy:sortType:sortReverse | filter:searchUnit" ng-show="(key|filterOldies) || showAll">
+            <tr class="results" ng-repeat="key in displayInformation | orderBy:model.sortType:model.sortReverse | filter:model.searchUnit" ng-show="(key|filterOldies) || showAll">
               <td class="text-center">
                 <a href="" ng-click="adminEditUnit(key)">
                   {{key.barcode}}
@@ -185,13 +185,31 @@
       <table class="table table-condensed tableBorder table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
         <thead class="tableHead">
           <tr>
-            <th class="text-center">  Cable </th>
-            <th class="text-center">  On Shelf </th>
-            <th class="text-center">  Last Scan </th>
+            <th class="text-center">
+              <a style="color: black;" href="" ng-click="model.cableSortType = 'barcode'; model.cableSortReverse = !model.cableSortReverse">
+                Cable
+                <span ng-show="model.cableSortType == 'barcode' && model.cableSortReverse" class="fa fa-caret-down"></span>
+                <span ng-show="model.cableSortType == 'barcode' && !model.cableSortReverse" class="fa fa-caret-up"></span>
+              </a>
+            </th>
+            <th class="text-center">
+              <a style="color: black;" href="" ng-click="model.cableSortType = 'inStock'; model.cableSortReverse = !model.cableSortReverse">
+                On Shelf
+                <span ng-show="model.cableSortType == 'inStock' && model.cableSortReverse" class="fa fa-caret-down"></span>
+                <span ng-show="model.cableSortType == 'inStock' && !model.cableSortReverse" class="fa fa-caret-up"></span>
+              </a>
+            </th>
+            <th class="text-center">
+              <a style="color: black;" href="" ng-click="model.cableSortType = 'timestamp'; model.cableSortReverse = !model.cableSortReverse">
+                Last Scan
+                <span ng-show="model.cableSortType == 'timestamp' && model.cableSortReverse" class="fa fa-caret-down"></span>
+                <span ng-show="model.cableSortType == 'timestamp' && !model.cableSortReverse" class="fa fa-caret-up"></span>
+              </a>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr class="tableItems" ng-repeat="cable in barcodedCablesArray" ng-if="cable.id">
+          <tr class="tableItems" ng-repeat="cable in barcodedCablesArray | orderBy:model.cableSortType:model.cableSortReverse " ng-if="cable.id">
             <td class="text-center" style="color: white; font-weight: 300"> {{cable.barcode}} </td>
             <td class="text-center" style="color: white"> {{cable.inStock}}  </td>
             <td class="text-center"> {{cable.timestamp | date:'medium'}} </td>
@@ -204,7 +222,63 @@
 
     <!-- accessories view -->
     <div ng-if="model.view === 'accessories'" style="margin-top: 40px;" >
-      <h1 style="color: white; margin: 30px; font-size: 50px;">Coming soon!</h1>
+      <div class="col-xs-12" ng-show="!loaded">
+        <img src="../assets/RollingPink.svg" alt="">
+        <div class="text-center">
+          <div class="invLoading">
+            Loading...
+          </div>
+        </div>
+      </div>
+
+      <div class="row" ng-show="loaded">
+        <div class="col-xs-12 text-center invFilterTitle">
+          Filter
+        </div>
+
+        <div class="col-xs-12 text-center">
+          <select id="unitChoice" class="invSelect" name="unitSelect" ng-model="model.accessoryFilter" ng-options="x for x in model.accessoryCategories" ng-change="removeFilter(model.accessoryFilter)">
+            <option value=""> Category </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-xs-12 text-center" style="margin-top: 40px;" ng-show="loaded" >
+        <table class="table table-condensed tableBorder table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
+          <thead class="tableHead">
+            <tr>
+              <th class="text-center">
+                <a style="color: black;" href="" ng-click="model.accessorySortType = 'barcode'; model.accessorySortReverse = !model.accessorySortReverse">
+                  Accessory
+                  <span ng-show="model.accessorySortType == 'barcode' && model.accessorySortReverse" class="fa fa-caret-down"></span>
+                  <span ng-show="model.accessorySortType == 'barcode' && !model.accessorySortReverse" class="fa fa-caret-up"></span>
+                </a>
+              </th>
+              <th class="text-center">
+                <a style="color: black;" href="" ng-click="model.accessorySortType = 'inStock'; model.accessorySortReverse = !model.accessorySortReverse">
+                  On Shelf
+                  <span ng-show="model.accessorySortType == 'inStock' && model.accessorySortReverse" class="fa fa-caret-down"></span>
+                  <span ng-show="model.accessorySortType == 'inStock' && !model.accessorySortReverse" class="fa fa-caret-up"></span>
+                </a>
+              </th>
+              <th class="text-center">
+                <a style="color: black;" href="" ng-click="model.accessorySortType = 'category'; model.accessorySortReverse = !model.accessorySortReverse">
+                  Categories
+                  <span ng-show="model.accessorySortType == 'category' && model.accessorySortReverse" class="fa fa-caret-down"></span>
+                  <span ng-show="model.accessorySortType == 'category' && !model.accessorySortReverse" class="fa fa-caret-up"></span>
+                </a>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="tableItems" ng-repeat="accessory in barcodedAccessories | orderBy:model.accessorySortType:model.accessorySortReverse | filter:{category : model.accessoryFilter}" ng-if="accessory.id">
+              <td class="text-center" style="color: white; font-weight: 300"> {{accessory.barcode}} </td>
+              <td class="text-center" style="color: white"> {{accessory.inStock}}  </td>
+              <td class="text-center" style="color: white"> {{accessory.category}} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 

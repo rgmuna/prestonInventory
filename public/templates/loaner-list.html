@@ -42,11 +42,9 @@
       <select id="unitChoice" class="loanInvSelect" name="unitSelect" value="test" ng-model="filterVariables.unitType" ng-options="x for x in loanerProducts" ng-change="removeFilter('unitFilter', filterVariables.unitType)">
         <option value=""> Unit Type </option>
       </select>
-      <!-- <span ng-class="{'vis-hidden': filterVariables.unitType !== ''}"><i class="fa fa-times" aria-hidden="true"></i></span> -->
       <select id="statusChoice" class="loanInvSelect" name="unitSelect" value="test" ng-model="filterVariables.status" ng-options="x for x in loanerStatuses" ng-change="removeFilter('statusFilter', filterVariables.status)">
         <option value=""> Status </option>
       </select>
-      <!-- <a ng-show="filterVariables.status !== ''"><i class="fa fa-times" aria-hidden="true"></i></a> -->
     </div>
   </div>
 
