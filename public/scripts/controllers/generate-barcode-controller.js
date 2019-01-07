@@ -75,8 +75,7 @@ barcodeApp.controller('GenerateBarcodeController', [
                 serialNum: null,
                 numItems: null
               }
-            }
-            else {
+            } else {
               alert('Please enter a real number for how many ' + item + ' you wish to print barcodes for.');
               return;
             }

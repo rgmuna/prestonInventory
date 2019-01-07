@@ -18,7 +18,7 @@
             Serial Number
           </div>
           <div class="col-xs-12">
-            <input id="serialEntry" class="numEntry" ng-enter="addBarcode(chosenItems.unitSelect, chosenItems.serialNum)" ng-model="chosenItems.serialNum" />
+            <input id="serialEntry" class="numEntry" ng-enter="addBarcode(chosenItems.unitSelect, chosenItems.serialNum, chosenItems.numItems)" ng-model="chosenItems.serialNum" />
             <div ng-if="showHowMany(chosenItems)" style="margin-top: 10px">
               How Many?
               <input class="cableNumEntry" ng-model="chosenItems.numItems" ng-enter="addBarcode(chosenItems.unitSelect, chosenItems.serialNum, chosenItems.numItems)">
@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="col-xs-12 text-center" style="margin-top: 30px;">
-        <a class="addEntry" ng-click="addBarcode(chosenItems.unitSelect, chosenItems.serialNum)"> Add <span class="hidden-xs"> (or press enter) </span> </a>
+        <a class="addEntry" ng-click="addBarcode(chosenItems.unitSelect, chosenItems.serialNum, chosenItems.numItems)"> Add <span class="hidden-xs"> (or press enter) </span> </a>
       </div>
     </div>
   </div>
