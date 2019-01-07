@@ -16,7 +16,7 @@ barcodeApp.controller('InventoryScannerController', [
     //
 
     var model = {
-      accessoryCategories : ['A', 'B', 'G', 'L']
+      accessoryCategories : ['A', 'B', 'G', 'L', 'M']
     }
 
   //------------- Import Firebase Information -------------
