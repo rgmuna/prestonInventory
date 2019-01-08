@@ -16,7 +16,7 @@ barcodeApp.controller('InventoryScannerController', [
     //
 
     var model = {
-      accessoryCategories : ['A', 'B', 'G', 'L', 'M']
+      accessoryCategories : ['A', 'G', 'L', 'M']
     }
 
   //------------- Import Firebase Information -------------
@@ -505,7 +505,7 @@ barcodeApp.controller('InventoryScannerController', [
     switch(barcode[0]) {
       case 'A':
           return 'other'
-      case 'B':
+      case 'M':
           return 'motor mounts'
       case 'G':
           return 'gears'
@@ -623,7 +623,8 @@ barcodeApp.controller('InventoryScannerController', [
         var unitSerial   = unit.barcode;
 
         $scope.pendingBarcodes[unit.barcode].inStock = currentStock + newAddition;
-
+console.log($scope.pendingBarcodes);
+debugger;
         $scope.barcodedAccessoryInfo.child(unitSerial).set({
           barcode   : unit.barcode,
           inStock   : unit.inStock,
