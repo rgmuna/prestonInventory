@@ -623,8 +623,7 @@ barcodeApp.controller('InventoryScannerController', [
         var unitSerial   = unit.barcode;
 
         $scope.pendingBarcodes[unit.barcode].inStock = currentStock + newAddition;
-console.log($scope.pendingBarcodes);
-debugger;
+
         $scope.barcodedAccessoryInfo.child(unitSerial).set({
           barcode   : unit.barcode,
           inStock   : unit.inStock,
