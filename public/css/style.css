@@ -766,6 +766,10 @@ tbody{
   background-color: #00ffff;
 }
 
+.yellowButton {
+  background-color: #CCFF00;
+}
+
 .statusTitle{
   font-weight: 600;
   font-size: 40px;

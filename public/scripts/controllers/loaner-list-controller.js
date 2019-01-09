@@ -6,7 +6,8 @@ barcodeApp.controller('LoanerListController', [
   '$http',
   '$window',
   '$filter',
-  function ($scope, $firebaseArray, $firebaseObject, $timeout, $http, $window, $filter) {
+  'authService',
+  function ($scope, $firebaseArray, $firebaseObject, $timeout, $http, $window, $filter, authService) {
 
   $scope.customerArray = ['reset'];
 
@@ -322,6 +323,11 @@ barcodeApp.controller('LoanerListController', [
     }
 
     var doc = new jsPDF('p', 'pt', 'letter' );
+
+    var CUSTOMER_OFFSET   = 180;
+    var UNIT_OFFSET       = 300;
+    var FINE_PRINT_OFFSET = 580;
+
     doc.setDrawColor(220,220,220);
     doc.setLineWidth(.25);
     doc.line(30, 75, 590, 75);
@@ -340,33 +346,56 @@ barcodeApp.controller('LoanerListController', [
     doc.text(590, 90, '1659 11th St, Suite 100', null, null, 'right');
     doc.text(590, 105, 'Santa Monica, CA 90404', null, null, 'right');
     doc.setTextColor(35,50,55);
+    doc.text(30, 150, 'Prepared By:____________________________');
+    doc.text(300, 150, 'Received By:________________________________');
+
+
     doc.setFontSize(12)
     doc.setFontType('bold')
-    doc.text(30, 220, 'Customer Info');
-    doc.text(30, 340, 'Units');
+    doc.text(30, CUSTOMER_OFFSET, 'Customer Info');
+
+    doc.text(30, UNIT_OFFSET, 'Units');
     doc.setFontSize(10);
-    doc.text(30, 245, 'Name: ');
-    doc.text(30, 275, 'Shipping: ');
+    doc.text(30, CUSTOMER_OFFSET + 25, 'Name: ');
+    doc.text(30, CUSTOMER_OFFSET + 55, 'Shipping: ');
     doc.setFontType('normal');
-    doc.text(90, 245, customerInfo.name);
-    doc.text(90, 275, customerInfo.shippingAddress);
+    doc.text(90, CUSTOMER_OFFSET + 25, customerInfo.name);
+
+    if (customerInfo.shippingAddress.length < 100) {
+      doc.text(90, CUSTOMER_OFFSET + 55, customerInfo.shippingAddress);
+    } else {
+      doc.text(90, CUSTOMER_OFFSET + 55, customerInfo.shippingAddress.substring(0,99) + '-');
+      doc.text(90, CUSTOMER_OFFSET + 70, customerInfo.shippingAddress.substring(99));
+    }
+
     doc.setDrawColor(35,50,55);
     doc.setLineWidth(2);
-    doc.line(30, 225, 590, 225);
-    doc.line(30, 345, 590, 345);
+    doc.line(30, CUSTOMER_OFFSET + 5, 590, CUSTOMER_OFFSET + 5);
+    doc.line(30, UNIT_OFFSET + 5, 590, UNIT_OFFSET + 5);
     doc.autoTable(columns, rows, {
         theme: 'striped',
         styles: {},
         columnStyles: {},
-        margin: {top: 360},
+        margin: {top: UNIT_OFFSET + 20},
         headerStyles: {
           fillColor: [220,220,220],
           textColor: 20
         }
     });
 
-    doc.text(30, 750, 'Prepared By:________________________________');
-    doc.text(300, 750, 'Received By:________________________________');
+    doc.setFontSize(8)
+    doc.text(30, FINE_PRINT_OFFSET, 'Our equipment loan program is provided as a courtesy because we understand the demands of the industry and how much our products are relied upon.');
+    doc.text(30, FINE_PRINT_OFFSET + 15, 'In exchange, we ask that you abide by the following policy:');
+    doc.text(40, FINE_PRINT_OFFSET + 35, '1. Loan equipment is pending availability for customers who immediately send in a unit for repair.');
+    doc.text(40, FINE_PRINT_OFFSET + 50, '2. Once your repair has been picked up, you will return the loaner within 1 week.  [One week is enough time for you to respond to our email, pay for any');
+    doc.text(40, FINE_PRINT_OFFSET + 65, '    repair charges, arrange shipping/pickup of the repaired unit and send back loaner].');
+    doc.text(40, FINE_PRINT_OFFSET + 80, '3. Our maximum repair turnaround time is 2 weeks so the maximum time for you to be in possession of the loaner is 3 weeks.');
+    doc.text(40, FINE_PRINT_OFFSET + 95, '4. Failure to follow this policy will lead to a loss of loan privileges for up to 1 year.  ');
+    doc.text(30, FINE_PRINT_OFFSET + 115, 'Please sign here to indicate you understand and will abide by the terms of this equipment loan:');
+    doc.setFontSize(12);
+    doc.text(30, FINE_PRINT_OFFSET + 160, 'Signature:______________________________________');
+    doc.text(360, FINE_PRINT_OFFSET + 160, 'Date:______________________');
+
     doc.save('loaner_receipt.pdf');
   }
 

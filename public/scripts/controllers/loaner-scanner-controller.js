@@ -94,7 +94,6 @@ barcodeApp.controller('LoanerScannerController', [
             var letters = barcode.substring(0,3);
             var numbers = Number(barcode.substring(3));
             // if item is stored in loaner database
-            console.log($scope.loaners[numbers])
             if($scope.loaners[numbers]){
               // create loaner in pending obj
               $scope.pendingLoaners[numbers] = deepObjCopy($scope.loaners[numbers]);
@@ -606,6 +605,15 @@ barcodeApp.controller('LoanerScannerController', [
     }
     if(custInfo.notes){
       singleLoaner.notes = custInfo.notes;
+    }
+  }
+
+  $scope.deleteFromDatabase = function(unit) {
+    var confirmDelete = window.confirm('Are you sure you want to delete this unit?');
+
+    if (confirmDelete) {
+      $scope.loanerInfo.child(unit.unitBarcode).remove();
+      delete $scope.pendingLoaners[unit.unitBarcode];
     }
   }
 

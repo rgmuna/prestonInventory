@@ -108,8 +108,9 @@
           <button class="submitButton blueButton" ng-click="submitToDatabase(unit, 'checkOut')" ng-show="unit.location==='checked out'">Update Info</button>
           <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkBackIn')" ng-show="unit.location==='checked out'">Check In</button>
           <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkIn')" ng-show="unit.status==='Needs QA'">Check In: QA'd</button>
-          <button class="submitButton" ng-click="removeItem(unit)" ng-show="unit.status==='Needs updates' || unit.status==='Needs updates & QA'">Close</button>
+          <button class="submitButton yellowButton" ng-click="removeItem(unit)" ng-show="unit.status==='Needs updates' || unit.status==='Needs updates & QA'">Close</button>
           <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkOut')" ng-show="unit.status==='Ready to loan'" ng-class="{'btnDisabled' : unit.customerInfo.name==='' || unit.customerInfo.email==='' || unit.customerInfo.phoneNum==='' }" ng-disabled="unit.customerInfo.name==='' || unit.customerInfo.email==='' || unit.customerInfo.phoneNum===''">Check Out</button>
+          <button class="submitButton" ng-if="adminLoggedIn && authenticated" ng-click="deleteFromDatabase(unit)"> DELETE </button>
         </div>
       </div>
     </div>
