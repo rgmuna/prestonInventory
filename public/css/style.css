@@ -919,16 +919,17 @@ tbody{
 .panel-heading{
   padding: 0px;
 }
-.results>.in.house{
+
+.readyToLoan{
   color: #33FF00;
   font-weight: 600;
 }
-.results>.checked.out{
+.checkedOut{
   color: red;
   font-weight: 600;
 
 }
-.results>.needs.QA{
+.needsQA{
   font-weight: 600;
   color: #CCFF00;
 }

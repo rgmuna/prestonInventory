@@ -56,7 +56,7 @@ barcodeApp.controller('LoanerListController', [
   $scope.saving = false;
   $scope.saved = false;
 
-  $scope.loanerStatuses = ['in house', 'needs QA', 'checked out'];
+  $scope.loanerStatuses = ['ready to loan', 'needs QA', 'checked out'];
 
   $scope.removeFilter = function(item, selection){
     if(item === "unitFilter"){
@@ -74,7 +74,7 @@ barcodeApp.controller('LoanerListController', [
   $scope.fixStatuses = function(){
     for(var item in $scope.loanerArray){
       if($scope.loanerArray[item].status === 'ready'){
-        $scope.loanerArray[item].status = 'in house';
+        $scope.loanerArray[item].status = 'ready to loan';
       }
     }
   }
@@ -86,6 +86,20 @@ barcodeApp.controller('LoanerListController', [
     else if(type==='customer'){
       $scope.showUnitList = false;
     }
+  }
+
+  $scope.setStatusClass = function(status) {
+    var className = {};
+
+    if (status === 'ready to loan') {
+      className['readyToLoan'] = true;
+    } else if (status === 'needs QA') {
+      className['needsQA'] = true;
+    } else if (status === 'checked out') {
+      className['checkedOut'] = true;
+    }
+
+    return className;
   }
 
   $scope.createCustArray = function(){

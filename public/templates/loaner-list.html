@@ -97,7 +97,7 @@
                       <span class="tableUnit">{{value.unit}}</span> s/n <span class="tableUnit">{{value.serialNum}}</span>
                     </td>
                     <td class="text-center hidden-xs" style="width: 130px; border: none;"> PCS{{value.unitBarcode}} </td>
-                    <td class="text-center" style="width: 138px; border: none;" ng-class="value.status"> {{value.status}} </td>
+                    <td class="text-center" style="width: 138px; border: none;" ng-class="setStatusClass(value.status)"> {{value.status}} </td>
                     <td class="text-center hidden-xs" style="width: 112px; border: none;"> {{value.timestamp  | date:'shortDate'}} </td>
                     <td style="border: none;"> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i> </td>
                   </tr>
