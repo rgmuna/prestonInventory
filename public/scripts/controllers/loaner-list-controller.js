@@ -1,26 +1,16 @@
-barcodeApp.controller('LoanerListController', [
-  '$scope',
-  '$firebaseArray',
-  '$firebaseObject',
-  '$timeout',
-  '$http',
-  '$window',
-  '$filter',
-  'authService',
-  function ($scope, $firebaseArray, $firebaseObject, $timeout, $http, $window, $filter, authService) {
-
+barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$firebaseObject', '$timeout', '$http', '$window', '$filter', 'authService', function ($scope, $firebaseArray, $firebaseObject, $timeout, $http, $window, $filter, authService) {
   $scope.customerArray = ['reset'];
 
   //firebase loaner load
-  $scope.loanerInfo = firebase.database().ref().child('loaners');
-  $scope.loaners = $firebaseObject($scope.loanerInfo);
-  $scope.loanerArray = $firebaseArray($scope.loanerInfo);
+  $scope.loanerInfo   = firebase.database().ref().child('loaners');
+  $scope.loaners      = $firebaseObject($scope.loanerInfo);
+  $scope.loanerArray  = $firebaseArray($scope.loanerInfo);
 
   $scope.showUnitList = true;
 
   $scope.loaners.$loaded().then(function() {
     $scope.loaded = true;
-    $scope.fixStatuses();
+    fixStatuses();
     $scope.createCustArray();
     $scope.populateCustomers();
   });
@@ -47,18 +37,18 @@ barcodeApp.controller('LoanerListController', [
     'BM'
   ];
 
-  $scope.loanerSearch = '';
+  $scope.loanerSearch    = '';
   $scope.filterVariables = {
     unitType: '',
     status: ''
   }
   $scope.editing = false;
-  $scope.saving = false;
-  $scope.saved = false;
+  $scope.saving  = false;
+  $scope.saved   = false;
 
-  $scope.loanerStatuses = ['ready to loan', 'needs QA', 'checked out'];
+  $scope.loanerStatuses = ['ready to loan', 'needs QA', 'checked out', 'needs updates'];
 
-  $scope.removeFilter = function(item, selection){
+  $scope.removeFilter = function(item, selection) {
     if(item === "unitFilter"){
       if(!selection){
         $scope.filterVariables.unitType = "";
@@ -71,12 +61,83 @@ barcodeApp.controller('LoanerListController', [
     }
   }
 
-  $scope.fixStatuses = function(){
-    for(var item in $scope.loanerArray){
-      if($scope.loanerArray[item].status === 'ready'){
-        $scope.loanerArray[item].status = 'ready to loan';
+  var unitTypeForApi = function(unit) {
+    if(unit === 'FI'){
+      return 'F/I';
+    }
+    else if(unit === 'MDR3'){
+      return 'MDR-3';
+    }
+    else if(unit === 'MDR2'){
+      return 'MDR-2';
+    }
+    else if(unit === 'MDR4'){
+      return 'MDR-4';
+    }
+    else if(unit === 'LR2'){
+      return 'LR2';
+    }
+    else if(unit === 'VIU'){
+      return 'VI';
+    }
+    else if(unit === 'VF3'){
+      return 'VF3';
+    }
+    else if(unit === 'BM'){
+      return 'Updater';
+    }
+    else{
+      return unit;
+    }
+  }
+
+  var fixStatuses = function() {
+    for (var item in $scope.loanerArray) {
+      if (typeof $scope.loanerArray[item] !== 'object' && typeof item != 'number') {
+        continue;
+      }
+
+      var unitType  = $scope.loanerArray[item].unit;
+      var barcode   = $scope.loanerArray[item].unitBarcode;
+
+      if (unitType !== "DM2X" && unitType !== "DM2"  && unitType !== "DM1X" && unitType !== "DM4X" && unitType !== "DM5" && $scope.loanerArray[item].status === 'ready') {
+        var apiUnitType = unitTypeForApi(unitType);
+
+        setUnitStatus(item);
+      } else {
+        if ($scope.loanerArray[item].status === 'ready') {
+          $scope.loanerArray[item].status = 'ready to loan';
+        }
       }
     }
+  }
+
+  var setUnitStatus = function(item) {
+    var unitType    = $scope.loanerArray[item].unit;
+    var serialNum   = $scope.loanerArray[item].serialNum;
+    var apiUnitType = unitTypeForApi(unitType);
+
+    var request = $http({
+      method : 'GET',
+      url    : 'https://secure-ocean-3120.herokuapp.com/api/v1/products/search',
+      params : {
+        item   : apiUnitType,
+        serial : serialNum
+      }
+    });
+
+    request.then(function(response) {
+      var data = response.data;
+      if (response.data == null) {
+        return;
+      } else if (data.main_fw_latest && data.mods_latest && data.radio_fw_latest) {
+        $scope.loanerArray[item].status = 'ready to loan';
+      } else {
+        $scope.loanerArray[item].status = 'update';
+      }
+    });
+
+
   }
 
   $scope.listSelection = function(type){
@@ -97,18 +158,20 @@ barcodeApp.controller('LoanerListController', [
       className['needsQA'] = true;
     } else if (status === 'checked out') {
       className['checkedOut'] = true;
+    } else if (status === 'update') {
+      className['update'] = true;
     }
 
     return className;
   }
 
-  $scope.createCustArray = function(){
+  $scope.createCustArray = function() {
     //for each item in loaner array
-    for(var item in $scope.loanerArray){
+    for (var item in $scope.loanerArray) {
       //find units that are checked out
-      if($scope.loanerArray[item].status === 'checked out'){
+      if ($scope.loanerArray[item].status === 'checked out') {
         //if object is NOT already in customer array
-        if($scope.objNotInArray($scope.loanerArray[item].customerInfo, $scope.customerArray)){
+        if ($scope.objNotInArray($scope.loanerArray[item].customerInfo, $scope.customerArray)) {
           //add customer to customer array
           $scope.customerArray.push($scope.loanerArray[item].customerInfo);
         }
@@ -147,16 +210,16 @@ barcodeApp.controller('LoanerListController', [
           //if customer is in the customer obj
           if($scope.customerObj.hasOwnProperty(formatName)){
             $scope.customerObj[formatName].units[loanerItem.unitBarcode] =
-            { unitBarcode: loanerItem.unitBarcode,
-              firmware: loanerItem.firmware,
-              location: loanerItem.location,
-              mods: loanerItem.mods,
-              notes: loanerItem.notes,
-              radio: loanerItem.radio,
-              serialNum: loanerItem.serialNum,
-              status: loanerItem.status,
-              timeStamp: loanerItem.timeStamp,
-              unit: loanerItem.unit,
+            { unitBarcode : loanerItem.unitBarcode,
+              firmware    : loanerItem.firmware,
+              location    : loanerItem.location,
+              mods        : loanerItem.mods,
+              notes       : loanerItem.notes,
+              radio       : loanerItem.radio,
+              serialNum   : loanerItem.serialNum,
+              status      : loanerItem.status,
+              timeStamp   : loanerItem.timeStamp,
+              unit        : loanerItem.unit,
             };
             $scope.customerObj[formatName].numUnits++;
           }
@@ -166,17 +229,17 @@ barcodeApp.controller('LoanerListController', [
             //populate customer info
             $scope.customerObj[formatName].customerInfo = loanerItem.customerInfo;
             //populate units
-            $scope.customerObj[formatName].units[loanerItem.unitBarcode] =
-            { unitBarcode: loanerItem.unitBarcode,
-              firmware: loanerItem.firmware,
-              location: loanerItem.location,
-              mods: loanerItem.mods,
-              notes: loanerItem.notes,
-              radio: loanerItem.radio,
-              serialNum: loanerItem.serialNum,
-              status: loanerItem.status,
-              timeStamp: loanerItem.timestamp,
-              unit: loanerItem.unit,
+            $scope.customerObj[formatName].units[loanerItem.unitBarcode] = {
+              unitBarcode : loanerItem.unitBarcode,
+              firmware    : loanerItem.firmware,
+              location    : loanerItem.location,
+              mods        : loanerItem.mods,
+              notes       : loanerItem.notes,
+              radio       : loanerItem.radio,
+              serialNum   : loanerItem.serialNum,
+              status      : loanerItem.status,
+              timeStamp   : loanerItem.timestamp,
+              unit        : loanerItem.unit,
             };
           }
         }
@@ -188,31 +251,27 @@ barcodeApp.controller('LoanerListController', [
   $scope.editInfo = function(value, status){
     var oldValue = value.customerInfo;
 
-    if(status==='edit'){
+    if (status==='edit') {
       $scope.editValues = {
-        name: oldValue.name,
-        email: oldValue.email,
-        phoneNum: oldValue.phoneNum,
-        repairNum: oldValue.repairNum,
-        shippingAddress: oldValue.shippingAddress,
-        notes: oldValue.notes
+        name            : oldValue.name,
+        email           : oldValue.email,
+        phoneNum        : oldValue.phoneNum,
+        repairNum       : oldValue.repairNum,
+        shippingAddress : oldValue.shippingAddress,
+        notes           : oldValue.notes
       }
       $scope.editing = true;
-    }
-    else if(status==='cancel'){
+    } else if(status==='cancel') {
       $scope.editing = false;
-    }
-    else if (status==='save'){
-      $scope.saving = true;
+    } else if (status==='save') {
+      $scope.saving  = true;
       $scope.editing = false;
 
-      for(var i in  value.units){
+      for (var i in  value.units) {
         var barcode = value.units[i].unitBarcode;
         $scope.loanerInfo.child(barcode).child('customerInfo').set(
           $scope.editValues
-        )
-        .then(function(builds){
-
+        ).then(function(builds){
           value.customerInfo = $scope.editValues;
 
           $timeout(function(){
@@ -231,90 +290,84 @@ barcodeApp.controller('LoanerListController', [
     }
   }
 
-  $scope.getFirmware = function(unit, source){
-    var unitType = unit.unit;
-    var serialNum = unit.serialNum;
-    var barcode = unit.unitBarcode;
+  // $scope.getFirmware = function(unit, source) {
+  //   var unitType = unit.unit;
+  //   var serialNum = unit.serialNum;
+  //   var barcode = unit.unitBarcode;
+  //
+  //   if(source!=='checkInOut'){
+  //     var unitIndex = $scope.loanerArray.indexOf(unit);
+  //
+  //     $scope.loanerArray[unitIndex].firmware = 'pending';
+  //     $scope.loanerArray[unitIndex].mods     = 'pending';
+  //     $scope.loanerArray[unitIndex].radio    = 'pending';
+  //   }
+  //
+  //   //prepare unit type for api
+  //   if(unitType === 'FI'){
+  //     apiUnitType = 'F/I';
+  //   }
+  //   else if(unitType === 'MDR3'){
+  //     apiUnitType = 'MDR-3';
+  //   }
+  //   else if(unitType === 'MDR2'){
+  //     apiUnitType = 'MDR-2';
+  //   }
+  //   else if(unitType === 'MDR4'){
+  //     apiUnitType = 'MDR-4';
+  //   }
+  //   else if(unitType === 'LR2'){
+  //     apiUnitType = 'LR2';
+  //   }
+  //   else if(unitType === 'VIU'){
+  //     apiUnitType = 'VI';
+  //   }
+  //   else if(unitType === 'VF3'){
+  //     apiUnitType = 'VF3';
+  //   }
+  //   else if(unitType === 'BM'){
+  //     apiUnitType = 'Updater';
+  //   }
+  //   else{
+  //     apiUnitType = unitType;
+  //   }
+  //
+  //   // create URL for api call
+  //   var generatedUrl = "https://secure-ocean-3120.herokuapp.com/api/v1/products/search?item=" + apiUnitType + "&serial=" + serialNum;
+  //   $http.get(generatedUrl).then(function(response){
+  //     $scope.invApiResponse(unit, response);
+  //   });
+  // }
 
-    if(source!=='checkInOut'){
-      var unitIndex = $scope.loanerArray.indexOf(unit);
-
-      $scope.loanerArray[unitIndex].firmware = 'pending';
-      $scope.loanerArray[unitIndex].mods = 'pending';
-      $scope.loanerArray[unitIndex].radio = 'pending';
-    }
-
-    //prepare unit type for api
-    if(unitType === 'FI'){
-      apiUnitType = 'F/I';
-    }
-    else if(unitType === 'MDR3'){
-      apiUnitType = 'MDR-3';
-    }
-    else if(unitType === 'MDR2'){
-      apiUnitType = 'MDR-2';
-    }
-    else if(unitType === 'MDR4'){
-      apiUnitType = 'MDR-4';
-    }
-    else if(unitType === 'LR2'){
-      apiUnitType = 'LR2';
-    }
-    else if(unitType === 'VIU'){
-      apiUnitType = 'VI';
-    }
-    else if(unitType === 'VF3'){
-      apiUnitType = 'VF3';
-    }
-    else if(unitType === 'BM'){
-      apiUnitType = 'Updater';
-    }
-    else{
-      apiUnitType = unitType;
-    }
-
-    // create URL for api call
-    var generatedUrl = "https://secure-ocean-3120.herokuapp.com/api/v1/products/search?item=" + apiUnitType + "&serial=" + serialNum;
-    $http.get(generatedUrl)
-    .then(function(response){
-      $scope.invApiResponse(unit, response);
-    });
-  }
-
-  $scope.invApiResponse = function(unit, response){
-
-    //get index of unit in loaner array
+  var invApiResponse = function(unit, response) {
     var unitIndex = $scope.loanerArray.indexOf(unit);
 
     var unitType = $scope.loanerArray[unitIndex].unit;
 
-    if(response.data === null){
-      if(unitType === 'DM1X' || unitType === 'DM2X' || unitType === 'DM2' || unitType === 'DM5' || unitType === 'DM4' || unitType === 'DM4X'){
-      }
-      else{
+    if (response.data === null) {
+      if (unitType === 'DM1X' || unitType === 'DM2X' || unitType === 'DM2' || unitType === 'DM5' || unitType === 'DM4' || unitType === 'DM4X') {
+      } else {
         alert("Unit not in internal database. Enter into database then redo check in of unit.");
       }
+
       $scope.loanerArray[unitIndex].firmware = 'NA';
-      $scope.loanerArray[unitIndex].mods = 'NA';
-      $scope.loanerArray[unitIndex].radio = 'NA';
-    }
-    else{
-      var noRadio = ["LR2", "DMF3", "DMF2", "BM"];
-      var all = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC"];
+      $scope.loanerArray[unitIndex].mods     = 'NA';
+      $scope.loanerArray[unitIndex].radio    = 'NA';
+    } else {
+      var noRadio  = ["LR2", "DMF3", "DMF2", "BM"];
+      var all      = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC"];
       var hasRadio = (all.indexOf(unitType)!==-1);
 
-      if(!hasRadio){
+      if (!hasRadio) {
         $scope.loanerArray[unitIndex].radio = "NA";
         hasRadio = false;
-      }
-      //else if unit does have a radio
-      else{
+      } else {
         $scope.loanerArray[unitIndex].radio = response.data.radio_fw_latest ? response.data.radio_fw_latest : false;
         hasRadio = $scope.loanerArray[unitIndex].radio;
       }
-      //update firmware and mods info for unit
+
       $scope.loanerArray[unitIndex].firmware = response.data.main_fw_latest ? response.data.main_fw_latest : false;
-      $scope.loanerArray[unitIndex].mods = response.data.mods_latest ? response.data.mods_latest : false;
+      $scope.loanerArray[unitIndex].mods     = response.data.mods_latest ? response.data.mods_latest       : false;
     }
   };
 

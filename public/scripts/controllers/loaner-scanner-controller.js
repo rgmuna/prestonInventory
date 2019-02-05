@@ -460,9 +460,9 @@ barcodeApp.controller('LoanerScannerController', [
     // create URL for api call
     var generatedUrl = "https://secure-ocean-3120.herokuapp.com/api/v1/products/search?item=" + apiUnitType + "&serial=" + serialNum;
     $http.get(generatedUrl)
-    .then(function(response){
+    .then(function(response) {
       //if getting API info for the check in/out page
-      if(source==='checkInOut'){
+      if (source==='checkInOut') {
         $scope.checkApiResponse(unit, response);
       }
       //if getting API info for the inventory page
@@ -475,51 +475,40 @@ barcodeApp.controller('LoanerScannerController', [
   $scope.checkApiResponse = function(unit, response){
 
     var unitType = unit.unit;
-    //if response is a motor, don't display FW
+
     if(response.data == null){
       alert("Unit not in internal database. Enter into database then redo check in of unit.");
       delete $scope.pendingLoaners[unit.unitBarcode];
-    }
-    else{
-      var noRadio = ["LR2", "DMF3", "DMF2", "BM"];
-      var all = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC"];
-      var hasRadio = (all.indexOf(unitType)!==-1);
+    } else {
+      var noRadio   = ["LR2", "DMF3", "DMF2", "BM"];
+      var withRadio = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC"];
+      var hasRadio  = (withRadio.indexOf(unitType)!==-1);
 
-      //if unit doesn't have a radio
-      if(!hasRadio){
+      if (!hasRadio) {
         $scope.pendingLoaners[unit.unitBarcode].radio = "NA";
-        hasRadio = false;
+      } else {
+        $scope.pendingLoaners[unit.unitBarcode].radio = response.data.radio_fw_latest;
       }
-      //else if unit does have a radio
-      else{
-        $scope.pendingLoaners[unit.unitBarcode].radio = response.data.radio_fw_latest ? response.data.radio_fw_latest : false;
-        hasRadio = $scope.pendingLoaners[unit.unitBarcode].radio;
-      }
-      //update firmware and mods info for unit
-      $scope.pendingLoaners[unit.unitBarcode].firmware = response.data.main_fw_latest ? response.data.main_fw_latest : false;
-      $scope.pendingLoaners[unit.unitBarcode].mods = response.data.mods_latest ? response.data.mods_latest : false;
+
+      $scope.pendingLoaners[unit.unitBarcode].firmware = response.data.main_fw_latest;
+      $scope.pendingLoaners[unit.unitBarcode].mods     = response.data.mods_latest;
       $scope.setStatus(unit, hasRadio);
     }
   };
 
 
-// status: 'checked out' | 'needs QA' | 'ready'
+// status: 'checked out' | 'needs QA' | 'ready' | 'update'
   $scope.setStatus = function(unit, hasRadio){
     var unitStatus = unit.status;
     var updateStatus = "";
 
-    if(unitStatus === "ready"){
-      //if unit is a motor
-      if($scope.isMotor(unit.unit)){
+    if (unitStatus === "ready") {
+      if ($scope.isMotor(unit.unit)){
         $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
-      }
-      //if unit has a radio and is up to date or doesn't have a radio
-      else if(((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods){
+      } else if(((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods){
         $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
-      }
-      else{
+      } else{
         $scope.pendingLoaners[unit.unitBarcode].status = "Needs updates";
-        // console.log()
       }
     }
     else if (unitStatus === 'needs QA'){

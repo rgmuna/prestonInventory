@@ -934,6 +934,11 @@ tbody{
   color: #CCFF00;
 }
 
+.update {
+  font-weight: 600;
+  color: white;
+}
+
 .customAccStyles{
   background: black;
   border: 1px solid #FF6600;

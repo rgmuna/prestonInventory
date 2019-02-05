@@ -259,7 +259,7 @@ barcodeApp.controller('InventoryScannerController', [
 
       if(unitTrue && serialLabelTrue && checkNums){
         if(src != 'invChecker') {
-          $scope.getFirmware(unitType, parsedItem[2]);
+          getFirmware(unitType, parsedItem[2]);
         }
         return true;
       }
@@ -284,7 +284,7 @@ barcodeApp.controller('InventoryScannerController', [
 
   //------------- Get firmware from API (units only)-------------
 
-  $scope.getFirmware = function(unitType, serialNum){
+  var getFirmware = function(unitType, serialNum){
     //prepare unit type for api
     if(unitType === 'FI'){
       apiUnitType = 'F/I';

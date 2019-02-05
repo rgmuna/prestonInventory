@@ -88,7 +88,7 @@
         </table>
 
         <uib-accordion>
-          <div uib-accordion-group class="customAccStyles" ng-click="getFirmware(value, 'loanerInv')" is-open="status.open" ng-repeat="value in loanerArray | orderBy:sortType:sortReverse | filter:loanerSearch  | filter:{status : filterVariables.status} | filter:{unit : filterVariables.unitType}">
+          <div uib-accordion-group class="customAccStyles" is-open="status.open" ng-repeat="value in loanerArray | orderBy:sortType:sortReverse | filter:loanerSearch  | filter:{status : filterVariables.status} | filter:{unit : filterVariables.unitType}">
             <uib-accordion-heading>
               <table class="table table-condensed" style="margin-bottom: 0px;">
                 <tbody>
@@ -113,9 +113,9 @@
               </div>
               <div ng-show="value.firmware !== 'pending'">
                 <span class="loanerInvResults" ng-show="value.firmware !== 'NA'">Firmware <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="value.firmware"></i> <i ng-if="!value.firmware" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i>&nbsp;&nbsp;</span>
-                <span class="loanerInvResults"  ng-show="value.radio !== 'NA'">Radio <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="value.radio"></i> <i ng-if="!value.radio" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i> &nbsp;&nbsp;</span>
-                <span class="loanerInvResults"  ng-show="value.mods !== 'NA'">Mods <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="value.mods"></i> <i ng-if="!value.mods" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i> &nbsp;&nbsp;</span>
-                <span class="loanerInvResults"  ng-show="value.firmware === 'NA' && value.radio === 'NA' && value.mods === 'NA'"> <i style="color: #CCFF00" class="fa fa-exclamation-triangle" aria-hidden="true"></i> NOT IN DATABASE <i style="color: #CCFF00" class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp;&nbsp;</span>
+                <span class="loanerInvResults" ng-show="value.radio !== 'NA'">Radio <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="value.radio"></i> <i ng-if="!value.radio" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i> &nbsp;&nbsp;</span>
+                <span class="loanerInvResults" ng-show="value.mods !== 'NA'">Mods <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="value.mods"></i> <i ng-if="!value.mods" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i> &nbsp;&nbsp;</span>
+                <span class="loanerInvResults" ng-show="value.firmware === 'NA' && value.radio === 'NA' && value.mods === 'NA'"> <i style="color: #CCFF00" class="fa fa-exclamation-triangle" aria-hidden="true"></i> NOT IN DATABASE <i style="color: #CCFF00" class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp;&nbsp;</span>
               </div>
             </div>
 
