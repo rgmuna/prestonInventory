@@ -102,7 +102,7 @@ barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$fir
       var unitType  = $scope.loanerArray[item].unit;
       var barcode   = $scope.loanerArray[item].unitBarcode;
 
-      if (unitType !== "DM2X" && unitType !== "DM2"  && unitType !== "DM1X" && unitType !== "DM4X" && unitType !== "DM5" && $scope.loanerArray[item].status === 'ready') {
+      if (unitType !== "DM2X" && unitType !== "DM2" && unitType !== "DM1X" && unitType !== "DM4X" && unitType !== "DM5" && unitType !== "LR2W" && $scope.loanerArray[item].status === 'ready') {
         var apiUnitType = unitTypeForApi(unitType);
 
         setUnitStatus(item);

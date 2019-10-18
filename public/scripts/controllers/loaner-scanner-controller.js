@@ -433,7 +433,7 @@ barcodeApp.controller('LoanerScannerController', [
     var unitStatus = unit.status;
 
     if (unitStatus === "ready") {
-      if ($scope.isMotor(unit.unit)){
+      if ($scope.isMotor(unit.unit) || unit.unit === "LR2W") {
         $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
       } else if(((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods){
         $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
