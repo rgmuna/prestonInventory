@@ -41,7 +41,9 @@ barcodeApp.controller('InventoryListController', [
     'DM1X',
     'DM2X',
     'DM5',
-    'BM'
+    'BM',
+    'HU4',
+    'LR2W'
   ];
 
 
@@ -134,25 +136,27 @@ barcodeApp.controller('InventoryListController', [
     }
   });
   //not including LR items due to weirdness of labels
-  $scope.unitList = ['fi', 'hu3', 'mdr3', 'mdr4', 'dmf3', 'rmf', 'vf3', 'dm1x', 'dm2x', 'dm5', 'bm'];
+  $scope.unitList = ['fi', 'hu3', 'mdr3', 'mdr4', 'dmf3', 'rmf', 'vf3', 'dm1x', 'dm2x', 'dm5', 'bm', 'lr2w'];
   $scope.displayUnitInfo = false;
 
   // make objects for each unit type
   $scope.loadTable = function(){
     //initialize variables
-    $scope.fiInv = [];
-    $scope.hu3Inv = [];
+    $scope.fiInv   = [];
+    $scope.hu3Inv  = [];
     $scope.mdr3Inv = [];
     $scope.mdr4Inv = [];
-    $scope.lrInv = [];
-    $scope.vouInv = [];
+    $scope.lrInv   = [];
+    $scope.vouInv  = [];
     $scope.dmf3Inv = [];
-    $scope.rmfInv = [];
-    $scope.vf3Inv = [];
+    $scope.rmfInv  = [];
+    $scope.vf3Inv  = [];
     $scope.dm1xInv = [];
     $scope.dm2xInv = [];
-    $scope.dm5Inv = [];
-    $scope.bmInv = [];
+    $scope.dm5Inv  = [];
+    $scope.bmInv   = [];
+    $scope.lr2wInv = [];
+    $scope.hu4     = [];
 
     $scope.allUnits = {
       fi: {
@@ -219,6 +223,16 @@ barcodeApp.controller('InventoryListController', [
         onShelf : 0,
         outOther: 0,
         outPurchase: 0
+      },
+      lr2w: {
+        onShelf : 0,
+        outOther: 0,
+        outPurchase: 0
+      },
+      hu4: {
+        onShelf : 0,
+        outOther: 0,
+        outPurchase: 0
       }
     }
 
@@ -245,8 +259,9 @@ barcodeApp.controller('InventoryListController', [
       }
 
       //for LR units, do the same as above
-      else if($scope.barcodedUnits[i].unit === 'lr2'){
+      else if ($scope.barcodedUnits[i].unit === 'lr2') {
         var parsedItem = $scope.barcodedUnits[i].barcode.split(" ");
+
         if(parsedItem[2][0] === 'L'){
           //add unit to the correct unit array
           $scope.lrInv.push($scope.barcodedUnits[i]);
@@ -261,7 +276,7 @@ barcodeApp.controller('InventoryListController', [
             $scope.allUnits.lr.onShelf += 1;
           }
         }
-        else if(parsedItem[2][0] === 'V'){
+        else if (parsedItem[2][0] === 'V') {
           //add unit to the correct unit array
           $scope.vouInv.push($scope.barcodedUnits[i]);
           //next, update allUnits object with appropriate numbers
@@ -342,20 +357,20 @@ barcodeApp.controller('InventoryListController', [
   $scope.categorySort = function(unitType) {
     return function(unit) {
       var barcode = unit.barcode;
-      if(unitType === "LR2 Sensor"){
+      if (unitType === "LR2 Sensor") {
         if(barcode.includes("s/n LR")){
           return unit;
         }
       }
-      else if(unitType === "LR2 VIU"){
-        if(barcode.includes("s/n VOU")){
+      else if (unitType === "LR2 VIU") {
+        if (barcode.includes("s/n VOU")) {
           return unit;
         }
       }
-      else if(barcode.includes(unitType)){
+      else if (barcode.includes(unitType)) {
         return unit;
       }
-      else{
+      else {
         return false;
       }
     }

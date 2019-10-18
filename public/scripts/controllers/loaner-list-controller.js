@@ -34,7 +34,9 @@ barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$fir
     'DM4X',
     'DM2',
     'VLC',
-    'BM'
+    'BM',
+    'LR2W',
+    'HU4'
   ];
 
   $scope.loanerSearch    = '';
