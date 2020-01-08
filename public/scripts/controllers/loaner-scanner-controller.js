@@ -75,6 +75,7 @@ barcodeApp.controller('LoanerScannerController', [
     'VLC',
     'BM',
     'LR2W',
+    'LR2M',
     'HU4'
   ];
 
@@ -103,7 +104,7 @@ barcodeApp.controller('LoanerScannerController', [
                 // create loaner in pending obj
                 $scope.pendingLoaners[numbers] = deepObjCopy($scope.loaners[numbers]);
                 //if unit is motor, hide fw stuff
-                if ($scope.isMotor($scope.pendingLoaners[numbers].unit) || $scope.pendingLoaners[numbers].unit==='LR2W') { //roq - remove after matt updates firmware
+                if ($scope.isMotor($scope.pendingLoaners[numbers].unit) || $scope.pendingLoaners[numbers].unit === 'LR2W' || $scope.pendingLoaners[numbers].unit === 'LR2M') { //roq - remove after matt updates firmware
                   $scope.pendingLoaners[numbers].firmware = "NA";
                   $scope.pendingLoaners[numbers].radio    = "NA";
                   $scope.pendingLoaners[numbers].mods     = "NA";
@@ -269,7 +270,7 @@ barcodeApp.controller('LoanerScannerController', [
 
   //serial number check
   $scope.checkSerialNum = function(item, serial) {
-    var shortBarcode = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'DM2', 'DM4X', 'MDR2', 'BM', 'HU4', 'LR2W'];
+    var shortBarcode = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'DM2', 'DM4X', 'MDR2', 'BM', 'HU4', 'LR2W', 'LR2M'];
     //if the item is one of the short barcode items
     if (shortBarcode.indexOf(item) >= 0) {
       if (!isNaN(serial) && (serial.length === 4) && (item != 'DM5')) {
@@ -410,7 +411,7 @@ barcodeApp.controller('LoanerScannerController', [
       alert("Unit not in internal database. Enter into database then redo check in of unit.");
       delete $scope.pendingLoaners[unit.unitBarcode];
     } else {
-      var noRadio   = ["LR2", "DMF3", "DMF2", "BM", "LR2W"];
+      var noRadio   = ["LR2", "DMF3", "DMF2", "BM", "LR2W", "LR2M"];
       var withRadio = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC", "HU4"];
       var hasRadio  = (withRadio.indexOf(unitType)!==-1);
 
@@ -433,7 +434,7 @@ barcodeApp.controller('LoanerScannerController', [
     var unitStatus = unit.status;
 
     if (unitStatus === "ready") {
-      if ($scope.isMotor(unit.unit) || unit.unit === "LR2W") {
+      if ($scope.isMotor(unit.unit) || unit.unit === "LR2W" || unit.unit === "LR2M") {
         $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
       } else if(((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods){
         $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";

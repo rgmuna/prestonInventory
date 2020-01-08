@@ -31,6 +31,7 @@ barcodeApp.controller('GenerateBarcodeController', ['$scope', '$window', functio
       'LR2 Sensor',
       'LR2 VIU',
       'LR2W',
+      'LR2M',
       'HU4',
       'DMF3',
       'RMF',
@@ -101,7 +102,7 @@ barcodeApp.controller('GenerateBarcodeController', ['$scope', '$window', functio
 
     //checks that inputted serial number is correctly formatted -------
     var checkSerialNum = function(item, serial){
-      var shortBarcode     = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'BM', 'HU4', 'LR2W'];
+      var shortBarcode     = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'BM', 'HU4', 'LR2W', 'LR2M'];
       var accessoryOptions = ['A-Mount', 'A-Other', 'A-Gear', 'A-LR2'];
 
       //if the item is one of the short barcode items

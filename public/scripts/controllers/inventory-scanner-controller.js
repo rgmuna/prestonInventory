@@ -131,7 +131,7 @@ barcodeApp.controller('InventoryScannerController', [
   //------------- Unit Authentication -------------
 
   $scope.checkSerialNum = function(item, serial) {
-    var shortBarcode = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'BM', 'HU4', 'LR2W'];
+    var shortBarcode = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'BM', 'HU4', 'LR2W', 'LR2M'];
     //if the item is one of the short barcode items
     if(shortBarcode.indexOf(item) >= 0) {
       if(!isNaN(serial) && (serial.length === 4) && (item != 'DM5')) {
@@ -243,7 +243,7 @@ barcodeApp.controller('InventoryScannerController', [
 
     //product
     else if (parsedItem.length === 3) {
-      var barcodeLetters = ['FI', 'HU3', 'MDR3', 'MDR4', 'LR2', 'DMF3', 'RMF', 'VF3', 'DM1X', 'DM2X', 'DM5', 'BM', 'LR2W', 'HU4'];
+      var barcodeLetters = ['FI', 'HU3', 'MDR3', 'MDR4', 'LR2', 'DMF3', 'RMF', 'VF3', 'DM1X', 'DM2X', 'DM5', 'BM', 'LR2W', 'HU4', 'LR2M'];
       var unitType = parsedItem[0];
       var unitTrue = barcodeLetters.indexOf(unitType)>=0;
       var serialLabelTrue = (parsedItem[1] === 's/n');
@@ -310,6 +310,9 @@ barcodeApp.controller('InventoryScannerController', [
     else if (unitType === 'LR2W') {
       apiUnitType = 'LR2W';
     }
+    else if (unitType === 'LR2M') {
+      apiUnitType = 'LR2M';
+    }
     else{
       apiUnitType = unitType;
     }
@@ -326,19 +329,15 @@ barcodeApp.controller('InventoryScannerController', [
     var pendingBarcodeName = $scope.simplifyKey(constructedName);
 
     $http.get(generatedUrl).then(function(response) {
-      //if response is a motor, don't display FW
+      //if item isn't in preston database (i.e. hasn't been QA'd)
       if(response.data == null) {
         alert("not in database")
-      }
-
-      else if(response.data.item === 'DM1X' || response.data.item === 'DM2X' || response.data.item === 'DM5') {
+      } else if (response.data.item === 'DM1X' || response.data.item === 'DM2X' || response.data.item === 'DM5') {
         var constructedName = unitType + ' s/n ' + serialNum;
         var pendingBarcodeName = $scope.simplifyKey(constructedName);
         $scope.pendingBarcodes[pendingBarcodeName].notMotor = false;
         $scope.pendingBarcodes[pendingBarcodeName].notes = response.data.notes;
-      }
-
-      else{
+      } else {
         if(unitType === 'LR2 Sensor' || unitType === 'LR2 VIU') {
           var constructedName = 'LR2 s/n ' + serialNum;
         }
