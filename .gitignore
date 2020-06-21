@@ -2,3 +2,4 @@ node_modules
 functions/node_modules
 public/node_modules
 .firebase/
+public/stylesheets
