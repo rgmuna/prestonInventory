@@ -3,9 +3,9 @@ const sass                 = require('gulp-sass');
 const connect              = require('gulp-connect');
 
 function generateCSS(cb) {
-  src('./sass/*.scss')
+  src('./stylesheets/sass/*.scss')
       .pipe(sass().on('error', sass.logError))
-      .pipe(dest('stylesheets'));
+      .pipe(dest('stylesheets/css'));
   cb();
 }
 
@@ -15,11 +15,9 @@ function generateCSS(cb) {
 
 function connectServer(cb) {
   connect.server();
-
-  watch('sass/**.scss', generateCSS).on('change', connect.reload);
-  watch("templates/**.html").on('change', connect.reload);
+  watch('stylesheets/sass/**.scss', generateCSS);
 }
 
-// exports.css = generateCSS;
+exports.css = generateCSS;
 // exports.watch = watchFiles;
 exports.default = connectServer;
