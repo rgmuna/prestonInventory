@@ -1,22 +1,25 @@
-// var gulp = require('gulp');
-// var webserver = require('gulp-webserver');
-//
-// gulp.task('webserver', function() {
-//   gulp.src('./')
-//     .pipe(webserver({
-//       fallback:   'index.html',
-//       livereload: true,
-//       directoryListing: {
-//         enable: true,
-//         path: 'app'
-//       },
-//       open: true
-//     }));
-// });
-//
-// // gulp.task('watch', function(){
-// //   gulp.watch('./scripts/*.js', ['webserver']);
-// //   gulp.watch('./templates/*.html', ['webserver']);
-// // });
-//
-// gulp.task('default', ['webserver']);
+const { src, dest, watch } = require("gulp");
+const sass                 = require('gulp-sass');
+const connect              = require('gulp-connect');
+
+function generateCSS(cb) {
+  src('./sass/*.scss')
+      .pipe(sass().on('error', sass.logError))
+      .pipe(dest('stylesheets'));
+  cb();
+}
+
+// function watchFiles(cb) {
+//   watch('sass/**.scss', generateCSS);
+// }
+
+function connectServer(cb) {
+  connect.server();
+
+  watch('sass/**.scss', generateCSS).on('change', connect.reload);
+  watch("templates/**.html").on('change', connect.reload);
+}
+
+// exports.css = generateCSS;
+// exports.watch = watchFiles;
+exports.default = connectServer;

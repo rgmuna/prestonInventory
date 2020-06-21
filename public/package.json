@@ -8,7 +8,9 @@
     "angular-barcode": "^2.0.1"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
+    "gulp": "4.0.2",
+    "gulp-connect": "^5.7.0",
+    "gulp-sass": "^4.1.0",
     "gulp-webserver": "^0.9.1"
   },
   "scripts": {
