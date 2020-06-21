@@ -1,3 +1,1234 @@
-body {
-  font: 100% Helvetica, sans-serif;
-  color: #333333; }
+*{
+  font-family: 'Rajdhani', sans-serif;
+}
+
+
+body{
+  background-image: url(../assets/hexabump.png)
+}
+
+#inventoryNav.activeState{
+  font-weight: 600;
+}
+#checkNav.activeState{
+  font-weight: 600;
+}
+#generateNav.activeState{
+  font-weight: 600;
+}
+#loanerInv.activeState{
+  font-weight: 600;
+}
+#loanerCheck.activeState{
+  font-weight: 600;
+}
+
+li>:after {
+	content: '';
+	display: block;
+	margin: auto;
+	height: 3px;
+	width: 0px;
+	background: transparent;
+	transition: width .5s ease, background-color .5s ease;
+}
+li>#inventoryNav.activeState:after {
+	width: 100%;
+	background: #FF00CC;
+}
+li>#checkNav.activeState:after {
+	width: 100%;
+	background: #00FFFF;
+}
+li>#generateNav.activeState:after {
+	width: 100%;
+	background: #33ff00;
+}
+li>#loanerInv.activeState:after {
+	width: 100%;
+	background: #FF6600;
+}
+li>#loanerCheck.activeState:after {
+	width: 100%;
+	background: #F3F315;
+}
+
+.navbar{
+  background-color: #202020;
+  border-radius: 0px;
+  height: 53px;
+}
+
+.navbar-default{
+  border: none;
+}
+.navbar-default .navbar-collapse{
+  border: none;
+  background-color: black;
+}
+
+.navbar-default .navbar-nav>li>a#inventoryNav{
+  background-color: transparent;
+  color: #FF00CC;
+}
+.navbar-default .navbar-nav>li>a#inventoryNav:focus{
+  background-color: transparent;
+  color: #FF00CC !important;
+}
+.navbar-default .navbar-nav>li>a#checkNav{
+  background-color: transparent;
+  color: #00FFFF;
+}
+.navbar-default .navbar-nav>li>a#checkNav:focus{
+  background-color: transparent;
+  color: #00FFFF !important;
+}
+.navbar-default .navbar-nav>li>a#generateNav{
+  background-color: transparent;
+  color: #33ff00;
+}
+.navbar-default .navbar-nav>li>a#generateNav:focus{
+  background-color: transparent;
+  color: #33ff00 !important;
+}
+.navbar-default .navbar-nav>li>a#loanerInv{
+  background-color: transparent;
+  color: #FF6600;
+}
+.navbar-default .navbar-nav>li>a#loanerInv:focus{
+  background-color: transparent;
+  color: #FF6600 !important;
+}
+.navbar-default .navbar-nav>li>a#loanerCheck{
+  background-color: transparent;
+  color: #F3F315;
+}
+.navbar-default .navbar-nav>li>a#loanerCheck:focus{
+  background-color: transparent;
+  color: #F3F315 !important;
+}
+
+.title-container{
+  z-index: -1;
+}
+
+#checkInOut.container{
+  max-width: 600px;
+}
+
+.title{
+  font-weight: 600;
+  text-align: center;
+  margin: 50px 0px;
+  font-family: 'Rajdhani', sans-serif !important;
+}
+
+
+.table-container{
+  max-width: 600px;
+}
+
+.barcode-graphic{
+  font-weight: 400;
+  font-size: 80px;
+  color: #33ff00;
+  height: 70px;
+  margin: 30px 0px 0px 0px;
+}
+
+.entry-container{
+  border: 1px #33FF00 solid;
+  padding: 20px;
+  color: #33FF00;
+  background-color: #202020;
+  /*z-index: -1;*/
+}
+.tab-title{
+  color: #33ff00;
+  font-weight: 500;
+  font-size: 60px;
+  margin: 50px 0px 20px 0px;
+}
+.subtitle{
+  color: #33FF00;
+}
+
+.cableNumEntry {
+  background-color: black;
+  height: 40px;
+  font-size: 30px;
+  width: 100px;
+  border-radius: 10px;
+  text-align: center;
+  border-color: #33FF00;
+}
+
+.cableNumEntry:focus{
+  outline: none;
+}
+
+.numEntry{
+  letter-spacing: 2px;
+  background-color: black;
+  font-size: 40px;
+  font-weight: 500;
+  color: #33FF00;
+  text-align: center;
+  width: 180px;
+  height: 63px;
+  display: inline-block;
+
+}
+.prodEntry{
+  background-color: black;
+  font-size: 30px;
+  font-weight: 500;
+  color: #33FF00;
+  text-align: center;
+  width: 180px;
+  height: 63px;
+}
+
+.addEntry{
+  font-size: 30px;
+  color: #33FF00;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.addEntry:hover{
+  color: white;
+  text-decoration: none;
+}
+
+
+
+.enteredItems{
+  color: #33FF00;
+  text-align: center;
+  background-color: black;
+  font-size: 18px;
+}
+.removeButton{
+  background-color: #33FF00;
+  color: black;
+  border: 1px solid black;
+  font-weight: 600;
+}
+
+.removeAll{
+  color: #fff000;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.removeButton:hover{
+  background-color: #FF0000;
+}
+
+.noBars{
+  padding: 30px;
+  border: 3px solid gray;
+  font-size: 30px;
+  background-color: lightgray;
+  color: gray;
+  border-radius: 5px;
+  margin: 20px;
+}
+.noBars:hover{
+  text-decoration: none;
+  color: gray;
+}
+.noBars:focus{
+  text-decoration: none;
+  color: gray;
+}
+.generateBars{
+  padding: 30px;
+  border: 3px solid #33FF00;
+  font-size: 30px;
+  background-color: black;
+  color: #33FF00;
+  border-radius: 5px;
+  margin: 20px;
+}
+.generateBars:hover{
+  background-color: #FF0000;
+  color: white;
+  border: 3px solid #AE0000;
+  text-decoration: none;
+}
+.generateBars:focus{
+  text-decoration: none;
+  color: #33ff00;
+}
+.btn-container{
+  height: 150px;
+  margin-top: 100px;
+}
+
+/*=========================================Login items=======================================*/
+
+.login-control {
+  color: white;
+}
+
+.login-control a{
+  cursor: pointer;
+  color: white;
+}
+
+/*loading animation*/
+.loginLoading{
+  position: absolute;
+  right: 0px;
+  color: white;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: .15em solid white; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 10px; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: .15em; /* Adjust as needed */
+  animation:
+    authTyping 2s steps(40, end) infinite,
+    blink-caret .75s step-end infinite;
+}
+
+/*=========================================second tab items=======================================*/
+.stockButtons button{
+  font-size: 20px;
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  font-weight: 600;
+  padding: 5px 15px;
+}
+
+.listHeaders{
+  margin-top: 30px;
+  color: #00ffff;
+  font-size: 18px;
+}
+.checkTitle{
+  color: #00FFFF;
+  font-weight: 300;
+  font-size: 60px;
+  margin-top: 50px;
+}
+.checkSubTitle{
+  color: #00FFFF;
+  font-size: 20px;
+  font-weight: 300;
+}
+
+.loginButton{
+  font-style: italic;
+  color: #00FFFF;
+}
+
+/*loading animation*/
+.loading{
+  color: #00FFFF;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: .15em solid #00FFFF; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: .15em; /* Adjust as needed */
+  animation:
+    typing 3s steps(40, end) infinite,
+    blink-caret .75s step-end infinite;
+}
+
+.barcode-input{
+  font-size: 35px;
+  color: #00FFFF;
+  background-color: black;
+  border: 1px solid #00FFFF;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 300px;
+}
+.barcode-input:focus{
+  outline-width: 0;
+}
+
+.unit-container{
+  margin-bottom: 30px;
+  border: 3px #00ffff solid;
+  background-color: black;
+  border-radius: 5px;
+  box-shadow: 0 8px 16px 0 rgba(0, 255, 255, .5), 0 6px 20px 0 rgba(0,0,0,0.19);
+
+}
+
+.pendingItems{
+  color: #00FFFF;
+  font-size: 27px;
+  border-bottom: 1px solid gray;
+
+}
+.pendingCode{
+  text-align: center;
+  font-weight: 600;
+  color: white;
+}
+.pendingStatus{
+  text-align: center;
+}
+.checkBarcodeSubtitles{
+  color: #00FFFF;
+}
+
+.unitNotes{
+  font-size: 18px;
+  color: white;
+  text-align: left;
+}
+
+.checkInBtn{
+  background-color: #33FF00;
+  width: 137px;
+  font-weight: 600;
+  font-size: 27px;
+  border-radius: 20px;
+  margin-top: 14px;
+}
+
+.no-padding{
+  padding: 0px;
+}
+.removeTest{
+  float: right;
+  z-index: 3;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  color: red;
+  cursor: pointer;
+}
+
+.checkOutOptions{
+  font-weight: 600;
+  font-size: 24px;
+  border-radius: 20px;
+  margin: 5px 0px;
+  width: 130px;
+  background-color: #FFFF00;
+}
+
+.bottomContainer{
+  height: 72px;
+
+}
+.test{
+padding-top: 26px;
+}
+
+.checkOutTitle{
+  text-align: center;
+  font-size: 15px;
+  color: white;
+}
+
+/*color options for different statuses*/
+.shelf {
+  color: #33FF00;
+}
+.other{
+  color: #E6FB04;
+}
+.purchase {
+  color: #0062FF;
+}
+.unchecked{
+  color: #FF0099;
+}
+
+.Checked.In{
+  background-color:  #33FF00;
+  color: black;
+}
+
+.Checked.Out{
+  background-color: #FF0099;
+  color: black;
+}
+
+.Saved{
+  background-color: #33FF00;
+  color: black;
+}
+
+.adminButtons button {
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+button:focus {
+  outline: none;
+}
+
+/*=========================================third tab items=======================================*/
+.invTitle{
+  color: #ff00cc;
+  font-weight: 300;
+  font-size: 35px;
+  margin-top: 50px;
+  outline: none;
+}
+
+.invTitle.active{
+  color: black;
+  background-color: #ff00cc;
+  border-radius: 5px;
+}
+
+.invTitle button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+
+}
+
+.invSubtitle{
+  color: #ff00cc;
+  font-weight: 300;
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.invLoading{
+  color: #ff00cc;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+ border-right: .15em solid #ff00cc; /* The typwriter cursor */
+ white-space: nowrap; /* Keeps the content on a single line */
+ margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+ letter-spacing: .15em; /* Adjust as needed */
+ animation:
+   typing 3s steps(40, end) infinite,
+   blink-caret .75s step-end infinite;
+}
+
+.tableBorder{
+  border: 1px solid #ff00cc;
+}
+
+.table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
+  border: 1px solid #ff00cc;
+}
+
+.tableHead{
+  background-color: #ff00cc;
+}
+
+tbody{
+  background-color: black;
+  color: #ff00cc;
+}
+
+.resTableBorder{
+  border: 1px solid #ff00cc;
+}
+
+.resTable-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
+  border: 1px solid #ff00cc;
+}
+
+.resTableHead{
+  background-color: transparent;
+}
+.resTableHead a{
+  color: white;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.resultsSubtitle{
+  color: #FF00CC;
+}
+
+.results{
+  font-size: 20px;
+  color: #FF00CC;
+}
+
+.results a {
+  color: #FF00CC;
+}
+
+.results a:hover {
+  text-decoration: none;
+}
+
+.results a:focus {
+  text-decoration: none;
+}
+
+.tableItems{
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.onShelf {
+  color: #ff00cc;
+}
+.outOther{
+  color: #ff00cc;
+}
+.outPurchase {
+  color: #ff00cc;
+}
+
+.table-hover>tbody>tr.tableItems:hover{
+  background-color: #2F3C40;
+}
+.table-hover>tbody>tr.tableItems{
+  font-size: 30px;
+}
+
+.itemHeader{
+  font-size: 30px;
+  font-weight: 300;
+}
+
+.listSelector.inventorySelect{
+  color: #ff00cc;
+  margin-bottom: 30px;
+}
+
+.listSelector.inventorySelect.activeList{
+  border-bottom: 2px solid #ff00cc;
+}
+
+#inventoryCheck .barcode-input{
+  color: #ff00cc;
+  border: 1px solid #ff00cc;
+
+}
+
+.invCheckLabels{
+  text-align: left;
+  color: #ff00cc;
+  font-size: 30px;
+  border-bottom: 1px solid #ff00cc;
+  margin-top: 20px;
+}
+
+.found{
+  color: #00ff00;
+  transition: color 2s ease;
+  font-weight: 600;
+}
+.hideCheckbox{
+  background-color: red;
+}
+.hideContainer{
+  color: #ff00cc;
+}
+
+.resetButton{
+  border: 1px solid #ff00cc;
+  background-color: black;
+  color: #ff00cc;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+.resetButton:hover{
+  background-color: #ff00cc;
+  color: black;
+}
+
+.invSelect{
+  text-align: center;
+  font-size: 30px;
+  background-color: black;
+  border: 1px solid #ff00cc;
+  color: #ff00cc;
+  width: 250px;
+}
+
+.invFilterTitle{
+  color: #ff00cc;
+  font-size: 30px;
+}
+/*=========================================fifth tab items=======================================*/
+#loanerCheck .checkTitle{
+  color: #CCFF00;
+}
+#loanerCheck .checkSubTitle{
+  color: #CCFF00;
+}
+
+#loanerCheck .loginButton{
+  color: #CCFF00;
+}
+/*loading animation*/
+#loanerCheck .loginLoading{
+  color: #CCFF00;
+  border-right: .15em solid #CCFF00; /* The typwriter cursor */
+}
+
+/*loading animation*/
+#loanerCheck .loading{
+  color: #CCFF00;
+ border-right: .15em solid #CCFF00; /* The typwriter cursor */
+}
+
+#loanerCheck .barcode-input{
+  color: #CCFF00;
+  border: 1px solid #CCFF00;
+
+}
+
+.removeScanned{
+  color: red;
+  cursor: pointer;
+  margin-right: 6px;
+}
+
+.loanEntry{
+  font-size: 25px;
+  background-color: black;
+  max-width: 100px;
+  border: 1px solid #CCFF00;
+  text-align: center;
+  height: 30px;
+}
+
+.notesBox{
+  background-color: black;
+  color: #CCFF00;
+  width: 100%;
+  font-size: 20px;
+  border: 1px solid #CCFF00;
+}
+
+.loanSelect{
+  text-align: center;
+  font-size: 20px;
+  background-color: black;
+  border: 1px solid #CCFF00;
+}
+
+.loanerStyle{
+  background-color: black;
+  border: 2px solid #CCFF00;
+  color: #CCFF00;
+  font-size: 20px;
+  padding: 15px;
+  border-radius: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(204,	255,	0, .5);
+
+}
+
+.submittedStyle{
+  background-color: #00FF00;
+  border: 2px solid black;
+  color: black;
+  font-size: 30px;
+  padding: 5px;
+  border-radius: 20px;
+  margin-top: 20px;
+  font-weight: 600;
+}
+
+.submitButton{
+  color: black;
+  font-weight: 600;
+  margin: 20px 0px;
+  font-size: 20px;
+  background-color: red;
+  border-radius: 5px;
+}
+
+.loanerTitle{
+  font-weight: 600;
+  color: white;
+}
+
+.loanerToDate{
+  font-size: 20px;
+}
+
+.btnDisabled{
+  opacity: .5;
+}
+
+.greenButton{
+  background-color: #00ff00;
+}
+.blueButton{
+  background-color: #00ffff;
+}
+
+.yellowButton {
+  background-color: #CCFF00;
+}
+
+.statusTitle{
+  font-weight: 600;
+  font-size: 40px;
+}
+.loanReady{
+  color: #00ff00;
+}
+.loanWarning{
+  color: #FF6600;
+}
+.doNotLoan{
+  color: red;
+}
+
+.sectionTitle{
+  border-bottom: 2px solid white;
+  color: white;
+  font-size: 30px;
+  margin: 20px 0px;
+}
+
+.customerEntry{
+  font-size: 20px;
+  background-color: black;
+  /*max-width: 100px;*/
+  border: none;
+  border-bottom: 1px solid #CCFF00;
+  margin-bottom: 10px;
+}
+.customerEntry:focus{
+   outline-width: 0;
+}
+
+.addressEntry{
+  font-size: 20px;
+  background-color: black;
+  width: 100%;
+  border: 1px solid #CCFF00;
+  margin-bottom: 10px;
+  display: inline-block;
+  overflow-wrap: normal;
+  overflow-wrap: break-word;
+}
+.addressEntry:focus{
+   outline-width: 0;
+}
+
+.custInfoSelect{
+  float: right;
+  background-color: black;
+  font-size: 15px;
+}
+
+.custImportInfo{
+  float: right;
+  font-size: 15px;
+}
+
+/*-------------------------------loaner inventory------------------------*/
+
+#loanerInv .checkTitle{
+  color: #FF6600;
+}
+#loanerInv .checkSubTitle{
+  color: #FF6600;
+}
+
+#loanerInv .loginButton{
+  color: #FF6600;
+}
+/*loading animation*/
+#loanerInv .loginLoading{
+  color: #FF6600;
+  border-right: .15em solid #FF6600; /* The typwriter cursor */
+}
+
+/*loading animation*/
+#loanerInv .loading{
+  color: #FF6600;
+ border-right: .15em solid #FF6600; /* The typwriter cursor */
+}
+
+#loanerInv .barcode-input{
+  color: #FF6600;
+  border: 1px solid #FF6600;
+
+}
+
+.loanInvSelect{
+  text-align: center;
+  font-size: 30px;
+  background-color: black;
+  border: 1px solid #FF6600;
+  color: #FF6600;
+  width: 180px;
+}
+
+.filterTitle{
+  color: #FF6600;
+  font-size: 30px;
+}
+
+#loanerInv  .resultsSubtitle{
+  color: #FF6600;
+}
+
+#loanerInv .results{
+  font-size: 20px;
+  color: #FF6600;
+}
+
+.customAccStyles:hover{
+  border: 1px solid white;
+}
+
+.wholeSerial{
+  color: #FF6600;
+  cursor: pointer;
+}
+.wholeSerial:hover{
+  color: #A54200;
+  text-decoration: none;
+}
+
+.listSelector{
+  background-color: transparent;
+  border: none;
+  color: #ff6600;
+}
+
+.listSelector.activeList{
+  border-bottom: 2px solid #ff6600;
+}
+
+.listSelector:focus{
+  outline: none;
+}
+
+.panel-group .panel{
+  border-radius: 0px;
+}
+
+.tableUnit{
+  font-weight: 600;
+  font-size: 25px;
+}
+.panel-heading{
+  padding: 0px;
+}
+
+.readyToLoan{
+  color: #33FF00;
+  font-weight: 600;
+}
+.checkedOut{
+  color: red;
+  font-weight: 600;
+
+}
+.needsQA{
+  font-weight: 600;
+  color: #CCFF00;
+}
+
+.update {
+  font-weight: 600;
+  color: white;
+}
+
+.customAccStyles{
+  background: black;
+  border: 1px solid #FF6600;
+}
+
+ .customAccStyles a:focus{
+  text-decoration: none;
+}
+ .customAccStyles a:hover{
+  text-decoration: none;
+}
+
+.loanerInvResults{
+  font-size: 20px;
+  color: white;
+}
+
+.panel-group .panel-heading + .panel-collapse > .list-group, .panel-group .panel-heading + .panel-collapse > .panel-body{
+  border-top: none;
+}
+
+#unitChoice{
+  margin-right: 5px ;
+}
+
+#statusChoice{
+  margin-left: 20px;
+  margin-right: 5px;
+}
+
+.vis-hidden{
+   visibility: hidden;
+}
+
+.unitItems{
+  display: inline-block;
+}
+
+.custInfoInv{
+  color: white;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.custInfoCustSec{
+  color: white;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+.custInfoInvTitle{
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.customerResults{
+  color: white;
+  font-weight :300;
+}
+.customerResultsHeaders{
+  font-size: 15px;
+  font-weight: 300;
+  border-bottom: 1px solid white;
+  color: white;
+}
+.customerResultsHeaders > td{
+  border-top: none !important;
+}
+
+.custInfoButton{
+  border: none;
+  border-radius: 5px;
+  font-size: 20px;
+  width: 100px;
+  padding: 10px 0px;
+}
+
+
+.editInfo{
+  font-size: 15px;
+  text-align: left;
+  color: white;
+}
+
+.infoTitle{
+  width: 60px;
+  font-weight: bold;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.editContainer{
+  margin-bottom: 10px;
+}
+
+.inputStyle{
+  background-color: black;
+  border: 1px solid white;
+  display: inline-block;
+}
+
+/* keypad modal */
+.keypad {
+  margin: 10px auto;
+}
+
+.keypad tbody {
+  background-color: #00ffff;
+}
+
+.keypad td {
+    padding: 5px 2px;
+}
+
+.keypad button{
+  font-size: 30px;
+  color: white;
+  background-color: black;
+  padding: 15px 30px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px lightgray;
+}
+
+.keypad button:active {
+  background-color: black;
+  box-shadow: 0 2px #666;
+  transform: translateY(2px);
+}
+
+.modal-content {
+  background-color: transparent;
+}
+
+.keypad-modal {
+  background-color: #00ffff;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+.edit-unit {
+  background-color: white;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+
+.keypad .entryBtn {
+  font-size: 30px;
+  font-weight: 600;
+  color: white;
+  width: 150px;
+}
+
+.entryBtn#enter {
+  background-color: green;
+}
+
+.entryBtn#cancel {
+  background-color: red;
+}
+
+.numberEntry {
+  width: 250px;
+  padding: 10px 20px;
+  background-color: black;
+  color: white;
+  text-align: center;
+  margin: 0px auto;
+  font-size: 50px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 5px solid white;
+  height: 101px;
+}
+
+.newNumber {
+  font-weight: 600;
+  font-size: 50px;
+  color: #33ff00;
+}
+
+.edit-unit {
+  background-color: #fff;
+}
+
+.edit-unit > ul {
+  list-style: none;
+  padding: 0px;
+}
+
+.edit-unit > ul > li > button {
+  font-size: 20px;
+  padding: 10px;
+  width: 250px;
+  margin: 5px;
+  border-radius: 10px;
+  border: 1px solid gray;
+  background-color: lightcyan;
+  font-weight: 600;
+  color: black;
+}
+
+.edit-unit > ul > li > button.active{
+  background: cyan;
+  outline: none;
+}
+
+.edit-unit ul button:hover{
+  background-color: cyan;
+}
+
+.edit-unit button {
+  font-size: 20px;
+  padding: 10px;
+  width: 160px;
+  margin: 5px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  color: white;
+}
+
+.edit-unit button:focus {
+  outline: none;
+}
+
+.edit-unit #savebutton.enabled {
+  opacity: 1;
+}
+
+.edit-unit #savebutton{
+  background-color: green;
+  opacity: 0.5;
+}
+
+/*animations------------------------------------------------------------------*/
+
+/* The typing effect */
+@keyframes authTyping {
+  from { width: 0 }
+  to { width:23% }
+}
+@keyframes typing {
+  from { width: 0 }
+  to { width:10% }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: inherit; }
+}
+
+/*media queries---------------------------------------------------------------*/
+@media (min-device-width: 768px) {
+  .navbar-default .navbar-nav>li>a:hover {
+    color: white !important;
+  }
+}
+
+@media only screen and (max-device-width: 767px) {
+  .numEntry{
+    letter-spacing: 1px;
+    font-size: 30px;
+    width: 100%;
+    text-align: center;
+  }
+  .prodEntry{
+    font-size: 30px;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+  }
+
+  .generateBars{
+    padding: 10px;
+  }
+  .noBars{
+    padding: 10px;
+  }
+
+  /*li>.activeState:after {
+  	width: 0px !important;
+    background: transparent;
+    transition: none !important;
+  }*/
+}

@@ -4,8 +4,8 @@ const connect              = require('gulp-connect');
 
 function generateCSS(cb) {
   src('./stylesheets/sass/*.scss')
-      .pipe(sass().on('error', sass.logError))
-      .pipe(dest('stylesheets/css'));
+    .pipe(sass().on('error', sass.logError))
+    .pipe(dest('stylesheets/compiled'));
   cb();
 }
 
@@ -18,6 +18,6 @@ function connectServer(cb) {
   watch('stylesheets/sass/**.scss', generateCSS);
 }
 
-exports.css = generateCSS;
+// exports.css = generateCSS;
 // exports.watch = watchFiles;
 exports.default = connectServer;

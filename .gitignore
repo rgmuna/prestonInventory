@@ -3,3 +3,4 @@ functions/node_modules
 public/node_modules
 .firebase/
 public/stylesheets/compiled/style.css
+public/stylesheets/lib
