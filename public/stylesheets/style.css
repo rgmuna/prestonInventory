@@ -1,11 +1,7 @@
-*{
-  font-family: 'Rajdhani', sans-serif;
-}
 
-
-body{
+/* body{
   background-image: url(../assets/hexabump.png)
-}
+} */
 
 #inventoryNav.activeState{
   font-weight: 600;
@@ -501,91 +497,17 @@ button:focus {
 .invLoading{
   color: #ff00cc;
   overflow: hidden; /* Ensures the content is not revealed until the animation */
- border-right: .15em solid #ff00cc; /* The typwriter cursor */
- white-space: nowrap; /* Keeps the content on a single line */
- margin: 0 auto; /* Gives that scrolling effect as the typing happens */
- letter-spacing: .15em; /* Adjust as needed */
- animation:
-   typing 3s steps(40, end) infinite,
-   blink-caret .75s step-end infinite;
+  border-right: .15em solid #ff00cc; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: .15em; /* Adjust as needed */
+  animation:
+  typing 3s steps(40, end) infinite,
+  blink-caret .75s step-end infinite;
 }
 
-.tableBorder{
-  border: 1px solid #ff00cc;
-}
 
-.table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
-  border: 1px solid #ff00cc;
-}
 
-.tableHead{
-  background-color: #ff00cc;
-}
-
-tbody{
-  background-color: black;
-  color: #ff00cc;
-}
-
-.resTableBorder{
-  border: 1px solid #ff00cc;
-}
-
-.resTable-bordered>tbody>tr>td, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>td, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>thead>tr>th {
-  border: 1px solid #ff00cc;
-}
-
-.resTableHead{
-  background-color: transparent;
-}
-.resTableHead a{
-  color: white;
-  font-size: 25px;
-  cursor: pointer;
-}
-
-.resultsSubtitle{
-  color: #FF00CC;
-}
-
-.results{
-  font-size: 20px;
-  color: #FF00CC;
-}
-
-.results a {
-  color: #FF00CC;
-}
-
-.results a:hover {
-  text-decoration: none;
-}
-
-.results a:focus {
-  text-decoration: none;
-}
-
-.tableItems{
-  font-size: 25px;
-  font-weight: 600;
-}
-
-.onShelf {
-  color: #ff00cc;
-}
-.outOther{
-  color: #ff00cc;
-}
-.outPurchase {
-  color: #ff00cc;
-}
-
-.table-hover>tbody>tr.tableItems:hover{
-  background-color: #2F3C40;
-}
-.table-hover>tbody>tr.tableItems{
-  font-size: 30px;
-}
 
 .itemHeader{
   font-size: 30px;

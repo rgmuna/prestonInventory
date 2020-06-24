@@ -1,128 +1,154 @@
 <div class="container-fluid text-center" style="margin-bottom: 50px;">
-  <div class="col-xs-12">
-    <div class="invTitle col-xs-4 col-md-2 col-md-offset-3" ng-class="{active: model.view === 'units'}">
-      <button ng-click="switchView('units')">Units</button>
-    </div>
-    <div class="invTitle col-md-2 col-xs-4" ng-class="{active: model.view === 'cables'}">
-      <button ng-click="switchView('cables')">Cables</button>
-    </div>
-    <div class="invTitle col-md-2 col-xs-4" ng-class="{active: model.view === 'accessories'}">
-      <button ng-click="switchView('accessories')">Accessories</button>
-    </div>
+  <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <h2>
+      Inventory List
+    </h2>
+
+    <!-- units tab -->
+    <uib-tabset>
+      <uib-tab heading="Units">
+        <div class="col-xs-12" ng-show="!model.loaded">
+          <img src="../assets/spin.gif" alt="">
+        </div>
+
+        <div ng-if="model.loaded">
+          <div class="col-xs-12 margin-top-bottom">
+            <button ng-click="model.inventoryListView = true" class="btn btn-default" ng-class="{ 'btn-primary' : model.inventoryListView }"> Inventory List </button>
+            <button ng-click="model.inventoryListView = false" class="btn btn-default" ng-class="{ 'btn-primary' : !model.inventoryListView }"> Inventory Check </button>
+          </div>
+
+          <!-- inventory list -->
+          <div ng-show="model.inventoryListView" class="inventory-list">
+            <div class="col-xs-12">
+              <h4> Click on a unit below to see a list of individual units stored in the database </h4>
+            </div>
+
+            <!-- list of all units -->
+            <div class="col-xs-12">
+              <table class="table table-striped table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
+                <thead>
+                  <tr class="text-center">
+                    <th> Unit </th>
+                    <th> On Shelf </th>
+                    <th> Checked Out - Other </th>
+                    <th> In Stock? </th>
+                    <th ng-if="adminLoggedIn">  Min Threshold </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="(key, value) in model.productInventory.stock">
+                    <th>
+                      <a href="#listOfUnits" du-smooth-scroll ng-click="revealStoredUnits(key)"> {{ key | uppercase }} </a>
+                    </th>
+                    <td class="text-center"> {{ value.onShelf }} </td>
+                    <td class="text-center"> {{ value.outOther }} </td>
+                    <td>
+                      <i ng-if="value.onShelf < model.minThresholdObject[key]" style="color: #E12222" class="fa fa-window-close"></i>
+                      <i ng-if="value.onShelf >= model.minThresholdObject[key]" style="color: #09A932" class="fa fa-check-square"></i>
+                    </td>
+                    <td ng-if="adminLoggedIn && !model.stockEditable">{{ model.minThresholdObject[key] }}</td>
+                    <td ng-if="adminLoggedIn && model.stockEditable">
+                      <input style="max-width: 60px; color: black" ng-model="model.stockObject[key]" type="number" placeholder="{{model.stockObject[key]}}" ng-style="{color: (model.stockObject[key] == minThreshold[key]) ? 'black' : '#FF0000'}">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- list by unit type -->
+            <div id="listOfUnits" class="col-xs-12 text-center" ng-if="model.showUnitTypeList">
+              <h2> List of {{model.showUnitTypeList | uppercase}}s in database </h2>
+              <div class="col-xs-12 margin-top-bottom">
+                <div class="col-sm-6 col-sm-offset-3">
+                  <input type="text" class="form-control" placeholder="Search {{model.showUnitTypeList | uppercase}}s..." ng-model="model.searchUnit">
+                </div>
+                <div class="col-xs-12 margin-top-bottom">
+                  <input id="checkBox" type="checkbox" ng-model="model.showUnitsByType"><span> Show units older than 30 days old</span>
+                </div>
+              </div>
+
+              <table class="table table-striped table-condensed" style="font-size: 15px;">
+                <thead>
+                  <tr>
+                    <th class="text-center">
+                      <a ng-click="model.sortType = 'barcode'; model.sortReverse = !model.sortReverse">
+                        Barcode
+                        <span ng-show="model.sortType == 'barcode' && model.sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="model.sortType == 'barcode' && !model.sortReverse" class="fa fa-caret-up"></span>
+                      </a>
+                    </th>
+                    <th class="text-center">
+                      <a ng-click="model.sortType = 'status'; model.sortReverse = !model.sortReverse">
+                        Status
+                        <span ng-show="model.sortType == 'status' && model.sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="model.sortType == 'status' && !model.sortReverse" class="fa fa-caret-up"></span>
+                      </a>
+                    </th>
+                    <th class="text-center">
+                      <a ng-click="model.sortType = 'timestamp'; model.sortReverse = !model.sortReverse">
+                        Last Scan
+                        <span ng-show="model.sortType == 'timestamp' && model.sortReverse" class="fa fa-caret-down"></span>
+                        <span ng-show="model.sortType == 'timestamp' && !model.sortReverse" class="fa fa-caret-up"></span>
+                      </a>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="results" ng-repeat="key in model.productInventory.byUnit[model.showUnitTypeList] | orderBy:model.sortType:model.sortReverse | filter:model.searchUnit" ng-show="(key|filterOldies) || model.showUnitsByType">
+                    <td class="text-center">
+                      <a href="" ng-click="adminEditUnit(key)">{{ key.barcode }}</a>
+                    </td>
+                    <td class="text-center"> {{ key.status }} </td>
+                    <td class="text-center"> {{ key.timestamp | date:'medium' }} </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Inventory check -->
+          <div ng-if="!model.inventoryListView">
+            <div class="row" ng-repeat="(category, categoryUnits) in model.productInventory.byUnit">
+              <div class="col-xs-12 inventory-checker-title">
+                <h3> {{ category | uppercase }} </h3>
+              </div>
+
+              <div class="col-xs-3" ng-repeat="(key, value) in categoryUnits">
+                {{ value.barcode }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </uib-tab>
+
+      <!-- cables tab -->
+      <uib-tab heading="Cables">
+
+      </uib-tab>
+
+      <!-- accessories tab -->
+      <uib-tab heading="Accessories">
+
+      </uib-tab>
+    </uib-tabset>
   </div>
 
   <!-- units view -->
   <div ng-if="model.view === 'units'">
-    <div class="col-xs-12">
-      <button ng-click="inventoryList = true" class="listSelector inventorySelect" ng-class="{ 'activeList' : inventoryList }"> Inventory List </button>
-      <button ng-click="inventoryList = false" class="listSelector inventorySelect" ng-class="{ 'activeList' : !inventoryList }"> Inventory Check </button>
-    </div>
 
-    <h3 ng-show="inventoryList" class="invSubtitle">Click on a unit below to see a list of individual units stored in the database</h3>
 
-    <div class="col-xs-12" ng-show="!loaded">
-      <img src="../assets/RollingPink.svg" alt="">
-      <div class="text-center">
-        <div class="invLoading">
-          Loading...
-        </div>
-      </div>
+    <h3 ng-show="inventoryList" class="invSubtitle"></h3>
+
+    <div class="col-xs-12 stockButtons" ng-if="adminLoggedIn" style="margin-bottom: 10px;">
+      <button ng-if="!model.stockEditable" ng-click="model.stockEditable = true">Edit Stock List</button>
+      <button ng-if="model.stockEditable" ng-click="saveStockEdits()">Save Changes</button>
+      <button ng-if="model.stockEditable" ng-click="cancelEdit()">Cancel</button>
     </div>
-  <div class="col-xs-12 stockButtons" ng-if="adminLoggedIn" style="margin-bottom: 10px;">
-    <button ng-if="!model.stockEditable" ng-click="model.stockEditable = true">Edit Stock List</button>
-    <button ng-if="model.stockEditable" ng-click="saveStockEdits()">Save Changes</button>
-    <button ng-if="model.stockEditable" ng-click="cancelEdit()">Cancel</button>
-  </div>
 
     <div ng-show="inventoryList">
 
-      <div class="col-xs-12 text-center" ng-show="loaded" >
-        <table class="table table-condensed tableBorder table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
-          <thead class="tableHead">
-            <tr>
-              <th class="text-center">  Unit </th>
-              <th class="text-center">  On Shelf </th>
-              <th class="text-center">  Checked Out - Other </th>
-              <th class="text-center">  In Stock? </th>
-              <th class="text-center" ng-if="adminLoggedIn">  Min Threshold </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="tableItems" ng-repeat="(key, value) in allUnits">
-                <th class="itemHeader" scope="row">
-                  <a style="color: white;" href="#listOfUnits" du-smooth-scroll ng-click="revealStoredUnits(key)">
-                    {{key | uppercase}}
-                  </a>
-                </th>
-                <td class="onShelf text-center"> {{value.onShelf ? value.onShelf : '-' }} </td>
-                <td class="outOther  text-center"> {{value.outOther ? value.outOther : '-'}} </td>
-                <td class="text-center" ng-if="value.onShelf < minThreshold[key]"> <i style="color: #FF0000" class="fa fa-window-close"></i> </td>
-                <td class="text-center" ng-if="value.onShelf >= minThreshold[key]"> <i style="color: #33FF00" class="fa fa-check-square"></i> </td>
-                <td class="text-center" ng-if="adminLoggedIn && !model.stockEditable">{{minThreshold[key]}}</td>
-                <td class="text-center" ng-if="adminLoggedIn && model.stockEditable">
-                    <input style="max-width: 60px; color: black" ng-model="model.stockObject[key]" type="number" placeholder="{{model.stockObject[key]}}" ng-style="{color: (model.stockObject[key] == minThreshold[key]) ? 'black' : '#FF0000'}">
-                </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
 
-      <div id="listOfUnits" class="col-xs-12 text-center" ng-show="displayUnitInfo">
-        <h2 class="col-xs-12 resultsSubtitle"> List of {{revealedUnit | uppercase}}s in database </h2>
-        <div class="col-xs-12">
-          <div class="col-sm-4 col-sm-offset-4 col-xs-6 col-xs-offset-3">
-            <form>
-              <div class="form-group">
-                <div class="input-group">
-                  <div class="input-group-addon"><i class="fa fa-search"></i></div>
-                  <input type="text" class="form-control" placeholder="Search {{revealedUnit | uppercase}}s..." ng-model="model.searchUnit">
-                </div>
-              </div>
-              <input id="checkBox" type="checkbox" ng-model="showAll"><span style="color: white;"> Show units older than 30 days old</span>
-            </form>
-          </div>
-        </div>
-
-        <table class="table table-condensed" style="max-width: 600px; margin: 0 auto;">
-          <thead class="resTableHead">
-            <tr>
-              <th class="text-center">
-                <a ng-click="model.sortType = 'barcode'; model.sortReverse = !model.sortReverse">
-                  Barcode
-                  <span ng-show="model.sortType == 'barcode' && model.sortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="model.sortType == 'barcode' && !model.sortReverse" class="fa fa-caret-up"></span>
-                </a>
-              </th>
-              <th class="text-center">
-                <a ng-click="model.sortType = 'status'; model.sortReverse = !model.sortReverse">
-                  Status
-                  <span ng-show="model.sortType == 'status' && model.sortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="model.sortType == 'status' && !model.sortReverse" class="fa fa-caret-up"></span>
-                </a>
-              </th>
-              <th class="text-center">
-                <a ng-click="model.sortType = 'timestamp'; model.sortReverse = !model.sortReverse">
-                  Last Scan
-                  <span ng-show="model.sortType == 'timestamp' && model.sortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="model.sortType == 'timestamp' && !model.sortReverse" class="fa fa-caret-up"></span>
-                </a>
-              </th>
-
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="results" ng-repeat="key in displayInformation | orderBy:model.sortType:model.sortReverse | filter:model.searchUnit" ng-show="(key|filterOldies) || showAll">
-              <td class="text-center">
-                <a href="" ng-click="adminEditUnit(key)">
-                  {{key.barcode}}
-                </a>
-               </td>
-              <td class="text-center"> {{key.status}} </td>
-              <td class="text-center"> {{key.timestamp | date:'medium'}} </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
 
     <!-- inventory checker -->
@@ -141,14 +167,15 @@
         </div>
       </div>
 
-      <div class="row" ng-repeat="unitType in products">
+      <!-- Need to update this -->
+      <!-- <div class="row" ng-repeat="unitType in products">
         <div ng-attr-id="{{ 'unitType-' + unitType }}" class="col-xs-12 invCheckLabels">
           {{unitType}}
         </div>
         <div class="col-xs-3" ng-repeat="unit in shelfUnits | filter:categorySort(unitType)" ng-hide="hideFound && unit.status" style="color: white;">
           <span ng-class="{'found': unit.status}">{{unit.barcode}}</span>
         </div>
-      </div>
+      </div> -->
 
       <div id="notInSystem" class="row">
         <div ng-show="unlistedUnits.length">
@@ -171,7 +198,7 @@
   <!-- cable view -->
   <div ng-if="model.view === 'cables'">
 
-    <div class="col-xs-12" ng-show="!loaded">
+    <div class="col-xs-12" ng-show="!model.loaded">
       <img src="../assets/RollingPink.svg" alt="">
       <div class="text-center">
         <div class="invLoading">
@@ -180,7 +207,7 @@
       </div>
     </div>
 
-    <div class="col-xs-12 text-center" style="margin-top: 40px;" ng-show="loaded" >
+    <div class="col-xs-12 text-center" style="margin-top: 40px;" ng-show="model.loaded" >
 
       <table class="table table-condensed tableBorder table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
         <thead class="tableHead">
@@ -222,7 +249,7 @@
 
     <!-- accessories view -->
     <div ng-if="model.view === 'accessories'" style="margin-top: 40px;" >
-      <div class="col-xs-12" ng-show="!loaded">
+      <div class="col-xs-12" ng-show="!model.loaded">
         <img src="../assets/RollingPink.svg" alt="">
         <div class="text-center">
           <div class="invLoading">
@@ -231,7 +258,7 @@
         </div>
       </div>
 
-      <div class="row" ng-show="loaded">
+      <div class="row" ng-show="model.loaded">
         <div class="col-xs-12 text-center invFilterTitle">
           Filter
         </div>
@@ -243,7 +270,7 @@
         </div>
       </div>
 
-      <div class="col-xs-12 text-center" style="margin-top: 40px;" ng-show="loaded" >
+      <div class="col-xs-12 text-center" style="margin-top: 40px;" ng-show="model.loaded" >
         <table class="table table-condensed tableBorder table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
           <thead class="tableHead">
             <tr>

@@ -1,64 +1,133 @@
-barcodeApp.controller('InventoryListController', [
-  '$rootScope',
-  'authService',
-  '$scope',
-  '$firebaseArray',
-  '$firebaseObject',
-  '$timeout',
-  '$http',
-  '$firebaseAuth',
-  '$window',
-  '$document',
-  '$filter',
-  '$uibModal',
-  function ($rootScope, authService, $scope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $document, $filter, $uibModal) {
+barcodeApp.controller('InventoryListController', ['$rootScope', '$scope', '$firebaseArray', '$firebaseObject', '$document', '$filter', '$uibModal', 'productService', function ($rootScope, $scope, $firebaseArray, $firebaseObject, $document, $filter, $uibModal, productService) {
 
-  $scope.model = {
-    view                 : 'units',
-    stockEditable        : false,
-    stockObject          : {},
-    sortType             : 'name',
-    sortReverse          : false,
-    searchUnits          : '',
-    cableSortType        : '',
-    cableSortReverse     : false,
-    accessorySortType    : '',
-    accessorySortReverse : false,
-    accessoryFilter      : '',
-    accessoryCategories  : ['motor mounts', 'gears', 'light ranger 2', 'other']
-  };
+  //
+  // Controller Model
+  //
 
-  $scope.products = [
-    'FI',
-    'HU3',
-    'MDR3',
-    'MDR4',
-    'LR2 Sensor',
-    'LR2 VIU',
-    'DMF3',
-    'RMF',
-    'VF3',
-    'DM1X',
-    'DM2X',
-    'DM5',
-    'BM',
-    'HU4',
-    'LR2W',
-    'LR2M'
-  ];
-
-
-  $scope.switchView = function(type) {
-    $scope.model.view = type;
+  var model = {
+    productFirebaseReference: firebase.database().ref().child('inventory'),
+    productStoredArray      : '',
+    constants               : {
+      ON_SHELF : 'on shelf',
+      PURCHASED: 'checked out - purchase',
+      OTHER    : 'checked out - other'
+    }
   }
 
-  $scope.isNavCollapsed = false;
+  //
+  // View Model
+  //
+
+  $scope.model = {
+    productInventory : {
+      stock : {},
+      byUnit: {}
+    },
+    loaded              : false,
+    minThresholdObject  : {},
+    inventoryListView   : true,
+    showUnitsByType     : false,
+    showUnitTypeList    : '',
+    view                : 'units',
+    stockEditable       : false,
+    stockObject         : {},
+    sortType            : 'name',
+    sortReverse         : false,
+    searchUnits         : '',
+    cableSortType       : '',
+    cableSortReverse    : false,
+    accessorySortType   : '',
+    accessorySortReverse: false,
+    accessoryFilter     : '',
+    accessoryCategories : ['motor mounts', 'gears', 'light ranger 2', 'other']
+  };
+
+  function renderPage() {
+    model.productStoredArray = $firebaseArray(model.productFirebaseReference);
+    model.productStoredArray.$loaded().then(function() {
+      $scope.model.loaded = true;
+      loadProductTable();
+      // $scope.makeShelfList();
+    });
+
+    loadMinThreshold();
+  }
+
+  renderPage();
+
+  /**
+   * Load inventory table
+   * @return {undefined}
+   */
+  function loadProductTable() {
+    for (var i = 0; i <  model.productStoredArray.length; i++) {
+      var singleItem =  model.productStoredArray[i];
+      addToStocklist(singleItem);
+      addToUnitLists(singleItem);
+    }
+  }
+
+  /**
+   * Add to inventory stock lists
+   * Each product:
+   * - onShelf
+   * - outOther
+   * @param {object} item
+   */
+  function addToStocklist(item) {
+    var itemCategory = item.unit;
+
+    if (!$scope.model.productInventory.stock.hasOwnProperty(itemCategory)) {
+      $scope.model.productInventory.stock[itemCategory] = {
+        onShelf : 0,
+        outOther: 0
+      }
+    }
+
+    switch(item.status) {
+      case model.constants.ON_SHELF:
+        $scope.model.productInventory.stock[itemCategory].onShelf++;
+        break;
+      case model.constants.OTHER:
+        $scope.model.productInventory.stock[itemCategory].outOther++;
+        break;
+    }
+  }
+
+  /**
+   * Add to unit lists
+   * @param {object} item
+   */
+  function addToUnitLists(item) {
+    var itemCategory = item.unit;
+
+    if (!$scope.model.productInventory.byUnit.hasOwnProperty(itemCategory)) {
+      $scope.model.productInventory.byUnit[itemCategory] = [];
+    }
+
+    if (item.status === model.constants.ON_SHELF) {
+      $scope.model.productInventory.byUnit[itemCategory].push(item);
+    }
+  }
+
+  /**
+   * Load min threshold object
+   * @return {undefined}
+   */
+  function loadMinThreshold() {
+    var minThresholdInfo            = firebase.database().ref().child('inventoryMinThreshold');
+    $scope.model.minThresholdObject = $firebaseObject(minThresholdInfo);
+
+    $scope.model.minThresholdObject.$loaded().then(function() {
+      $scope.model.stockObject = Object.assign({}, $scope.model.minThresholdObject);
+    });
+  }
 
   //------------- Import Firebase Information -------------
 
-  //product invnetory from Firebase
-  $scope.barcodedUnitInfo = firebase.database().ref().child('inventory');
-  $scope.barcodedUnits = $firebaseArray($scope.barcodedUnitInfo);
+  // //product invnetory from Firebase
+  // $scope.barcodedUnitInfo = ;
+  // $scope.barcodedUnits = $firebaseArray($scope.barcodedUnitInfo);
 
   //cable invnetory from Firebase
   $scope.barcodedCableInfo = firebase.database().ref().child('cableInventory');
@@ -67,18 +136,8 @@ barcodeApp.controller('InventoryListController', [
   //accessory invnetory from Firebase
   $scope.barcodedAccessoryInfo = firebase.database().ref().child('accessoryInventory');
   $scope.barcodedAccessories = $firebaseArray($scope.barcodedAccessoryInfo);
-
-  var minThresholdInfo = firebase.database().ref().child('inventoryMinThreshold');
-  $scope.minThreshold = $firebaseObject(minThresholdInfo);
-
-  $scope.minThreshold.$loaded().then(function() {
-    $scope.model.stockObject = Object.assign({}, $scope.minThreshold);
-  });
   //----------------------------------------------------------
 
-  //initilizations
-  $scope.barcodeEntered = false;
-  $scope.loaded = false;
 
   // object with currently read barcode
   $scope.barcodeRead = {
@@ -113,13 +172,6 @@ barcodeApp.controller('InventoryListController', [
     $scope.model.stockObject = $scope.minThreshold;
   }
 
-  //checks when firebase items are loaded ------
-  $scope.barcodedUnits.$loaded().then(function() {
-    $scope.loaded = true;
-    $scope.loadTable();
-    $scope.makeShelfList();
-  });
-
   $scope.currDate = firebase.database.ServerValue.TIMESTAMP;
   $scope.dateLimiter = $scope.currDate - 2592000;
 
@@ -138,162 +190,6 @@ barcodeApp.controller('InventoryListController', [
   });
   //not including LR items due to weirdness of labels
   $scope.unitList        = ['fi', 'hu3', 'mdr3', 'mdr4', 'dmf3', 'rmf', 'vf3', 'dm1x', 'dm2x', 'dm5', 'bm', 'lr2w', 'lr2m'];
-  $scope.displayUnitInfo = false;
-
-  // make objects for each unit type
-  $scope.loadTable = function(){
-    //initialize variables
-    $scope.fiInv   = [];
-    $scope.hu3Inv  = [];
-    $scope.mdr3Inv = [];
-    $scope.mdr4Inv = [];
-    $scope.lrInv   = [];
-    $scope.vouInv  = [];
-    $scope.dmf3Inv = [];
-    $scope.rmfInv  = [];
-    $scope.vf3Inv  = [];
-    $scope.dm1xInv = [];
-    $scope.dm2xInv = [];
-    $scope.dm5Inv  = [];
-    $scope.bmInv   = [];
-    $scope.lr2wInv = [];
-    $scope.lr2mInv = [];
-    $scope.hu4     = [];
-
-    $scope.allUnits = {
-      fi: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      hu3: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      mdr3: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      mdr4: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      lr: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      vou: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      dmf3: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      rmf: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      vf3: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      dm2x: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      dm1x: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      dm5: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      bm: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      lr2w: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      lr2m: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      },
-      hu4: {
-        onShelf : 0,
-        outOther: 0,
-        outPurchase: 0
-      }
-    }
-
-    //for each item in barcoded units...
-    for(var i in $scope.barcodedUnits){
-      //first parse out the item's info
-      if ($scope.unitList.indexOf($scope.barcodedUnits[i].unit) > -1) {
-        var particularUnit = $scope.barcodedUnits[i].unit;
-        var particularUnitArray = particularUnit + "Inv";
-
-        //add unit to the correct unit array
-        $scope[particularUnitArray].push($scope.barcodedUnits[i]);
-
-        //next, update allUnits object with appropriate numbers
-        if ($scope.barcodedUnits[i].status === "checked out - other") {
-          $scope.allUnits[particularUnit].outOther += 1;
-        } else if ($scope.barcodedUnits[i].status === "checked out - purchase") {
-          $scope.allUnits[particularUnit].outPurchase += 1;
-        } else if ($scope.barcodedUnits[i].status === "on shelf") {
-          $scope.allUnits[particularUnit].onShelf += 1;
-        }
-      } else if ($scope.barcodedUnits[i].unit === 'lr2') { //for LR units, do the same as above
-        var parsedItem = $scope.barcodedUnits[i].barcode.split(" ");
-
-        if(parsedItem[2][0] === 'L'){
-          //add unit to the correct unit array
-          $scope.lrInv.push($scope.barcodedUnits[i]);
-          //next, update allUnits object with appropriate numbers
-          if($scope.barcodedUnits[i].status === "checked out - other"){
-            $scope.allUnits.lr.outOther += 1;
-          }
-          else if($scope.barcodedUnits[i].status === "checked out - purchase"){
-            $scope.allUnits.lr.outPurchase += 1;
-          }
-          else if($scope.barcodedUnits[i].status === "on shelf"){
-            $scope.allUnits.lr.onShelf += 1;
-          }
-        } else if (parsedItem[2][0] === 'V') {
-          //add unit to the correct unit array
-          $scope.vouInv.push($scope.barcodedUnits[i]);
-          //next, update allUnits object with appropriate numbers
-          if($scope.barcodedUnits[i].status === "checked out - other"){
-            $scope.allUnits.vou.outOther += 1;
-          }
-          else if($scope.barcodedUnits[i].status === "checked out - purchase"){
-            $scope.allUnits.vou.outPurchase += 1;
-          }
-          else if($scope.barcodedUnits[i].status === "on shelf"){
-            $scope.allUnits.vou.onShelf += 1;
-          }
-        }
-      }
-    }
-  }
 
   $scope.getTypeFromBarcode = function(barcode){
     var unitType = '';
@@ -333,27 +229,28 @@ barcodeApp.controller('InventoryListController', [
 
   }
 
-  $scope.revealStoredUnits = function(unitType){
-    $scope.displayUnitInfo = true;
-    $scope.revealedUnit = unitType;
-
-    var unitArray = unitType + 'Inv';
-    $scope.displayInformation = $scope[unitArray];
+  /**
+   * Show list of stored units by category
+   * @param {string} unitType
+   */
+  $scope.revealStoredUnits = function(unitType) {
+    $scope.model.showUnitTypeList = unitType;
   }
 
 
-  $scope.makeShelfList = function(){
-    $scope.shelfUnits = [];
-    for(var unit in $scope.barcodedUnits){
-      if($scope.barcodedUnits[unit].status === "on shelf"){
-        var newObj =
-          {status: false,
-            barcode: $scope.barcodedUnits[unit].barcode
-          };
-        $scope.shelfUnits.push(newObj);
-      }
-    }
-  }
+  // update this eventually
+  // $scope.makeShelfList = function(){
+  //   $scope.shelfUnits = [];
+  //   for(var unit in $scope.barcodedUnits){
+  //     if($scope.barcodedUnits[unit].status === "on shelf"){
+  //       var newObj =
+  //         {status: false,
+  //           barcode: $scope.barcodedUnits[unit].barcode
+  //         };
+  //       $scope.shelfUnits.push(newObj);
+  //     }
+  //   }
+  // }
 
   $scope.categorySort = function(unitType) {
     return function(unit) {
@@ -489,7 +386,7 @@ barcodeApp.controller('InventoryListController', [
             timestamp: firebase.database.ServerValue.TIMESTAMP
           })
 
-          $scope.loadTable();
+          loadProductTable();
         }
       })
     }

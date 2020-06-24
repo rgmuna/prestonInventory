@@ -1,7 +1,38 @@
 $font-stack: Helvetica, sans-serif;
 $primary-color: #444;
 
+*{
+  font-family: $font-stack, sans-serif;
+}
+
 body {
   // font: 90% $font-stack;
   // color: $primary-color;
+}
+
+.margin-top-bottom {
+  margin: 20px 0px;
+}
+
+.margin-sides {
+  margin: 0px 20px;
+}
+
+.all-margins {
+  margin: 20px;
+}
+
+// Inventory List
+.inventory {
+  &-list {
+    font-size: 18px;
+  }
+
+  &-checker {
+    &-title {
+      border-bottom: 1px solid $primary-color;
+      text-align: left;
+      margin-top: 50px;
+    }
+  }
 }
