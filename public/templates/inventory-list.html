@@ -4,118 +4,117 @@
       Inventory List
     </h2>
 
+    <div class="col-xs-12" ng-show="!model.loaded">
+      <img src="../assets/spin.gif" alt="">
+    </div>
+
     <!-- units tab -->
-    <uib-tabset>
+    <uib-tabset ng-if="model.loaded">
       <uib-tab heading="Units">
-        <div class="col-xs-12" ng-show="!model.loaded">
-          <img src="../assets/spin.gif" alt="">
+
+        <div class="col-xs-12 margin-top-bottom">
+          <button ng-click="model.inventoryListView = true" class="btn btn-default" ng-class="{ 'btn-primary' : model.inventoryListView }"> Inventory List </button>
+          <button ng-click="model.inventoryListView = false" class="btn btn-default" ng-class="{ 'btn-primary' : !model.inventoryListView }"> Inventory Check </button>
         </div>
 
-        <div ng-if="model.loaded">
-          <div class="col-xs-12 margin-top-bottom">
-            <button ng-click="model.inventoryListView = true" class="btn btn-default" ng-class="{ 'btn-primary' : model.inventoryListView }"> Inventory List </button>
-            <button ng-click="model.inventoryListView = false" class="btn btn-default" ng-class="{ 'btn-primary' : !model.inventoryListView }"> Inventory Check </button>
+        <!-- inventory list -->
+        <div ng-show="model.inventoryListView" class="inventory-list">
+          <div class="col-xs-12">
+            <h4> Click on a unit below to see a list of individual units stored in the database </h4>
           </div>
 
-          <!-- inventory list -->
-          <div ng-show="model.inventoryListView" class="inventory-list">
-            <div class="col-xs-12">
-              <h4> Click on a unit below to see a list of individual units stored in the database </h4>
-            </div>
+          <!-- list of all units -->
+          <div class="col-xs-12">
+            <table class="table table-striped table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
+              <thead>
+                <tr>
+                  <th class="text-center"> Unit </th>
+                  <th class="text-center"> On Shelf </th>
+                  <th class="text-center"> Checked Out - Other </th>
+                  <th class="text-center"> In Stock? </th>
+                  <th ng-if="adminLoggedIn">  Min Threshold </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="(key, value) in model.productInventory.stock">
+                  <th>
+                    <a href="#listOfUnits" du-smooth-scroll ng-click="revealStoredUnits(key)"> {{ key | uppercase }} </a>
+                  </th>
+                  <td class="text-center"> {{ value.onShelf }} </td>
+                  <td class="text-center"> {{ value.outOther }} </td>
+                  <td>
+                    <i ng-if="value.onShelf < model.minThresholdObject[key]" style="color: #E12222" class="fa fa-window-close"></i>
+                    <i ng-if="value.onShelf >= model.minThresholdObject[key]" style="color: #09A932" class="fa fa-check-square"></i>
+                  </td>
+                  <td ng-if="adminLoggedIn && !model.stockEditable">{{ model.minThresholdObject[key] }}</td>
+                  <td ng-if="adminLoggedIn && model.stockEditable">
+                    <input style="max-width: 60px; color: black" ng-model="model.stockObject[key]" type="number" placeholder="{{model.stockObject[key]}}" ng-style="{color: (model.stockObject[key] == minThreshold[key]) ? 'black' : '#FF0000'}">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-            <!-- list of all units -->
-            <div class="col-xs-12">
-              <table class="table table-striped table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
-                <thead>
-                  <tr class="text-center">
-                    <th> Unit </th>
-                    <th> On Shelf </th>
-                    <th> Checked Out - Other </th>
-                    <th> In Stock? </th>
-                    <th ng-if="adminLoggedIn">  Min Threshold </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="(key, value) in model.productInventory.stock">
-                    <th>
-                      <a href="#listOfUnits" du-smooth-scroll ng-click="revealStoredUnits(key)"> {{ key | uppercase }} </a>
-                    </th>
-                    <td class="text-center"> {{ value.onShelf }} </td>
-                    <td class="text-center"> {{ value.outOther }} </td>
-                    <td>
-                      <i ng-if="value.onShelf < model.minThresholdObject[key]" style="color: #E12222" class="fa fa-window-close"></i>
-                      <i ng-if="value.onShelf >= model.minThresholdObject[key]" style="color: #09A932" class="fa fa-check-square"></i>
-                    </td>
-                    <td ng-if="adminLoggedIn && !model.stockEditable">{{ model.minThresholdObject[key] }}</td>
-                    <td ng-if="adminLoggedIn && model.stockEditable">
-                      <input style="max-width: 60px; color: black" ng-model="model.stockObject[key]" type="number" placeholder="{{model.stockObject[key]}}" ng-style="{color: (model.stockObject[key] == minThreshold[key]) ? 'black' : '#FF0000'}">
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- list by unit type -->
-            <div id="listOfUnits" class="col-xs-12 text-center" ng-if="model.showUnitTypeList">
-              <h2> List of {{model.showUnitTypeList | uppercase}}s in database </h2>
+          <!-- list by unit type -->
+          <div id="listOfUnits" class="col-xs-12 text-center" ng-if="model.showUnitTypeList">
+            <h2> List of {{model.showUnitTypeList | uppercase}}s in database </h2>
+            <div class="col-xs-12 margin-top-bottom">
+              <div class="col-sm-6 col-sm-offset-3">
+                <input type="text" class="form-control" placeholder="Search {{model.showUnitTypeList | uppercase}}s..." ng-model="model.searchUnit">
+              </div>
               <div class="col-xs-12 margin-top-bottom">
-                <div class="col-sm-6 col-sm-offset-3">
-                  <input type="text" class="form-control" placeholder="Search {{model.showUnitTypeList | uppercase}}s..." ng-model="model.searchUnit">
-                </div>
-                <div class="col-xs-12 margin-top-bottom">
-                  <input id="checkBox" type="checkbox" ng-model="model.showUnitsByType"><span> Show units older than 30 days old</span>
-                </div>
+                <input id="checkBox" type="checkbox" ng-model="model.showUnitsByType"><span> Show units older than 30 days old</span>
               </div>
-
-              <table class="table table-striped table-condensed" style="font-size: 15px;">
-                <thead>
-                  <tr>
-                    <th class="text-center">
-                      <a ng-click="model.sortType = 'barcode'; model.sortReverse = !model.sortReverse">
-                        Barcode
-                        <span ng-show="model.sortType == 'barcode' && model.sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="model.sortType == 'barcode' && !model.sortReverse" class="fa fa-caret-up"></span>
-                      </a>
-                    </th>
-                    <th class="text-center">
-                      <a ng-click="model.sortType = 'status'; model.sortReverse = !model.sortReverse">
-                        Status
-                        <span ng-show="model.sortType == 'status' && model.sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="model.sortType == 'status' && !model.sortReverse" class="fa fa-caret-up"></span>
-                      </a>
-                    </th>
-                    <th class="text-center">
-                      <a ng-click="model.sortType = 'timestamp'; model.sortReverse = !model.sortReverse">
-                        Last Scan
-                        <span ng-show="model.sortType == 'timestamp' && model.sortReverse" class="fa fa-caret-down"></span>
-                        <span ng-show="model.sortType == 'timestamp' && !model.sortReverse" class="fa fa-caret-up"></span>
-                      </a>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="results" ng-repeat="key in model.productInventory.byUnit[model.showUnitTypeList] | orderBy:model.sortType:model.sortReverse | filter:model.searchUnit" ng-show="(key|filterOldies) || model.showUnitsByType">
-                    <td class="text-center">
-                      <a href="" ng-click="adminEditUnit(key)">{{ key.barcode }}</a>
-                    </td>
-                    <td class="text-center"> {{ key.status }} </td>
-                    <td class="text-center"> {{ key.timestamp | date:'medium' }} </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
+
+            <table class="table table-striped table-condensed" style="font-size: 15px;">
+              <thead>
+                <tr>
+                  <th class="text-center">
+                    <a ng-click="model.sortType = 'barcode'; model.sortReverse = !model.sortReverse">
+                      Barcode
+                      <span ng-show="model.sortType == 'barcode' && model.sortReverse" class="fa fa-caret-down"></span>
+                      <span ng-show="model.sortType == 'barcode' && !model.sortReverse" class="fa fa-caret-up"></span>
+                    </a>
+                  </th>
+                  <th class="text-center">
+                    <a ng-click="model.sortType = 'status'; model.sortReverse = !model.sortReverse">
+                      Status
+                      <span ng-show="model.sortType == 'status' && model.sortReverse" class="fa fa-caret-down"></span>
+                      <span ng-show="model.sortType == 'status' && !model.sortReverse" class="fa fa-caret-up"></span>
+                    </a>
+                  </th>
+                  <th class="text-center">
+                    <a ng-click="model.sortType = 'timestamp'; model.sortReverse = !model.sortReverse">
+                      Last Scan
+                      <span ng-show="model.sortType == 'timestamp' && model.sortReverse" class="fa fa-caret-down"></span>
+                      <span ng-show="model.sortType == 'timestamp' && !model.sortReverse" class="fa fa-caret-up"></span>
+                    </a>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="results" ng-repeat="key in model.productInventory.byUnit[model.showUnitTypeList] | orderBy:model.sortType:model.sortReverse | filter:model.searchUnit" ng-show="(key|filterOldies) || model.showUnitsByType">
+                  <td class="text-center">
+                    <a href="" ng-click="adminEditUnit(key)">{{ key.barcode }}</a>
+                  </td>
+                  <td class="text-center"> {{ key.status }} </td>
+                  <td class="text-center"> {{ key.timestamp | date:'medium' }} </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+        </div>
 
-          <!-- Inventory check -->
-          <div ng-if="!model.inventoryListView">
-            <div class="row" ng-repeat="(category, categoryUnits) in model.productInventory.byUnit">
-              <div class="col-xs-12 inventory-checker-title">
-                <h3> {{ category | uppercase }} </h3>
-              </div>
+        <!-- Inventory check -->
+        <div ng-if="!model.inventoryListView">
+          <div class="row" ng-repeat="(category, categoryUnits) in model.productInventory.byUnit">
+            <div class="col-xs-12 inventory-checker-title">
+              <h3> {{ category | uppercase }} </h3>
+            </div>
 
-              <div class="col-xs-3" ng-repeat="(key, value) in categoryUnits">
-                {{ value.barcode }}
-              </div>
+            <div class="col-xs-3" ng-repeat="(key, value) in categoryUnits">
+              {{ value.barcode }}
             </div>
           </div>
         </div>
@@ -124,11 +123,104 @@
 
       <!-- cables tab -->
       <uib-tab heading="Cables">
+        <div class="col-xs-12 text-center">
 
+          <table class="table table-bordered table-hover table-striped" style="max-width: 600px; margin: 30px auto; font-size:18px;">
+            <thead>
+              <tr>
+                <th class="text-center">
+                  <a href="" ng-click="model.cableSortType = 'barcode'; model.cableSortReverse = !model.cableSortReverse">
+                    <strong>Cable</strong>
+                    <span ng-show="model.cableSortType == 'barcode' && model.cableSortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="model.cableSortType == 'barcode' && !model.cableSortReverse" class="fa fa-caret-up"></span>
+                  </a>
+                </th>
+                <th class="text-center">
+                  <a href="" ng-click="model.cableSortType = 'inStock'; model.cableSortReverse = !model.cableSortReverse">
+                    <strong>On Shelf</strong>
+                    <span ng-show="model.cableSortType == 'inStock' && model.cableSortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="model.cableSortType == 'inStock' && !model.cableSortReverse" class="fa fa-caret-up"></span>
+                  </a>
+                </th>
+                <th class="text-center">
+                  <a href="" ng-click="model.cableSortType = 'timestamp'; model.cableSortReverse = !model.cableSortReverse">
+                    <strong>Last Scan</strong>
+                    <span ng-show="model.cableSortType == 'timestamp' && model.cableSortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="model.cableSortType == 'timestamp' && !model.cableSortReverse" class="fa fa-caret-up"></span>
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="cable in model.cableInventory | orderBy:model.cableSortType:model.cableSortReverse " ng-if="cable.id">
+                <td> <strong> {{ cable.barcode }} </strong> </td>
+                <td> {{cable.inStock}}  </td>
+                <td> {{cable.timestamp | date:'medium'}} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </uib-tab>
 
       <!-- accessories tab -->
       <uib-tab heading="Accessories">
+
+        <div class="col-xs-12 inventory-accessory-filter-container">
+          <div class="col-xs-12 text-center">
+            <h3>Filter</h3>
+          </div>
+
+          <div class="col-xs-12 col-sm-6 col-sm-offset-3 text-center">
+            <select class="form-control" ng-model="model.accessoryFilter" ng-options="x for x in model.accessoryCategories" ng-change="removeFilter(model.accessoryFilter)">
+              <option value=""> Category </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-xs-12 text-center">
+          <table class="table table-condensed tableBorder table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
+            <thead class="tableHead">
+              <tr>
+                <th class="text-center">
+                  <a href="" ng-click="model.accessorySortType = 'barcode'; model.accessorySortReverse = !model.accessorySortReverse">
+                    Accessory
+                    <span ng-show="model.accessorySortType == 'barcode' && model.accessorySortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="model.accessorySortType == 'barcode' && !model.accessorySortReverse" class="fa fa-caret-up"></span>
+                  </a>
+                </th>
+                <th class="text-center">
+                  <a href="" ng-click="model.accessorySortType = 'inStock'; model.accessorySortReverse = !model.accessorySortReverse">
+                    On Shelf
+                    <span ng-show="model.accessorySortType == 'inStock' && model.accessorySortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="model.accessorySortType == 'inStock' && !model.accessorySortReverse" class="fa fa-caret-up"></span>
+                  </a>
+                </th>
+                <th class="text-center">
+                  <a href="" ng-click="model.accessorySortType = 'category'; model.accessorySortReverse = !model.accessorySortReverse">
+                    Categories
+                    <span ng-show="model.accessorySortType == 'category' && model.accessorySortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="model.accessorySortType == 'category' && !model.accessorySortReverse" class="fa fa-caret-up"></span>
+                  </a>
+                </th>
+                <th class="text-center">
+                  <a href="" ng-click="model.accessorySortType = 'timestamp'; model.accessorySortReverse = !model.accessorySortReverse">
+                    Last Scan
+                    <span ng-show="model.accessorySortType == 'timestamp' && model.accessorySortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="model.accessorySortType == 'timestamp' && !model.accessorySortReverse" class="fa fa-caret-up"></span>
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="tableItems" ng-repeat="accessory in model.accessoryInventory | orderBy:model.accessorySortType:model.accessorySortReverse | filter:{category : model.accessoryFilter}" ng-if="accessory.id">
+                <td class="text-center"> <strong> {{ accessory.barcode }} </strong> </td>
+                <td class="text-center"> {{ accessory.inStock }}  </td>
+                <td class="text-center"> {{ accessory.category }} </td>
+                <td class="text-center"> {{ accessory.timestamp | date:'medium' }} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
       </uib-tab>
     </uib-tabset>
@@ -144,11 +236,6 @@
       <button ng-if="!model.stockEditable" ng-click="model.stockEditable = true">Edit Stock List</button>
       <button ng-if="model.stockEditable" ng-click="saveStockEdits()">Save Changes</button>
       <button ng-if="model.stockEditable" ng-click="cancelEdit()">Cancel</button>
-    </div>
-
-    <div ng-show="inventoryList">
-
-
     </div>
 
     <!-- inventory checker -->
@@ -195,118 +282,6 @@
     </div>
   </div>
 
-  <!-- cable view -->
-  <div ng-if="model.view === 'cables'">
-
-    <div class="col-xs-12" ng-show="!model.loaded">
-      <img src="../assets/RollingPink.svg" alt="">
-      <div class="text-center">
-        <div class="invLoading">
-          Loading...
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xs-12 text-center" style="margin-top: 40px;" ng-show="model.loaded" >
-
-      <table class="table table-condensed tableBorder table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
-        <thead class="tableHead">
-          <tr>
-            <th class="text-center">
-              <a style="color: black;" href="" ng-click="model.cableSortType = 'barcode'; model.cableSortReverse = !model.cableSortReverse">
-                Cable
-                <span ng-show="model.cableSortType == 'barcode' && model.cableSortReverse" class="fa fa-caret-down"></span>
-                <span ng-show="model.cableSortType == 'barcode' && !model.cableSortReverse" class="fa fa-caret-up"></span>
-              </a>
-            </th>
-            <th class="text-center">
-              <a style="color: black;" href="" ng-click="model.cableSortType = 'inStock'; model.cableSortReverse = !model.cableSortReverse">
-                On Shelf
-                <span ng-show="model.cableSortType == 'inStock' && model.cableSortReverse" class="fa fa-caret-down"></span>
-                <span ng-show="model.cableSortType == 'inStock' && !model.cableSortReverse" class="fa fa-caret-up"></span>
-              </a>
-            </th>
-            <th class="text-center">
-              <a style="color: black;" href="" ng-click="model.cableSortType = 'timestamp'; model.cableSortReverse = !model.cableSortReverse">
-                Last Scan
-                <span ng-show="model.cableSortType == 'timestamp' && model.cableSortReverse" class="fa fa-caret-down"></span>
-                <span ng-show="model.cableSortType == 'timestamp' && !model.cableSortReverse" class="fa fa-caret-up"></span>
-              </a>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="tableItems" ng-repeat="cable in barcodedCablesArray | orderBy:model.cableSortType:model.cableSortReverse " ng-if="cable.id">
-            <td class="text-center" style="color: white; font-weight: 300"> {{cable.barcode}} </td>
-            <td class="text-center" style="color: white"> {{cable.inStock}}  </td>
-            <td class="text-center"> {{cable.timestamp | date:'medium'}} </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-  </div>
-
-    <!-- accessories view -->
-    <div ng-if="model.view === 'accessories'" style="margin-top: 40px;" >
-      <div class="col-xs-12" ng-show="!model.loaded">
-        <img src="../assets/RollingPink.svg" alt="">
-        <div class="text-center">
-          <div class="invLoading">
-            Loading...
-          </div>
-        </div>
-      </div>
-
-      <div class="row" ng-show="model.loaded">
-        <div class="col-xs-12 text-center invFilterTitle">
-          Filter
-        </div>
-
-        <div class="col-xs-12 text-center">
-          <select id="unitChoice" class="invSelect" name="unitSelect" ng-model="model.accessoryFilter" ng-options="x for x in model.accessoryCategories" ng-change="removeFilter(model.accessoryFilter)">
-            <option value=""> Category </option>
-          </select>
-        </div>
-      </div>
-
-      <div class="col-xs-12 text-center" style="margin-top: 40px;" ng-show="model.loaded" >
-        <table class="table table-condensed tableBorder table-bordered table-hover" style="max-width: 600px; margin: 0 auto;">
-          <thead class="tableHead">
-            <tr>
-              <th class="text-center">
-                <a style="color: black;" href="" ng-click="model.accessorySortType = 'barcode'; model.accessorySortReverse = !model.accessorySortReverse">
-                  Accessory
-                  <span ng-show="model.accessorySortType == 'barcode' && model.accessorySortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="model.accessorySortType == 'barcode' && !model.accessorySortReverse" class="fa fa-caret-up"></span>
-                </a>
-              </th>
-              <th class="text-center">
-                <a style="color: black;" href="" ng-click="model.accessorySortType = 'inStock'; model.accessorySortReverse = !model.accessorySortReverse">
-                  On Shelf
-                  <span ng-show="model.accessorySortType == 'inStock' && model.accessorySortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="model.accessorySortType == 'inStock' && !model.accessorySortReverse" class="fa fa-caret-up"></span>
-                </a>
-              </th>
-              <th class="text-center">
-                <a style="color: black;" href="" ng-click="model.accessorySortType = 'category'; model.accessorySortReverse = !model.accessorySortReverse">
-                  Categories
-                  <span ng-show="model.accessorySortType == 'category' && model.accessorySortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="model.accessorySortType == 'category' && !model.accessorySortReverse" class="fa fa-caret-up"></span>
-                </a>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="tableItems" ng-repeat="accessory in barcodedAccessories | orderBy:model.accessorySortType:model.accessorySortReverse | filter:{category : model.accessoryFilter}" ng-if="accessory.id">
-              <td class="text-center" style="color: white; font-weight: 300"> {{accessory.barcode}} </td>
-              <td class="text-center" style="color: white"> {{accessory.inStock}}  </td>
-              <td class="text-center" style="color: white"> {{accessory.category}} </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
   </div>
 
 </div>

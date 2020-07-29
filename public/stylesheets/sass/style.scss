@@ -35,4 +35,12 @@ body {
       margin-top: 50px;
     }
   }
+
+  &-accessory {
+    &-filter {
+      &-container {
+        margin: 20px auto;
+      }
+    }
+  }
 }

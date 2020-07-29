@@ -23,6 +23,8 @@ barcodeApp.controller('InventoryListController', ['$rootScope', '$scope', '$fire
       stock : {},
       byUnit: {}
     },
+    cableInventory      : [],
+    accessoryInventory  : [],
     loaded              : false,
     minThresholdObject  : {},
     inventoryListView   : true,
@@ -49,6 +51,9 @@ barcodeApp.controller('InventoryListController', ['$rootScope', '$scope', '$fire
       loadProductTable();
       // $scope.makeShelfList();
     });
+
+    $scope.model.cableInventory     = $firebaseArray(firebase.database().ref().child('cableInventory'));
+    $scope.model.accessoryInventory = $firebaseArray(firebase.database().ref().child('accessoryInventory'));
 
     loadMinThreshold();
   }
@@ -122,22 +127,6 @@ barcodeApp.controller('InventoryListController', ['$rootScope', '$scope', '$fire
       $scope.model.stockObject = Object.assign({}, $scope.model.minThresholdObject);
     });
   }
-
-  //------------- Import Firebase Information -------------
-
-  // //product invnetory from Firebase
-  // $scope.barcodedUnitInfo = ;
-  // $scope.barcodedUnits = $firebaseArray($scope.barcodedUnitInfo);
-
-  //cable invnetory from Firebase
-  $scope.barcodedCableInfo = firebase.database().ref().child('cableInventory');
-  $scope.barcodedCablesArray = $firebaseArray($scope.barcodedCableInfo);
-
-  //accessory invnetory from Firebase
-  $scope.barcodedAccessoryInfo = firebase.database().ref().child('accessoryInventory');
-  $scope.barcodedAccessories = $firebaseArray($scope.barcodedAccessoryInfo);
-  //----------------------------------------------------------
-
 
   // object with currently read barcode
   $scope.barcodeRead = {
