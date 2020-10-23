@@ -10,44 +10,51 @@ barcodeApp.controller('GenerateBarcodeController', ['$scope', '$window', functio
     //
 
     var model = {
-      accessoryOptions : ['A-Mount', 'A-Other', 'A-Gear', 'A-LR2']
+      accessoryOptions      : ['A-Mount', 'A-Other', 'A-Gear', 'A-LR2'],
+      showQuantityOptionList: ['Cable', 'A-Mount', 'A-Other', 'A-Gear', 'A-LR2']
     };
 
-    $scope.chosenItems = {
+    //
+    // View Model
+    //
+
+    $scope.model = {
       unitSelect: null,
       serialNum : null,
-      numItems  : null
-    }
+      numItems  : null,
+      barcodes  : [],
+      products  : [
+        'FI',
+        'HU3',
+        'MDR3',
+        'MDR4',
+        'LR2 Sensor',
+        'LR2 VIU',
+        'LR2W',
+        'LR2M',
+        'HU4',
+        'DMF3',
+        'RMF',
+        'VF3',
+        'DM1X',
+        'DM2X',
+        'DM5',
+        'BM',
+        'Cable',
+        'A-Gear',
+        'A-Mount',
+        'A-LR2',
+        'A-Other'
+      ]
+    };
 
-    //barcode array
-    $scope.barcodes = [];
-
-    //product options
-    $scope.products = [
-      'FI',
-      'HU3',
-      'MDR3',
-      'MDR4',
-      'LR2 Sensor',
-      'LR2 VIU',
-      'LR2W',
-      'LR2M',
-      'HU4',
-      'DMF3',
-      'RMF',
-      'VF3',
-      'DM1X',
-      'DM2X',
-      'DM5',
-      'BM',
-      'Cable',
-      'A-Gear',
-      'A-Mount',
-      'A-LR2',
-      'A-Other'
-    ];
-
-    //add barcode to array and update local storage-------
+    /**
+     * Add barcode to array and localStorage
+     * @param {string} item
+     * @param {string} serial
+     * @param {number} numItem
+     * @return {undefined}
+     */
     $scope.addBarcode = function(item, serial, numItem){
       var reset = '';
 
@@ -57,7 +64,7 @@ barcodeApp.controller('GenerateBarcodeController', ['$scope', '$window', functio
         alert('Please enter a serial number');
       } else {
         //make sure inputted serial number is the right number of characters
-        if (checkSerialNum(item, serial)) {
+        if (validateSerialNumber(item, serial)) {
           //check to fix long barcodes due to sensor and VIU
           if (item === 'LR2 Sensor' || item === 'LR2 VIU') {
             item = 'LR2';
@@ -66,10 +73,10 @@ barcodeApp.controller('GenerateBarcodeController', ['$scope', '$window', functio
           if (item === 'Cable' || model.accessoryOptions.indexOf(item) !== -1) {
             if (!isNaN(parseInt(numItem))) {
               for (var i=0; i<numItem; i++) {
-                $scope.barcodes.push({unit: item, num: serial})
-                localStorage.setItem('barcodes', JSON.stringify($scope.barcodes));
+                $scope.model.barcodes.push({unit: item, num: serial})
+                localStorage.setItem('barcodes', JSON.stringify($scope.model.barcodes));
               }
-              $scope.chosenItems = {
+              $scope.model = {
                 unitSelect: null,
                 serialNum : null,
                 numItems  : null
@@ -78,30 +85,34 @@ barcodeApp.controller('GenerateBarcodeController', ['$scope', '$window', functio
               alert('Please enter a real number for how many ' + item + ' you wish to print barcodes for.');
               return;
             }
-          }
-          else {
-            $scope.barcodes.push({unit: item, num: serial})
-            localStorage.setItem('barcodes', JSON.stringify($scope.barcodes));
+          } else {
+            $scope.model.barcodes.push({unit: item, num: serial})
+            localStorage.setItem('barcodes', JSON.stringify($scope.model.barcodes));
 
-            for (var i=0; i<$scope.chosenItems.serialNum.length; i++) {
-              if ($scope.chosenItems.unitSelect === "DMF3" && (i===1)) {
-                reset += $scope.chosenItems.serialNum[i];
-              } else if ($scope.chosenItems.unitSelect === "DM2X" && (i===0)) {
-                reset += $scope.chosenItems.serialNum[i];
-              } else if (isNaN($scope.chosenItems.serialNum[i])) {
-                reset += $scope.chosenItems.serialNum[i];
+            for (var i=0; i<$scope.model.serialNum.length; i++) {
+              if ($scope.model.unitSelect === "DMF3" && (i===1)) {
+                reset += $scope.model.serialNum[i];
+              } else if ($scope.model.unitSelect === "DM2X" && (i===0)) {
+                reset += $scope.model.serialNum[i];
+              } else if (isNaN($scope.model.serialNum[i])) {
+                reset += $scope.model.serialNum[i];
               }
             }
           }
 
           //reset input to previous barcode lettering
-          $scope.chosenItems.serialNum = reset;
+          $scope.model.serialNum = reset;
         }
       }
     }
 
-    //checks that inputted serial number is correctly formatted -------
-    var checkSerialNum = function(item, serial){
+    /**
+     * Validation that serial number is correct
+     * @param {string} item
+     * @param {number} serial
+     * @return {bool}
+     */
+    var validateSerialNumber = function(item, serial){
       var shortBarcode     = ['FI', 'HU3', 'MDR3', 'MDR4', 'RMF', 'DM1X', 'DM5', 'BM', 'HU4', 'LR2W', 'LR2M'];
       var accessoryOptions = ['A-Mount', 'A-Other', 'A-Gear', 'A-LR2'];
 
@@ -207,77 +218,84 @@ barcodeApp.controller('GenerateBarcodeController', ['$scope', '$window', functio
       }
     }
 
-    //remove item from array and update local storage -------
+    /**
+     * Remove item from array and localStorage
+     * @param {string} item
+     * @return {undefined}
+     */
     $scope.removeItem = function(item){
-      $scope.barcodes.splice($scope.barcodes.indexOf(item), 1);
-      localStorage.setItem('barcodes', JSON.stringify($scope.barcodes));
+      $scope.model.barcodes.splice($scope.model.barcodes.indexOf(item), 1);
+      localStorage.setItem('barcodes', JSON.stringify($scope.model.barcodes));
     }
 
-    //checks when an item is selected and updates the appropriate serial num letters -------
-    $scope.$watch('chosenItems.unitSelect', function(newValue) {
-      if ($scope.chosenItems.unitSelect==='DMF3') {
-        $scope.chosenItems.serialNum = 'D3-';
+    /**
+     * Watcher for when unit is selected to update serial number
+     * @return {undefined}
+     */
+    $scope.$watch('model.unitSelect', function(newValue) {
+      if ($scope.model.unitSelect==='DMF3') {
+        $scope.model.serialNum = 'D3-';
       }
-      else if ($scope.chosenItems.unitSelect==='LR2 Sensor') {
-        $scope.chosenItems.serialNum = 'LR';
+      else if ($scope.model.unitSelect==='LR2 Sensor') {
+        $scope.model.serialNum = 'LR';
       }
-      else if ($scope.chosenItems.unitSelect==='LR2 VIU') {
-        $scope.chosenItems.serialNum = 'VOU';
+      else if ($scope.model.unitSelect==='LR2 VIU') {
+        $scope.model.serialNum = 'VOU';
       }
-      else if ($scope.chosenItems.unitSelect==='VF3') {
-        $scope.chosenItems.serialNum = 'MF';
+      else if ($scope.model.unitSelect==='VF3') {
+        $scope.model.serialNum = 'MF';
       }
-      else if ($scope.chosenItems.unitSelect==='DM2X') {
-        $scope.chosenItems.serialNum = '2X';
+      else if ($scope.model.unitSelect==='DM2X') {
+        $scope.model.serialNum = '2X';
       }
-      else if ($scope.chosenItems.unitSelect==='Cable') {
-        $scope.chosenItems.serialNum = 'C';
+      else if ($scope.model.unitSelect==='Cable') {
+        $scope.model.serialNum = 'C';
       }
-      else if ($scope.chosenItems.unitSelect==='A-LR2') {
-        $scope.chosenItems.serialNum = 'L';
+      else if ($scope.model.unitSelect==='A-LR2') {
+        $scope.model.serialNum = 'L';
       }
-      else if ($scope.chosenItems.unitSelect==='A-Mount') {
-        $scope.chosenItems.serialNum = 'M';
+      else if ($scope.model.unitSelect==='A-Mount') {
+        $scope.model.serialNum = 'M';
       }
-      else if ($scope.chosenItems.unitSelect==='A-Gear') {
-        $scope.chosenItems.serialNum = 'G';
+      else if ($scope.model.unitSelect==='A-Gear') {
+        $scope.model.serialNum = 'G';
       }
-      else if ($scope.chosenItems.unitSelect==='A-Other') {
-        $scope.chosenItems.serialNum = 'A';
+      else if ($scope.model.unitSelect==='A-Other') {
+        $scope.model.serialNum = 'A';
       }
       else {
-        $scope.chosenItems.serialNum = '';
+        $scope.model.serialNum = '';
       }
 
-      $scope.setFocus();
+      setFocus();
     })
 
-    $scope.setFocus = function() {
+    /**
+     * Sets focus on next box after unit is selected
+     * @return {undefined}
+     */
+    function setFocus() {
       var input = $window.document.getElementById('serialEntry');
       input.focus();
     }
 
-    //removes all items preparing to be scanned ---------
+    /**
+     * Removes all barcodes from list
+     * @public
+     * @return {undefined}
+     */
     $scope.removeAll = function() {
-      $scope.barcodes = [];
+      $scope.model.barcodes = [];
       localStorage.setItem('barcodes', '');
     }
 
-    //when generate barcodes is clicked before anything is added ---------
-    $scope.checkForItems = function(){
-      if(!$scope.barcodes.length){
-        localStorage.setItem('barcodes', '');
-        alert("Probably should've entered some items");
-      }
-    }
-
     /**
-     * Shows/hides the numberi nput for how many cables a user can see
+     * Shows/hides the number input for how many cables a user can see
      * @param {string} unit
      * @return {bool}
      */
-    $scope.showHowMany = function(unit) {
-      return unit.unitSelect === 'Cable' || model.accessoryOptions.indexOf(unit.unitSelect) !== -1;
+    $scope.showHowMany = function(unitSelected) {
+      return model.showQuantityOptionList.indexOf(unitSelected) !== -1;
     }
 }])
 

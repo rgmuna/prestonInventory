@@ -10,7 +10,7 @@
             Unit Type
           </h3>
           <div class="col-xs-12">
-            <select class="form-control" name="unitSelect" value="test" ng-model="chosenItems.unitSelect" ng-options="x for x in products" ng-change="update()"> </select>
+            <select class="form-control" name="unitSelect" value="test" ng-model="model.unitSelect" ng-options="x for x in model.products" ng-change="update()"> </select>
           </div>
         </div>
         <div class="col-sm-6 text-center">
@@ -18,24 +18,24 @@
             Serial Number
           </h3>
           <div class="col-xs-12">
-            <input id="serialEntry" class="form-control" ng-enter="addBarcode(chosenItems.unitSelect, chosenItems.serialNum, chosenItems.numItems)" ng-model="chosenItems.serialNum" />
+            <input id="serialEntry" class="form-control" ng-enter="addBarcode(model.unitSelect, model.serialNum, model.numItems)" ng-model="model.serialNum" />
           </div>
         </div>
-        <div class="col-xs-12" ng-if="showHowMany(chosenItems)">
+        <div class="col-xs-12" ng-if="showHowMany(model.unitSelect)">
           <div class="generate-barcode-how-many">
             <h4>How Many?</h4>
-            <input class="form-control" ng-model="chosenItems.numItems" ng-enter="addBarcode(chosenItems.unitSelect, chosenItems.serialNum, chosenItems.numItems)">
+            <input class="form-control" ng-model="model.numItems" ng-enter="addBarcode(model.unitSelect, model.serialNum, model.numItems)">
           </div>
         </div>
       </div>
       <div class="col-xs-12 text-center">
-        <button class="btn btn-primary btn-lg" ng-click="addBarcode(chosenItems.unitSelect, chosenItems.serialNum, chosenItems.numItems)"> Add to List </button>
+        <button class="btn btn-primary btn-lg" ng-click="addBarcode(model.unitSelect, model.serialNum, model.numItems)"> Add to List </button>
       </div>
     </div>
   </div>
 
   <div class="row">
-    <div class="col-sm-8 col-sm-offset-2 col-xs-12" ng-show="barcodes.length">
+    <div class="col-sm-8 col-sm-offset-2 col-xs-12" ng-show="model.barcodes.length">
       <table class="table table-striped">
         <thead>
           <tr>
@@ -45,7 +45,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="item in barcodes">
+          <tr ng-repeat="item in model.barcodes">
             <td>{{item.unit}}</td>
             <td>{{item.num}} </td>
             <td><button class="btn btn-danger" ng-click="removeItem(item)">Remove</button></td>
@@ -54,11 +54,11 @@
       </table>
     </div>
 
-    <div class="col-xs-12 text-center" ng-show="barcodes.length">
+    <div class="col-xs-12 text-center" ng-show="model.barcodes.length">
       <a ng-click="removeAll()">Remove all items</a>
     </div>
   </div>
   <div class="row text-center btn-container">
-      <a ng-show="barcodes.length" class="btn btn-success btn-lg"  ui-sref="generated({obj: barcodes})" target="_blank">Generate Barcodes</a>
+      <a ng-show="model.barcodes.length" class="btn btn-success btn-lg"  ui-sref="generated({obj: model.barcodes})" target="_blank">Generate Barcodes</a>
   </div>
 </div>

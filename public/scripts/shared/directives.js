@@ -7,16 +7,16 @@ barcodeApp.directive('ngEnter', function () {
 
           //script for resetting serial number while still including letters
           var reset = '';
-          for(var i=0; i<$scope.chosenItems.serialNum.length; i++){
-            if ($scope.chosenItems.unitSelect === "DMF3" && (i===1)) {
-              reset += $scope.chosenItems.serialNum[i];
-            } else if ($scope.chosenItems.unitSelect === "DM2X" && (i===0)) {
-              reset += $scope.chosenItems.serialNum[i];
-            } else if (isNaN($scope.chosenItems.serialNum[i])) {
-              reset += $scope.chosenItems.serialNum[i];
+          for(var i=0; i<$scope.model.serialNum.length; i++){
+            if ($scope.model.unitSelect === "DMF3" && (i===1)) {
+              reset += $scope.model.serialNum[i];
+            } else if ($scope.model.unitSelect === "DM2X" && (i===0)) {
+              reset += $scope.model.serialNum[i];
+            } else if (isNaN($scope.model.serialNum[i])) {
+              reset += $scope.model.serialNum[i];
             }
           };
-          $scope.chosenItems.serialNum = reset;
+          $scope.model.serialNum = reset;
         });
         event.preventDefault();
       }
