@@ -44,3 +44,40 @@ body {
     }
   }
 }
+
+// Generate Barcode
+.generate-barcode {
+  .main-section {
+    padding: 20px;
+    border: 1px solid #555555;
+    margin: 40px 0;
+    border-radius: 10px;
+  }
+
+  .form-control {
+    font-size: 25px;
+    height: 54px;
+  }
+
+  &-how-many {
+    margin-top: 30px;
+
+    h4 {
+      display: inline-block;
+    }
+
+    input {
+      display: inline-block;
+      max-width: 100px;
+    }
+  }
+
+  table {
+    font-size: 20px;
+    margin-top: 20px;
+  }
+
+  .btn-success {
+    font-size: 30px;
+  }
+}

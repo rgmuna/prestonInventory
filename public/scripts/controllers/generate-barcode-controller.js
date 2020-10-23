@@ -271,14 +271,14 @@ barcodeApp.controller('GenerateBarcodeController', ['$scope', '$window', functio
       }
     }
 
+    /**
+     * Shows/hides the numberi nput for how many cables a user can see
+     * @param {string} unit
+     * @return {bool}
+     */
     $scope.showHowMany = function(unit) {
-      if (unit.unitSelect === 'Cable' || model.accessoryOptions.indexOf(unit.unitSelect) !== -1) {
-        return true;
-      } else {
-        return false;
-      }
+      return unit.unitSelect === 'Cable' || model.accessoryOptions.indexOf(unit.unitSelect) !== -1;
     }
-
 }])
 
 .controller('PrintController', ['$scope', function ($scope) {

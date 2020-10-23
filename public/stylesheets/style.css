@@ -132,19 +132,6 @@ li>#loanerCheck.activeState:after {
   margin: 30px 0px 0px 0px;
 }
 
-.entry-container{
-  border: 1px #33FF00 solid;
-  padding: 20px;
-  color: #33FF00;
-  background-color: #202020;
-  /*z-index: -1;*/
-}
-.tab-title{
-  color: #33ff00;
-  font-weight: 500;
-  font-size: 60px;
-  margin: 50px 0px 20px 0px;
-}
 .subtitle{
   color: #33FF00;
 }
