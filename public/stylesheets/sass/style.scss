@@ -10,6 +10,38 @@ body {
   // color: $primary-color;
 }
 
+.no-padding{
+  padding: 0px;
+}
+
+/*
+  Login control
+*/
+
+.login-control {
+  color: #777;
+}
+
+.login-control a{
+  cursor: pointer;
+  color: #777;
+}
+
+/*loading animation*/
+.loginLoading{
+  position: absolute;
+  right: 0px;
+  color: white;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: .15em solid white; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 10px; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: .15em; /* Adjust as needed */
+  animation:
+    authTyping 2s steps(40, end) infinite,
+    blink-caret .75s step-end infinite;
+}
+
 /*
   Nav Bar
 */
@@ -37,7 +69,10 @@ body {
   margin: 20px;
 }
 
-// Inventory List
+/*
+  Inventory List
+*/
+
 .inventory {
   &-list {
     font-size: 18px;
@@ -60,7 +95,72 @@ body {
   }
 }
 
-// Generate Barcode
+/*
+  Inventory Scanner
+*/
+
+.inventory-scanner {
+  max-width: 600px;
+
+  &-main-input {
+    max-width: 300px;
+    font-size: 35px;
+    padding: 5px;
+    margin: 20px auto;
+    height: auto;
+    text-align: center;
+  }
+
+  &-titles {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+
+  &-container {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #f8f8f8;
+    padding: 20px;
+    margin-top: 20px;
+
+    h3 {
+      margin-top: 0;
+    }
+
+    ul {
+      padding-inline-start: 0;
+    }
+
+    li {
+      list-style-type: none;
+    }
+  }
+
+  &-buttons {
+    display: inline-block;
+    vertical-align: bottom;
+    margin-top: 10px;
+  }
+}
+
+// .barcode-input{
+//   font-size: 35px;
+//   color: white;
+//   background-color: black;
+//   border: 1px solid #00FFFF;
+//   border-radius: 10px;
+//   text-align: center;
+//   max-width: 300px;
+// }
+
+// .barcode-input:focus{
+//   outline-width: 0;
+// }
+
+/*
+  Generate Barcode
+*/
+
 .generate-barcode {
   .main-section {
     padding: 20px;

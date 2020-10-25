@@ -16,14 +16,20 @@ barcodeApp.controller('InventoryScannerController', [
     //
 
     var model = {
-      accessoryCategories : ['A', 'G', 'L', 'M']
+      accessoryCategories: ['A', 'G', 'L', 'M'],
+      unitStatus         : {
+        0: 'checked out - purchase',
+        1: 'checked out - other',
+        2: 'on shelf',
+        3: 'missing'
+      }
     }
 
   //------------- Import Firebase Information -------------
 
   //product invnetory from Firebase
   $scope.barcodedUnitInfo = firebase.database().ref().child('inventory');
-  $scope.barcodedUnits = $firebaseArray($scope.barcodedUnitInfo);
+  $scope.barcodedUnits    = $firebaseArray($scope.barcodedUnitInfo);
 
   //cable invnetory from Firebase
   $scope.barcodedCableInfo = firebase.database().ref().child('cableInventory');
