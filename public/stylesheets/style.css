@@ -1,108 +1,10 @@
 
-/* body{
-  background-image: url(../assets/hexabump.png)
-} */
 
-#inventoryNav.activeState{
-  font-weight: 600;
-}
-#checkNav.activeState{
-  font-weight: 600;
-}
-#generateNav.activeState{
-  font-weight: 600;
-}
-#loanerInv.activeState{
-  font-weight: 600;
-}
-#loanerCheck.activeState{
-  font-weight: 600;
-}
 
-li>:after {
-	content: '';
-	display: block;
-	margin: auto;
-	height: 3px;
-	width: 0px;
-	background: transparent;
-	transition: width .5s ease, background-color .5s ease;
-}
-li>#inventoryNav.activeState:after {
-	width: 100%;
-	background: #FF00CC;
-}
-li>#checkNav.activeState:after {
-	width: 100%;
-	background: #00FFFF;
-}
-li>#generateNav.activeState:after {
-	width: 100%;
-	background: #33ff00;
-}
-li>#loanerInv.activeState:after {
-	width: 100%;
-	background: #FF6600;
-}
-li>#loanerCheck.activeState:after {
-	width: 100%;
-	background: #F3F315;
-}
 
-.navbar{
-  background-color: #202020;
-  border-radius: 0px;
-  height: 53px;
-}
 
-.navbar-default{
-  border: none;
-}
-.navbar-default .navbar-collapse{
-  border: none;
-  background-color: black;
-}
 
-.navbar-default .navbar-nav>li>a#inventoryNav{
-  background-color: transparent;
-  color: #FF00CC;
-}
-.navbar-default .navbar-nav>li>a#inventoryNav:focus{
-  background-color: transparent;
-  color: #FF00CC !important;
-}
-.navbar-default .navbar-nav>li>a#checkNav{
-  background-color: transparent;
-  color: #00FFFF;
-}
-.navbar-default .navbar-nav>li>a#checkNav:focus{
-  background-color: transparent;
-  color: #00FFFF !important;
-}
-.navbar-default .navbar-nav>li>a#generateNav{
-  background-color: transparent;
-  color: #33ff00;
-}
-.navbar-default .navbar-nav>li>a#generateNav:focus{
-  background-color: transparent;
-  color: #33ff00 !important;
-}
-.navbar-default .navbar-nav>li>a#loanerInv{
-  background-color: transparent;
-  color: #FF6600;
-}
-.navbar-default .navbar-nav>li>a#loanerInv:focus{
-  background-color: transparent;
-  color: #FF6600 !important;
-}
-.navbar-default .navbar-nav>li>a#loanerCheck{
-  background-color: transparent;
-  color: #F3F315;
-}
-.navbar-default .navbar-nav>li>a#loanerCheck:focus{
-  background-color: transparent;
-  color: #F3F315 !important;
-}
+
 
 .title-container{
   z-index: -1;
@@ -1108,11 +1010,6 @@ button:focus {
 }
 
 /*media queries---------------------------------------------------------------*/
-@media (min-device-width: 768px) {
-  .navbar-default .navbar-nav>li>a:hover {
-    color: white !important;
-  }
-}
 
 @media only screen and (max-device-width: 767px) {
   .numEntry{
