@@ -174,7 +174,7 @@ barcodeApp.controller('InventoryListController', ['$rootScope', '$scope', '$fire
     if($scope.barcodeChecker.barcodeNum){
         $scope.checkInv(newValue);
         $scope.barcodeChecker.barcodeNum = '';
-        $scope.playAudio('scanned');
+        playAudio('scanned');
     }
   });
   //not including LR items due to weirdness of labels
@@ -288,7 +288,7 @@ barcodeApp.controller('InventoryListController', ['$rootScope', '$scope', '$fire
         $scope.shelfUnits[i].status = false;
       }
       $scope.unlistedUnits = [];
-      $scope.playAudio('alanna');
+      playAudio('alanna');
     }
   }
 
@@ -320,7 +320,11 @@ barcodeApp.controller('InventoryListController', ['$rootScope', '$scope', '$fire
     })
   }
 
-  $scope.playAudio = function(sound) {
+  /**
+   * Plays audio file for
+   * @param {string} sound
+   */
+  function playAudio(sound) {
     if(sound === "checkedIn"){
       var audio = new Audio('../audio/checkedIn.wav');
     }

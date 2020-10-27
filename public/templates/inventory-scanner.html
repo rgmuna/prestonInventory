@@ -2,39 +2,39 @@
 
   <div class="row text-center">
     <h2> Inventory Check In/Out </h2>
-    <h4 style="margin-top: 30px"> <i class="fa fa-long-arrow-down" aria-hidden="true"></i> Click inside black box then scan barcode <i class="fa fa-long-arrow-down" aria-hidden="true"></i></h4>
+    <h4 style="margin-top: 30px"> <i class="fa fa-long-arrow-down" aria-hidden="true"></i> Click inside the box then scan barcode <i class="fa fa-long-arrow-down" aria-hidden="true"></i></h4>
   </div>
 
-  <div class="row text-center" ng-show="!loaded">
-    <img src="../assets/Rolling.svg" alt="">
-    <div class="text-center">
-      <div class="loading">
-        Loading...
-      </div>
-    </div>
+  <div class="row text-center" ng-show="!model.loaded">
+    <img src="../assets/loading.svg" alt="">
   </div>
 
-  <div class="row text-center" ng-show="loaded">
-    <input id="scanInput" class="form-control inventory-scanner-main-input" ng-model="barcodeRead.barcodeNum" ng-model-options="{debounce : 300}" autofocus/>
-    <div ng-if="adminLoggedIn" class="adminButtons">
-      <button ng-click="barcodeRead.barcodeNum = ''"> Clear </button>
+  <div class="row text-center" ng-show="model.loaded">
+    <input id="scanInput" class="form-control inventory-scanner-main-input" ng-model="model.barcodeNum" ng-model-options="{debounce : 300}" autofocus/>
+    <!-- <div ng-if="adminLoggedIn" class="adminButtons">
+      <button ng-click="model.barcodeNum = ''"> Clear </button>
       <button ng-click="prepareScannedInput()"> Enter </button>
-    </div>
+    </div> -->
   </div>
 
-  <div class="row text-left" ng-show="loaded && barcodeEntered && ((pendingBarcodes | json) != '{}')">
-    # of Scanned Units: {{numPending}} <a href="" ng-click="removeAllUnits()" style="float: right; color: red;">Clear All</a>
+  <div class="row text-left" ng-if="model.loaded && model.barcodeEntered && ((model.pendingBarcodes | json) != '{}')">
+    # of Scanned Units: {{ model.pendingBarcodes | numkeys }} <a href="" ng-click="removeAllUnits()" style="float: right; color: red;">Clear All</a>
   </div>
 
-  <div class="row" ng-show="loaded">
-    <div class="col-xs-12 inventory-scanner-container no-padding" ng-repeat="unit in pendingBarcodes">
+  <div class="row" ng-show="model.loaded">
+    <div class="col-xs-12 inventory-scanner-container no-padding" ng-repeat="unit in model.pendingBarcodes">
 
       <!-- LEFT IN FOR ADDING IN LATER -->
       <!-- <i ng-if="adminLoggedIn" style="float: left; padding-top: 10px; margin-left: -8px;" ng-click="adminEditUnit(unit)" class="fa fa-pencil-square" aria-hidden="true"></i> {{unit.barcode}} -->
 
+      <div class="col-xs-12" ng-if="unit.checkingUnit">
+        <img src="../assets/loading.svg" alt="">
+      </div>
+
       <!-- Unit -->
-      <div class="row" ng-if="!unit.type">
-        <span class="removeTest" ng-click="remove(unit)" ng-if="unit.status !== 'Checked In' && unit.status !== 'Checked Out'"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
+      <span class="removeTest" ng-click="remove(unit)" ng-if="!unit.checkingUnit"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
+
+      <div class="row" ng-if="!unit.type && !unit.checkingUnit">
         <div class="col-xs-12 inventory-scanner-titles no-padding">
           <div class="col-xs-6">
             <h3 class="text-left">
@@ -66,38 +66,37 @@
             </ul>
           </div>
           <div class="col-xs-6 inventory-scanner-buttons">
-            <button class="btn btn-lg btn-success" ng-click="checkIn(unit)" ng-show="(unit.status==='checked out - purchase' || unit.status==='unchecked' || unit.status==='checked out - other')">Check In</button>
-            <button class="btn btn-lg btn-primary" ng-click="checkOut(unit, 'other')" ng-show="unit.status==='on shelf'">Other</button>
-            <button class="btn btn-lg btn-info" ng-click="checkOut(unit, 'purchase')" ng-show="unit.status==='on shelf'">Purchase</button>
+            <button class="btn btn-lg btn-success" ng-click="checkIn(unit)"              ng-show="(unit.status==='checked out - purchase' || unit.status==='unchecked' || unit.status==='checked out - other')">Check In</button>
+            <button class="btn btn-lg btn-primary" ng-click="checkOut(unit, 'other')"    ng-show="unit.status==='on shelf'">Other</button>
+            <button class="btn btn-lg btn-info"    ng-click="checkOut(unit, 'purchase')" ng-show="unit.status==='on shelf'">Purchase</button>
           </div>
         </div>
       </div>
 
       <!-- if unit is a cable or accessory -->
-      <div ng-if="unit.type === 'cable' || unit.type === 'accessory'">
-        <span class="removeTest" ng-click="remove(unit)"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
-        <div class="col-xs-12 pendingItems no-padding">
-          <div class="col-xs-3 pendingCode">
-            {{unit.barcode}}
+      <div ng-if="(unit.type === 'cable' || unit.type === 'accessory') && !unit.checkingUnit">
+        <div class="col-xs-12 inventory-scanner-titles no-padding">
+          <div class="col-xs-6">
+            <h3 class="text-left">
+              <strong>{{ unit.barcode }}</strong>
+            </h3>
           </div>
-          <div class="col-xs-9 pendingStatus" ng-class="unit.status" ng-if="unit.status === 'Checked In' || unit.status === 'Checked Out'">
-            <strong> {{unit.newNumber}}x </strong> {{unit.status}}
-          </div>
-          <div class="col-xs-9 text-right" ng-show="!unit.checkInClicked">
-            <a style="margin-right: 30px; color: white;" ng-click="editNumber(unit.barcode)"> <i class="fa fa-pencil" aria-hidden="true"></i> Edit Number </a>
+          <div class="col-xs-6 no-padding">
+            <a ng-click="editNumber(unit.barcode)">
+              <h4 style="margin-top: 0;"><i class="fa fa-pencil" aria-hidden="true"></i> Edit Number</h4>
+            </a>
           </div>
         </div>
 
-        <div class="col-xs-12 no-padding bottomContainer" ng-show="!unit.checkInClicked">
-          <div class="col-xs-3" style="font-size: 20px; color: white;">
-            # Checking In/Out:
+        <div class="col-xs-12 no-padding">
+          <div class="col-xs-6 no-padding">
+            <h3 style="margin-top: 10px;" class="text-left">
+              # Checking In/Out: <strong>{{ unit.newNumber }}</strong>
+            </h3>
           </div>
-          <div class="col-xs-2 no-padding text-left newNumber">
-            {{unit.newNumber}}
-          </div>
-          <div class="col-xs-7 text-right">
-            <button class="checkInBtn" ng-click="checkIn(unit)"> Check In </button>
-            <button ng-if="unit.status !== 'unchecked'" class="checkOutOptions" ng-click="checkOut(unit)"> Check Out </button>
+          <div class="col-xs-6 text-right">
+            <button class="btn btn-lg btn-primary" ng-click="checkIn(unit)"> Check In </button>
+            <button class="btn btn-lg btn-info"    ng-click="checkOut(unit)"> Check Out </button>
           </div>
         </div>
       </div>
