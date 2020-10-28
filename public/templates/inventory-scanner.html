@@ -11,10 +11,21 @@
 
   <div class="row text-center" ng-show="model.loaded">
     <input id="scanInput" class="form-control inventory-scanner-main-input" ng-model="model.barcodeNum" ng-model-options="{debounce : 300}" autofocus/>
-    <!-- <div ng-if="adminLoggedIn" class="adminButtons">
-      <button ng-click="model.barcodeNum = ''"> Clear </button>
-      <button ng-click="prepareScannedInput()"> Enter </button>
-    </div> -->
+
+    <div class="switch">
+      <div class="switch-title">Scanner</div>
+      <label class="switch-toggle">
+        <input class="switch-toggle-check" ng-model="model.isManualEntry" type="checkbox">
+        <span class="switch-toggle-slider round"></span>
+      </label>
+      <div class="switch-title">Manual</div>
+    </div>
+
+    <div style="margin-top: 10px;" ng-if="model.isManualEntry">
+      <button class="btn btn-lg btn-secondary" ng-click="model.barcodeNum = ''"> Clear </button>
+      <button class="btn btn-lg btn-primary" ng-click="prepareScannedInput()"> Enter </button>
+    </div>
+
   </div>
 
   <div class="row text-left" ng-if="model.loaded && model.barcodeEntered && ((model.pendingBarcodes | json) != '{}')">
@@ -47,7 +58,7 @@
             </h3>
           </div>
         </div>
-        <div class="col-xs-12" ng-if="unit.notes">
+        <div style="margin-bottom: 12px;" class="col-xs-12" ng-if="unit.notes">
           QA Notes: {{unit.notes}}
         </div>
         <div class="col-xs-12">

@@ -25,7 +25,8 @@ barcodeApp.controller('InventoryScannerController', ['$scope','$rootScope','$fir
     loaded         : false,
     pendingBarcodes: {},
     barcodeNum     : '',
-    barcodeEntered : false
+    barcodeEntered : false,
+    isManualEntry  : false
   }
 
   //------------- Import Firebase Information -------------
@@ -43,14 +44,13 @@ barcodeApp.controller('InventoryScannerController', ['$scope','$rootScope','$fir
   $scope.barcodedAccessoriesObj = $firebaseObject($scope.barcodedAccessoryInfo);
 
 
-
-
   /**
    * Mark as loaded when firebase items are all loaded
    * @return {undefined}
    */
   $scope.barcodedUnits.$loaded().then(function() {
     $scope.model.loaded = true;
+    setFocus();
   });
 
 
@@ -60,7 +60,7 @@ barcodeApp.controller('InventoryScannerController', ['$scope','$rootScope','$fir
    */
   $scope.$watch('model.barcodeNum', function() {
     if ($scope.model.barcodeNum) {
-      if (!$rootScope.adminLoggedIn) {
+      if (!$scope.model.isManualEntry) {
         $scope.prepareScannedInput($scope.model.barcodeNum)
       }
     }
@@ -775,6 +775,7 @@ barcodeApp.controller('InventoryScannerController', ['$scope','$rootScope','$fir
    */
   function setFocus() {
     var input = $window.document.getElementById('scanInput');
+    console.log('IN HERE');
     input.focus();
   }
 

@@ -1,22 +1,19 @@
 <div id="loanerInv" class="container-fluid text-center">
 
   <div class="row text-center">
-    <h2 class="checkTitle"> Loaner Inventory </h2>
+    <h2> Loaner Inventory </h2>
   </div>
 
   <div class="row text-center" ng-show="!loaded">
     <div class="text-center">
-      <img src="../assets/RollingOrg.svg" alt="">
-      <div class="loading">
-        Loading...
-      </div>
+      <img src="../assets/loading.svg" alt="">
     </div>
   </div>
 
   <div class="row" style="margin-bottom: 30px;" ng-show="loaded">
     <div class="col-xs-12">
-      <button ng-click="showUnitList = true" class="listSelector" ng-class="{ 'activeList' : showUnitList }"> By Unit</button>
-      <button ng-click="showUnitList = false" class="listSelector" ng-class="{ 'activeList' : !showUnitList }"> By Customer</button>
+      <button class="btn btn-default" ng-click="showUnitList = true" ng-class="{ 'btn-primary' : showUnitList }"> By Unit</button>
+      <button class="btn btn-default" ng-click="showUnitList = false" ng-class="{ 'btn-primary' : !showUnitList }"> By Customer</button>
     </div>
   </div>
 
