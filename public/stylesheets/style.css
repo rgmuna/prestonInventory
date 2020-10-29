@@ -719,15 +719,6 @@ button:focus {
   border-top: none;
 }
 
-#unitChoice{
-  margin-right: 5px ;
-}
-
-#statusChoice{
-  margin-left: 20px;
-  margin-right: 5px;
-}
-
 .vis-hidden{
    visibility: hidden;
 }

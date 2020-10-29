@@ -1,4 +1,4 @@
-<div id="loanerInv" class="container-fluid text-center">
+<div id="loanerInv" class="container-fluid text-center loaner-inventory">
 
   <div class="row text-center">
     <h2> Loaner Inventory </h2>
@@ -31,15 +31,13 @@
   </div>
 
   <div class="row" ng-show="showUnitList && loaded">
-    <div class="col-xs-12 text-center filterTitle">
-      Filters
-    </div>
+    <h4>Filters</h4>
 
-    <div class="col-xs-12 text-center">
-      <select id="unitChoice" class="loanInvSelect" name="unitSelect" value="test" ng-model="filterVariables.unitType" ng-options="x for x in loanerProducts" ng-change="removeFilter('unitFilter', filterVariables.unitType)">
+    <div class="col-xs-12 text-center loaner-inventory-filters">
+      <select class="form-control" value="test" ng-model="filterVariables.unitType" ng-options="x for x in loanerProducts" ng-change="removeFilter('unitFilter', filterVariables.unitType)">
         <option value=""> Unit Type </option>
       </select>
-      <select id="statusChoice" class="loanInvSelect" name="unitSelect" value="test" ng-model="filterVariables.status" ng-options="x for x in loanerStatuses" ng-change="removeFilter('statusFilter', filterVariables.status)">
+      <select class="form-control" value="test" ng-model="filterVariables.status" ng-options="x for x in loanerStatuses" ng-change="removeFilter('statusFilter', filterVariables.status)">
         <option value=""> Status </option>
       </select>
     </div>
@@ -48,7 +46,8 @@
   <div class="row" ng-show="showUnitList && loaded">
     <div class="col-xs-12 text-center">
       <div style="max-width: 600px; margin: 30px auto;">
-        <table class="table table-condensed" style="max-width: 600px; margin: 30px auto 5px auto;">
+        <!-- headers -->
+        <table class="table table-condensed">
           <thead class="resTableHead">
             <tr>
               <th class="text-center">
@@ -84,19 +83,20 @@
           </thead>
         </table>
 
+        <!-- list -->
         <uib-accordion>
-          <div uib-accordion-group class="customAccStyles" is-open="status.open" ng-repeat="value in loanerArray | orderBy:sortType:sortReverse | filter:loanerSearch  | filter:{status : filterVariables.status} | filter:{unit : filterVariables.unitType}">
+          <div uib-accordion-group class="loaner-inventory-thumbnails" is-open="status.open" ng-repeat="value in loanerArray | orderBy:sortType:sortReverse | filter:loanerSearch  | filter:{status : filterVariables.status} | filter:{unit : filterVariables.unitType}">
             <uib-accordion-heading>
-              <table class="table table-condensed" style="margin-bottom: 0px;">
+              <table class="table">
                 <tbody>
-                  <tr class="results">
-                    <td class="text-left" style="border: none; width: 187px;">
-                      <span class="tableUnit">{{value.unit}}</span> s/n <span class="tableUnit">{{value.serialNum}}</span>
+                  <tr>
+                    <td class="text-left">
+                      <strong>{{ value.unit }} s/n {{ value.serialNum }}</strong>
                     </td>
-                    <td class="text-center hidden-xs" style="width: 130px; border: none;"> PCS{{value.unitBarcode}} </td>
-                    <td class="text-center" style="width: 138px; border: none;" ng-class="setStatusClass(value.status)"> {{value.status}} </td>
-                    <td class="text-center hidden-xs" style="width: 112px; border: none;"> {{value.timestamp  | date:'shortDate'}} </td>
-                    <td style="border: none;"> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i> </td>
+                    <td class="text-center hidden-xs"> PCS{{ value.unitBarcode }} </td>
+                    <td class="text-center"> {{ value.status }} </td>
+                    <td class="text-center hidden-xs"> {{ value.timestamp  | date:'shortDate' }} </td>
+                    <td> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i> </td>
                   </tr>
                 </tbody>
               </table>

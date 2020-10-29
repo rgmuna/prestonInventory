@@ -1,5 +1,7 @@
 $font-stack: Helvetica, sans-serif;
 $primary-color: #444;
+$background-color: #f8f8f8;
+$border-color-1: #e7e7e7;
 
 *{
   font-family: $font-stack, sans-serif;
@@ -271,5 +273,24 @@ body {
 
   .btn-success {
     font-size: 30px;
+  }
+}
+
+/*
+  Loaner Inventory
+*/
+
+.loaner-inventory {
+  &-filters {
+    select {
+      display: inline-block;
+      width: 150px;
+    }
+  }
+
+  &-thumbnails {
+    background: $background-color;
+    border: 1px solid $border-color-1;
+    border-radius: 10px;
   }
 }
