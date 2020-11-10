@@ -640,10 +640,6 @@ button:focus {
   color: #FF6600;
 }
 
-.customAccStyles:hover{
-  border: 1px solid white;
-}
-
 .wholeSerial{
   color: #FF6600;
   cursor: pointer;
@@ -703,16 +699,12 @@ button:focus {
   border: 1px solid #FF6600;
 }
 
- .customAccStyles a:focus{
-  text-decoration: none;
-}
- .customAccStyles a:hover{
+.customAccStyles a:focus{
   text-decoration: none;
 }
 
-.loanerInvResults{
-  font-size: 20px;
-  color: white;
+.customAccStyles a:hover{
+  text-decoration: none;
 }
 
 .panel-group .panel-heading + .panel-collapse > .list-group, .panel-group .panel-heading + .panel-collapse > .panel-body{
@@ -720,7 +712,7 @@ button:focus {
 }
 
 .vis-hidden{
-   visibility: hidden;
+  visibility: hidden;
 }
 
 .unitItems{
@@ -728,7 +720,6 @@ button:focus {
 }
 
 .custInfoInv{
-  color: white;
   text-align: left;
   margin-top: 10px;
 }
@@ -738,11 +729,6 @@ button:focus {
   text-align: left;
   font-size: 15px;
   font-weight: 300;
-}
-
-.custInfoInvTitle{
-  font-size: 20px;
-  font-weight: 600;
 }
 
 .customerResults{
@@ -759,36 +745,10 @@ button:focus {
   border-top: none !important;
 }
 
-.custInfoButton{
-  border: none;
-  border-radius: 5px;
-  font-size: 20px;
-  width: 100px;
-  padding: 10px 0px;
-}
-
-
 .editInfo{
   font-size: 15px;
   text-align: left;
   color: white;
-}
-
-.infoTitle{
-  width: 60px;
-  font-weight: bold;
-  display: inline-block;
-  vertical-align: top;
-}
-
-.editContainer{
-  margin-bottom: 10px;
-}
-
-.inputStyle{
-  background-color: black;
-  border: 1px solid white;
-  display: inline-block;
 }
 
 /* keypad modal */
