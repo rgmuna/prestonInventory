@@ -14,11 +14,12 @@ barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$fir
   //
 
   $scope.model = {
-    showUnitList: true,
-    loanerArray : null,
-    loaded      : false,
-    customerObj : {},
-    editing     : false
+    showUnitList  : true,
+    loanerArray   : null,
+    loaded        : false,
+    customerObj   : {},
+    editing       : false,
+    editableValues: null
   }
 
   /**
@@ -230,13 +231,14 @@ barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$fir
    * Edit customer info for user
    * @param {object} value - object for specific customer
    * @param {string} status - action that user is performing
+   * @param {string} key - key of item being edited in array
    * @return {undefined}
    */
-  $scope.editInfo = function(value, status) {
+  $scope.editInfo = function(value, status, key) {
     var oldValue = value.customerInfo;
 
     if (status==='edit') {
-      var editValues = {
+      $scope.model.editableValues = {
         name            : oldValue.name,
         email           : oldValue.email,
         phoneNum        : oldValue.phoneNum,
@@ -253,8 +255,9 @@ barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$fir
       for (var i in  value.units) {
         var barcode = value.units[i].unitBarcode;
 
-        model.loanerReference.child(barcode).child('customerInfo').set(editValues).then(function() {
-          value.customerInfo = editValues;
+        model.loanerReference.child(barcode).child('customerInfo').set($scope.model.editableValues).then(function() {
+          $scope.model.customerObj[key].customerInfo = $scope.model.editableValues;
+          $scope.$apply();
         }).catch(function(error) {
           alert(error + " try saving again");
           $scope.model.editing = true;

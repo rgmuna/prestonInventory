@@ -159,7 +159,7 @@
   <div class="row" ng-show="!model.showUnitList">
     <div class="col-xs-12 loaner-inventory-container">
       <uib-accordion>
-        <div uib-accordion-group class="loaner-inventory-thumbnails" is-open="status.open" ng-repeat="value in model.customerObj" is-disabled="model.editing">
+        <div uib-accordion-group class="loaner-inventory-thumbnails" is-open="status.open" ng-repeat="(key, value) in model.customerObj" is-disabled="model.editing">
 
           <uib-accordion-heading>
             <div class="loaner-inventory-thumbnails-titles">
@@ -198,28 +198,28 @@
             <div class="row" ng-if="model.editing">
               <div class="col-sm-6 col-xs-12">
                 <div class="loaner-inventory-customer-title">Name:</div>
-                <input type="text" ng-model="editValues.name" />
+                <input type="text" ng-model="model.editableValues.name" />
               </div>
               <div class="col-sm-6 col-xs-12">
                 <div class="loaner-inventory-customer-title">Email:</div>
-                <input type="text" ng-model="editValues.email" />
+                <input type="text" ng-model="model.editableValues.email" />
               </div>
               <div class="col-sm-6 col-xs-12">
                 <div class="loaner-inventory-customer-title">Phone:</div>
-                <input type="text" ng-model="editValues.phoneNum" />
+                <input type="text" ng-model="model.editableValues.phoneNum" />
               </div>
               <div class="col-sm-6 col-xs-12">
                 <div class="loaner-inventory-customer-title">Repair #:</div>
-                <input type="text" ng-model="editValues.repairNum" />
+                <input type="text" ng-model="model.editableValues.repairNum" />
               </div>
               <div class="col-sm-6 col-xs-12">
                 <div class="loaner-inventory-customer-title">Shipping:</div>
-                <textarea rows="4" ng-model="editValues.shippingAddress"></textarea>
+                <textarea rows="4" ng-model="model.editableValues.shippingAddress"></textarea>
               </div>
 
               <div class="col-sm-6 col-xs-12">
                 <div class="loaner-inventory-customer-title">Notes:</div>
-                <textarea rows="4" ng-model="editValues.notes"></textarea>
+                <textarea rows="4" ng-model="model.editableValues.notes"></textarea>
               </div>
             </div>
 
@@ -252,10 +252,10 @@
             </div>
 
             <div class="loaner-inventory-customer-container-button">
-              <button class="btn btn-info btn-lg"    ng-show="!model.editing" ng-click="editInfo(value, 'edit')"> Edit </button>
+              <button class="btn btn-info btn-lg"    ng-show="!model.editing" ng-click="editInfo(value, 'edit', key)"> Edit </button>
               <button class="btn btn-primary btn-lg" ng-show="!model.editing" ng-click="generatePage(value)"> Print </button>
-              <button class="btn btn-danger btn-lg"  ng-show="model.editing"  ng-click="editInfo(value, 'cancel')"> Cancel </button>
-              <button class="btn btn-success btn-lg" ng-show="model.editing"  ng-click="editInfo(value, 'save')"> Save </button>
+              <button class="btn btn-danger btn-lg"  ng-show="model.editing"  ng-click="editInfo(value, 'cancel', key)"> Cancel </button>
+              <button class="btn btn-success btn-lg" ng-show="model.editing"  ng-click="editInfo(value, 'save', key)"> Save </button>
             </div>
           </uib-accordion-group>
 
