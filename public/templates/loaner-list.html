@@ -43,212 +43,232 @@
     </div>
   </div>
 
+  <!-- List View -->
+
   <div class="row" ng-show="model.showUnitList && model.loaded">
-    <div class="col-xs-12 text-center">
-      <div style="max-width: 600px; margin: 30px auto;">
-        <!-- headers -->
-        <table class="table table-condensed">
-          <thead class="resTableHead">
-            <tr>
-              <th class="text-center" style="width: 202px">
-                <a ng-click="sortType = ['unit', 'serialNum'] ; sortReverse = !sortReverse">
-                  Unit
-                  <span ng-show="sortType[0] === 'unit' && sortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="sortType[0] === 'unit' && !sortReverse" class="fa fa-caret-up"></span>
-                </a>
-              </th>
-              <th class="text-center hidden-xs" style="width: 130px;">
-                <a ng-click="sortType = 'barcode'; sortReverse = !sortReverse">
-                  Barcode
-                  <span ng-show="sortType === 'barcode' && sortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="sortType === 'barcode' && !sortReverse" class="fa fa-caret-up"></span>
-                </a>
-              </th>
-              <th class="text-center" style="width: 138px;">
-                <a ng-click="sortType = 'status'; sortReverse = !sortReverse">
-                  Status
-                  <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-caret-up"></span>
-                </a>
-              </th>
-              <th class="text-center hidden-xs" style="width: 112px;">
-                <a ng-click="sortType = 'timestamp'; sortReverse = !sortReverse">
-                  Scan
-                  <span ng-show="sortType == 'timestamp' && sortReverse" class="fa fa-caret-down"></span>
-                  <span ng-show="sortType == 'timestamp' && !sortReverse" class="fa fa-caret-up"></span>
-                </a>
-              </th>
-              <th style="width: 40px"></th>
-            </tr>
-          </thead>
-        </table>
+    <div class="col-xs-12 loaner-inventory-container">
+      <!-- headers -->
+      <table class="table table-condensed">
+        <thead class="resTableHead">
+          <tr>
+            <th class="text-center" style="width: 202px">
+              <a ng-click="sortType = ['unit', 'serialNum'] ; sortReverse = !sortReverse">
+                Unit
+                <span ng-show="sortType[0] === 'unit' && sortReverse" class="fa fa-caret-down"></span>
+                <span ng-show="sortType[0] === 'unit' && !sortReverse" class="fa fa-caret-up"></span>
+              </a>
+            </th>
+            <th class="text-center hidden-xs" style="width: 130px;">
+              <a ng-click="sortType = 'barcode'; sortReverse = !sortReverse">
+                Barcode
+                <span ng-show="sortType === 'barcode' && sortReverse" class="fa fa-caret-down"></span>
+                <span ng-show="sortType === 'barcode' && !sortReverse" class="fa fa-caret-up"></span>
+              </a>
+            </th>
+            <th class="text-center" style="width: 138px;">
+              <a ng-click="sortType = 'status'; sortReverse = !sortReverse">
+                Status
+                <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-down"></span>
+                <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-caret-up"></span>
+              </a>
+            </th>
+            <th class="text-center hidden-xs" style="width: 112px;">
+              <a ng-click="sortType = 'timestamp'; sortReverse = !sortReverse">
+                Scan
+                <span ng-show="sortType == 'timestamp' && sortReverse" class="fa fa-caret-down"></span>
+                <span ng-show="sortType == 'timestamp' && !sortReverse" class="fa fa-caret-up"></span>
+              </a>
+            </th>
+            <th style="width: 40px"></th>
+          </tr>
+        </thead>
+      </table>
 
-        <!-- list -->
-        <uib-accordion>
-          <div uib-accordion-group class="loaner-inventory-thumbnails" is-open="status.open" ng-repeat="value in model.loanerArray | orderBy:sortType:sortReverse | filter:loanerSearch  | filter:{status : filterVariables.status} | filter:{unit : filterVariables.unitType}">
-            <uib-accordion-heading>
-              <table class="table" style="margin-bottom: 0px;">
-                <tbody>
-                  <tr>
-                    <td class="text-left" style="width: 202px">
-                      <strong>{{ value.unit }} s/n {{ value.serialNum }}</strong>
-                    </td>
-                    <td class="text-center hidden-xs"> PCS{{ value.unitBarcode }} </td>
-                    <td class="text-center"> {{ value.status }} </td>
-                    <td class="text-center hidden-xs"> {{ value.timestamp  | date:'shortDate' }} </td>
-                    <td> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i> </td>
-                  </tr>
-                </tbody>
-              </table>
-            </uib-accordion-heading>
+      <!-- list -->
+      <uib-accordion>
+        <div uib-accordion-group class="loaner-inventory-thumbnails" is-open="status.open" ng-repeat="value in model.loanerArray | orderBy:sortType:sortReverse | filter:loanerSearch  | filter:{status : filterVariables.status} | filter:{unit : filterVariables.unitType}">
+          <uib-accordion-heading>
+            <table class="table" style="margin-bottom: 0px;">
+              <tbody>
+                <tr>
+                  <td class="text-left" style="width: 202px">
+                    <strong>{{ value.unit }} s/n {{ value.serialNum }}</strong>
+                  </td>
+                  <td class="text-center hidden-xs"> PCS{{ value.unitBarcode }} </td>
+                  <td class="text-center"> {{ value.status }} </td>
+                  <td class="text-center hidden-xs"> {{ value.timestamp  | date:'shortDate' }} </td>
+                  <td> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i> </td>
+                </tr>
+              </tbody>
+            </table>
+          </uib-accordion-heading>
 
-            <div ng-show="value.unit !== 'DM1X' && value.unit !== 'DM2X' && value.unit !== 'DM2' && value.unit !== 'DM5' && value.unit !== 'DM4' && value.unit !== 'DM4X' && value.unit !== 'LR2W' && value.unit !== 'LR2M'">
-              <div ng-show="value.firmware === 'pending'">
-                <div class="loading">
-                  Loading...
-                </div>
-              </div>
-              <div ng-show="value.firmware !== 'pending'">
-                <span ng-show="value.firmware !== 'NA'">
-                  Firmware
-                  <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="value.firmware"></i>
-                  <i ng-if="!value.firmware" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i>
-                  &nbsp;&nbsp;
-                </span>
-                <span ng-show="value.radio !== 'NA'">
-                  Radio
-                  <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="value.radio"></i>
-                  <i ng-if="!value.radio" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i>
-                  &nbsp;&nbsp;
-                </span>
-                <span ng-show="value.mods !== 'NA'">
-                  Mods
-                  <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="value.mods"></i>
-                  <i ng-if="!value.mods" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i>
-                  &nbsp;&nbsp;
-                </span>
-                <span ng-show="value.firmware === 'NA' && value.radio === 'NA' && value.mods === 'NA'">
-                  <i style="color: #CCFF00" class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                  NOT IN DATABASE
-                  <i style="color: #CCFF00" class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                  &nbsp;&nbsp;
-                </span>
+          <div ng-show="value.unit !== 'DM1X' && value.unit !== 'DM2X' && value.unit !== 'DM2' && value.unit !== 'DM5' && value.unit !== 'DM4' && value.unit !== 'DM4X' && value.unit !== 'LR2W' && value.unit !== 'LR2M'">
+            <div ng-show="value.firmware === 'pending'">
+              <div class="loading">
+                Loading...
               </div>
             </div>
-
-            <div ng-show="value.unit === 'DM1X' || value.unit === 'DM2X' || value.unit === 'DM2' || value.unit === 'DM5' || value.unit === 'DM4' || value.unit === 'DM4X'">
-              No firmware to check
-            </div>
-
-            <div ng-show="value.status === 'checked out'" class="custInfoInv">
-              <div class="custInfoInvTitle">Customer Info</div>
-              <div ng-if="value.customerInfo.name">Name: {{value.customerInfo.name}}</div>
-              <div ng-if="value.customerInfo.email">Email: {{value.customerInfo.email}}</div>
-              <div ng-if="value.customerInfo.phoneNum">Phone: {{value.customerInfo.phoneNum}}</div>
-              <div ng-if="value.customerInfo.repairNum">Repair: {{value.customerInfo.repairNum}}</div>
-              <div ng-if="value.customerInfo.notes">Notes: {{value.customerInfo.notes}}</div>
+            <div ng-show="value.firmware !== 'pending'">
+              <span ng-show="value.firmware !== 'NA'">
+                Firmware
+                <i class="fa fa-check-square" style="color: #28a745" aria-hidden="true" ng-if="value.firmware"></i>
+                <i ng-if="!value.firmware" style="color: #dc3545" class="fa fa-window-close" aria-hidden="true"></i>
+                &nbsp;&nbsp;
+              </span>
+              <span ng-show="value.radio !== 'NA'">
+                Radio
+                <i class="fa fa-check-square" style="color: #28a745" aria-hidden="true" ng-if="value.radio"></i>
+                <i ng-if="!value.radio" style="color: #dc3545" class="fa fa-window-close" aria-hidden="true"></i>
+                &nbsp;&nbsp;
+              </span>
+              <span ng-show="value.mods !== 'NA'">
+                Mods
+                <i class="fa fa-check-square" style="color: #28a745" aria-hidden="true" ng-if="value.mods"></i>
+                <i ng-if="!value.mods" style="color: #dc3545" class="fa fa-window-close" aria-hidden="true"></i>
+                &nbsp;&nbsp;
+              </span>
+              <span ng-show="value.firmware === 'NA' && value.radio === 'NA' && value.mods === 'NA'">
+                <i style="color: #CCFF00" class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                NOT IN DATABASE
+                <i style="color: #CCFF00" class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                &nbsp;&nbsp;
+              </span>
             </div>
           </div>
-        </uib-accordion>
-      </div>
+
+          <div ng-show="value.unit === 'DM1X' || value.unit === 'DM2X' || value.unit === 'DM2' || value.unit === 'DM5' || value.unit === 'DM4' || value.unit === 'DM4X'">
+            No firmware to check
+          </div>
+
+          <div ng-show="value.status === 'checked out'" class="custInfoInv">
+            <div class="custInfoInvTitle">Customer Info</div>
+            <div ng-if="value.customerInfo.name">Name: {{value.customerInfo.name}}</div>
+            <div ng-if="value.customerInfo.email">Email: {{value.customerInfo.email}}</div>
+            <div ng-if="value.customerInfo.phoneNum">Phone: {{value.customerInfo.phoneNum}}</div>
+            <div ng-if="value.customerInfo.repairNum">Repair: {{value.customerInfo.repairNum}}</div>
+            <div ng-if="value.customerInfo.notes">Notes: {{value.customerInfo.notes}}</div>
+          </div>
+        </div>
+      </uib-accordion>
     </div>
   </div>
 
-  <!-- customer list -->
+  <!-- customer list view -->
 
   <div class="row" ng-show="!model.showUnitList">
-    <div class="col-xs-12 text-center">
-      <div class="tableUnit" style="max-width: 600px; margin: 30px auto;">
+    <div class="col-xs-12 loaner-inventory-container">
+      <uib-accordion>
+        <div uib-accordion-group class="loaner-inventory-thumbnails" is-open="status.open" ng-repeat="value in model.customerObj" is-disabled="model.editing">
 
-          <uib-accordion>
-            <div uib-accordion-group class="customAccStyles" is-open="status.open" ng-repeat="value in model.customerObj" is-disabled="editing">
+          <uib-accordion-heading>
+            <table class="table table-condensed" style="margin-bottom: 0px;">
+              <tbody>
+                <tr>
+                  <td class="text-center tableUnit" style="width: 50px; border: none;">
+                    {{value.numUnits}}
+                  </td>
+                  <td class="text-left tableUnit" style="border: none;">
+                    {{value.customerInfo.name}}
+                  </td>
+                  <td style="border: none;">  <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i> </td>
+                </tr>
+              </tbody>
+            </table>
+          </uib-accordion-heading>
 
-              <uib-accordion-heading>
-                <table class="table table-condensed" style="margin-bottom: 0px;">
-                  <tbody>
-                    <tr class="results">
-                      <td class="text-center tableUnit" style="width: 50px; border: none;">
-                        {{value.numUnits}}
-                      </td>
-                      <td class="text-left tableUnit" style="border: none;">
-                        {{value.customerInfo.name}}
-                      </td>
-                      <td style="border: none;">  <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i> </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </uib-accordion-heading>
+          <uib-accordion-group class="loaner-inventory-customer-container">
+            <h4>
+              <strong> Customer Information </strong>
+            </h4>
 
-              <uib-accordion-group>
-                <div class="custInfoCustSec" ng-show="!editing">
-                  <h2>Customer Info </h2>
-                  <div ng-if="value.customerInfo.name"><b>Name:</b> {{value.customerInfo.name}}</div>
-                  <div ng-if="value.customerInfo.email"><b>Email:</b> {{value.customerInfo.email}}</div>
-                  <div ng-if="value.customerInfo.phoneNum"><b>Phone:</b> {{value.customerInfo.phoneNum}}</div>
-                  <div ng-if="value.customerInfo.shippingAddress"><b>Shipping:</b> {{value.customerInfo.shippingAddress}}</div>
-                  <div ng-if="value.customerInfo.repairNum"><b>Repair:</b> {{value.customerInfo.repairNum}}</div>
-                  <div ng-if="value.customerInfo.notes"><b>Notes:</b> {{value.customerInfo.notes}}</div>
-                </div>
-
-                <div ng-show="editing">
-                  <h2 class="text-center">Customer Info</h2>
-                  <div class="editInfo">
-                    <div class="col-sm-6 col-xs-12">
-                      <div>Name:</div> <input type="text" ng-model="editValues.name" />
-                    </div>
-                    <div class="col-sm-6 col-xs-12">
-                      <div>Email:</div> <input type="text" ng-model="editValues.email" />
-                    </div>
-                    <div class="col-sm-6 col-xs-12">
-                      <div>Phone:</div> <input type="text" ng-model="editValues.phoneNum" />
-                    </div>
-                    <div class="col-sm-6 col-xs-12">
-                      <div>Repair #:</div> <input type="text" ng-model="editValues.repairNum" />
-                    </div>
-                    <div class="col-sm-6 col-xs-12">
-                      <div>Shipping:</div> <textarea rows="4" ng-model="editValues.shippingAddress"></textarea>
-                    </div>
-
-                    <div class="col-sm-6 col-xs-12">
-                      <div>Notes:</div> <textarea rows="4" ng-model="editValues.notes"></textarea>
-                    </div>
-                  </div>
-                </div>
-
-                <table class="table table-condensed" style="margin-bottom: 0px;">
-                  <tbody>
-                    <tr class="customerResultsHeaders">
-                      <td>Unit</td>
-                      <td>Barcode</td>
-                      <td>Date Scanned</td>
-                    </tr>
-                    <tr class="customerResults" ng-repeat="unit in value.units">
-                      <td class="text-left tableUnit" style="border: none;">
-                        {{unit.unit}} s/n {{unit.serialNum}}
-                      </td>
-                      <td class="text-center tableUnit" style="border: none;">
-                        PCS{{unit.unitBarcode}}
-                      </td>
-                      <td class="text-center tableUnit" style="border: none;">
-                        {{unit.timeStamp  | date:'shortDate'}}
-                      </td>
-                      <td style="border: none;">  </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <div>
-                  <button class="btn btn-info btn-lg" ng-show="!editing" ng-click="editInfo(value, 'edit')"> Edit </button>
-                  <button class="btn btn-primary btn-lg" ng-show="!editing" ng-click="generatePage(value)"> Print </button>
-                  <button class="btn btn-danger btn-lg" ng-show="editing" ng-click="editInfo(value, 'cancel')"> Cancel </button>
-                  <button class="btn btn-success btn-lg" ng-show="editing" ng-click="editInfo(value, 'save')"> Save </button>
-                </div>
-              </uib-accordion-group>
-
+            <div ng-if="!model.editing">
+              <div ng-if="value.customerInfo.name">
+                <strong>Name:</strong> {{value.customerInfo.name}}
+              </div>
+              <div ng-if="value.customerInfo.email">
+                <strong>Email:</strong> {{value.customerInfo.email}}
+              </div>
+              <div ng-if="value.customerInfo.phoneNum">
+                <strong>Phone:</strong> {{value.customerInfo.phoneNum}}
+              </div>
+              <div ng-if="value.customerInfo.shippingAddress">
+                <strong>Shipping:</strong> {{value.customerInfo.shippingAddress}}
+              </div>
+              <div ng-if="value.customerInfo.repairNum">
+                <strong>Repair:</strong> {{value.customerInfo.repairNum}}
+              </div>
+              <div ng-if="value.customerInfo.notes">
+                <strong>Notes:</strong> {{value.customerInfo.notes}}
+              </div>
             </div>
-          </uib-accordion>
 
-      </div>
+            <div class="row" ng-if="model.editing">
+              <div class="col-sm-6 col-xs-12">
+                <div class="loaner-inventory-customer-title">Name:</div>
+                <input type="text" ng-model="editValues.name" />
+              </div>
+              <div class="col-sm-6 col-xs-12">
+                <div class="loaner-inventory-customer-title">Email:</div>
+                <input type="text" ng-model="editValues.email" />
+              </div>
+              <div class="col-sm-6 col-xs-12">
+                <div class="loaner-inventory-customer-title">Phone:</div>
+                <input type="text" ng-model="editValues.phoneNum" />
+              </div>
+              <div class="col-sm-6 col-xs-12">
+                <div class="loaner-inventory-customer-title">Repair #:</div>
+                <input type="text" ng-model="editValues.repairNum" />
+              </div>
+              <div class="col-sm-6 col-xs-12">
+                <div class="loaner-inventory-customer-title">Shipping:</div>
+                <textarea rows="4" ng-model="editValues.shippingAddress"></textarea>
+              </div>
+
+              <div class="col-sm-6 col-xs-12">
+                <div class="loaner-inventory-customer-title">Notes:</div>
+                <textarea rows="4" ng-model="editValues.notes"></textarea>
+              </div>
+            </div>
+
+            <div class="loaner-inventory-customer-container-list">
+              <h4>
+                <strong> Loaner List </strong>
+              </h4>
+
+              <table class="table table-condensed">
+                <tbody>
+                  <thead>
+                    <th class="text-left">Unit</th>
+                    <th class="text-center">Barcode</th>
+                    <th class="text-center">Date Scanned</th>
+                  </thead>
+                  <tr ng-repeat="unit in value.units">
+                    <td class="text-left">
+                      {{unit.unit}} s/n {{unit.serialNum}}
+                    </td>
+                    <td class="text-center">
+                      PCS{{unit.unitBarcode}}
+                    </td>
+                    <td class="text-center">
+                      {{unit.timeStamp  | date:'shortDate'}}
+                    </td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="loaner-inventory-customer-container-button">
+              <button class="btn btn-info btn-lg" ng-show="!model.editing" ng-click="editInfo(value, 'edit')"> Edit </button>
+              <button class="btn btn-primary btn-lg" ng-show="!model.editing" ng-click="generatePage(value)"> Print </button>
+              <button class="btn btn-danger btn-lg" ng-show="model.editing" ng-click="editInfo(value, 'cancel')"> Cancel </button>
+              <button class="btn btn-success btn-lg" ng-show="model.editing" ng-click="editInfo(value, 'save')"> Save </button>
+            </div>
+          </uib-accordion-group>
+
+        </div>
+      </uib-accordion>
     </div>
   </div>
 

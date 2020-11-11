@@ -288,9 +288,62 @@ body {
     }
   }
 
+  &-container {
+    max-width: 600px;
+    margin: 0px auto;
+    float: none;
+    margin-top: 30px;
+  }
+
   &-thumbnails {
     background: $background-color;
     border: 1px solid $border-color-1;
     border-radius: 10px;
+
+    & a:focus{
+      text-decoration: none;
+    }
+
+    & a:hover{
+      text-decoration: none;
+    }
+  }
+
+  &-customer {
+    &-title {
+      font-weight: 600;
+      margin-top: 15px;
+    }
+
+    &-container {
+      text-align: left;
+
+      h4 {
+        border-bottom: 1px solid lightgray;
+      }
+
+      table {
+        border: none;
+
+        tr {
+          th {
+            border: none;
+          }
+
+          td {
+            border: none;
+          }
+        }
+      }
+
+      &-list {
+        padding-top: 30px;
+      }
+
+      &-button {
+        text-align: center;
+        margin-top: 30px;
+      }
+    }
   }
 }

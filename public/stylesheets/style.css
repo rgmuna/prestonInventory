@@ -631,15 +631,6 @@ button:focus {
   font-size: 30px;
 }
 
-#loanerInv  .resultsSubtitle{
-  color: #FF6600;
-}
-
-#loanerInv .results{
-  font-size: 20px;
-  color: #FF6600;
-}
-
 .wholeSerial{
   color: #FF6600;
   cursor: pointer;
@@ -667,10 +658,6 @@ button:focus {
   border-radius: 0px;
 }
 
-.tableUnit{
-  font-weight: 600;
-  font-size: 25px;
-}
 .panel-heading{
   padding: 0px;
 }
@@ -694,19 +681,6 @@ button:focus {
   color: white;
 }
 
-.customAccStyles{
-  background: black;
-  border: 1px solid #FF6600;
-}
-
-.customAccStyles a:focus{
-  text-decoration: none;
-}
-
-.customAccStyles a:hover{
-  text-decoration: none;
-}
-
 .panel-group .panel-heading + .panel-collapse > .list-group, .panel-group .panel-heading + .panel-collapse > .panel-body{
   border-top: none;
 }
@@ -717,38 +691,6 @@ button:focus {
 
 .unitItems{
   display: inline-block;
-}
-
-.custInfoInv{
-  text-align: left;
-  margin-top: 10px;
-}
-
-.custInfoCustSec{
-  color: white;
-  text-align: left;
-  font-size: 15px;
-  font-weight: 300;
-}
-
-.customerResults{
-  color: white;
-  font-weight :300;
-}
-.customerResultsHeaders{
-  font-size: 15px;
-  font-weight: 300;
-  border-bottom: 1px solid white;
-  color: white;
-}
-.customerResultsHeaders > td{
-  border-top: none !important;
-}
-
-.editInfo{
-  font-size: 15px;
-  text-align: left;
-  color: white;
 }
 
 /* keypad modal */

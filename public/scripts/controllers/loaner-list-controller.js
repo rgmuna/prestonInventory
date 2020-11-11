@@ -17,7 +17,8 @@ barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$fir
     showUnitList: true,
     loanerArray : null,
     loaded      : false,
-    customerObj : {}
+    customerObj : {},
+    editing     : false
   }
 
   /**
@@ -67,9 +68,6 @@ barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$fir
     unitType: '',
     status: ''
   }
-  $scope.editing = false;
-  $scope.saving  = false;
-  $scope.saved   = false;
 
   $scope.loanerStatuses = ['ready to loan', 'needs QA', 'checked out', 'needs updates'];
 
@@ -246,12 +244,11 @@ barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$fir
         shippingAddress : oldValue.shippingAddress,
         notes           : oldValue.notes
       }
-      $scope.editing = true;
+      $scope.model.editing = true;
     } else if(status==='cancel') {
-      $scope.editing = false;
+      $scope.model.editing = false;
     } else if (status==='save') {
-      $scope.saving  = true;
-      $scope.editing = false;
+      $scope.model.editing = false;
 
       for (var i in  value.units) {
         var barcode = value.units[i].unitBarcode;
@@ -263,7 +260,7 @@ barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$fir
         })
         .catch(function(error){
           alert(error + " try saving again");
-          $scope.editing = true;
+          $scope.model.editing = true;
         });
       }
     }
