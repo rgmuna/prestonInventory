@@ -162,19 +162,11 @@
         <div uib-accordion-group class="loaner-inventory-thumbnails" is-open="status.open" ng-repeat="value in model.customerObj" is-disabled="model.editing">
 
           <uib-accordion-heading>
-            <table class="table table-condensed" style="margin-bottom: 0px;">
-              <tbody>
-                <tr>
-                  <td class="text-center tableUnit" style="width: 50px; border: none;">
-                    {{value.numUnits}}
-                  </td>
-                  <td class="text-left tableUnit" style="border: none;">
-                    {{value.customerInfo.name}}
-                  </td>
-                  <td style="border: none;">  <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i> </td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="loaner-inventory-thumbnails-titles">
+              <div class="loaner-inventory-thumbnails-units">{{value.numUnits}}</div>
+              <div class="loaner-inventory-thumbnails-name">{{value.customerInfo.name}}</div>
+              <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+            </div>
           </uib-accordion-heading>
 
           <uib-accordion-group class="loaner-inventory-customer-container">
@@ -260,10 +252,10 @@
             </div>
 
             <div class="loaner-inventory-customer-container-button">
-              <button class="btn btn-info btn-lg" ng-show="!model.editing" ng-click="editInfo(value, 'edit')"> Edit </button>
+              <button class="btn btn-info btn-lg"    ng-show="!model.editing" ng-click="editInfo(value, 'edit')"> Edit </button>
               <button class="btn btn-primary btn-lg" ng-show="!model.editing" ng-click="generatePage(value)"> Print </button>
-              <button class="btn btn-danger btn-lg" ng-show="model.editing" ng-click="editInfo(value, 'cancel')"> Cancel </button>
-              <button class="btn btn-success btn-lg" ng-show="model.editing" ng-click="editInfo(value, 'save')"> Save </button>
+              <button class="btn btn-danger btn-lg"  ng-show="model.editing"  ng-click="editInfo(value, 'cancel')"> Cancel </button>
+              <button class="btn btn-success btn-lg" ng-show="model.editing"  ng-click="editInfo(value, 'save')"> Save </button>
             </div>
           </uib-accordion-group>
 

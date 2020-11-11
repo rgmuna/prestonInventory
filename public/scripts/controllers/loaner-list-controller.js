@@ -236,7 +236,7 @@ barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$fir
     var oldValue = value.customerInfo;
 
     if (status==='edit') {
-      $scope.editValues = {
+      var editValues = {
         name            : oldValue.name,
         email           : oldValue.email,
         phoneNum        : oldValue.phoneNum,
@@ -253,12 +253,9 @@ barcodeApp.controller('LoanerListController', ['$scope', '$firebaseArray', '$fir
       for (var i in  value.units) {
         var barcode = value.units[i].unitBarcode;
 
-        model.loanerReference.child(barcode).child('customerInfo').set(
-          $scope.editValues
-        ).then(function() {
-          value.customerInfo = $scope.editValues;
-        })
-        .catch(function(error){
+        model.loanerReference.child(barcode).child('customerInfo').set(editValues).then(function() {
+          value.customerInfo = editValues;
+        }).catch(function(error) {
           alert(error + " try saving again");
           $scope.model.editing = true;
         });

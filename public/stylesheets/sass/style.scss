@@ -307,6 +307,23 @@ body {
     & a:hover{
       text-decoration: none;
     }
+
+    &-titles {
+      padding: 10px;
+      text-align: left;
+    }
+
+    &-units {
+      font-size: 18px;
+      font-weight: 600;
+      width: 60px;
+      display: inline-block;
+    }
+
+    &-name {
+      display: inline-block;
+      font-size: 18px;
+    }
   }
 
   &-customer {
