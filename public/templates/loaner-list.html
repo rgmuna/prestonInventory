@@ -1,4 +1,4 @@
-<div id="loanerInv" class="container-fluid text-center loaner-inventory">
+<div class="container-fluid text-center loaner-inventory">
 
   <div class="row text-center">
     <h2> Loaner Inventory </h2>
@@ -141,13 +141,13 @@
             No firmware to check
           </div>
 
-          <div ng-show="value.status === 'checked out'" class="custInfoInv">
-            <div class="custInfoInvTitle">Customer Info</div>
-            <div ng-if="value.customerInfo.name">Name: {{value.customerInfo.name}}</div>
-            <div ng-if="value.customerInfo.email">Email: {{value.customerInfo.email}}</div>
-            <div ng-if="value.customerInfo.phoneNum">Phone: {{value.customerInfo.phoneNum}}</div>
-            <div ng-if="value.customerInfo.repairNum">Repair: {{value.customerInfo.repairNum}}</div>
-            <div ng-if="value.customerInfo.notes">Notes: {{value.customerInfo.notes}}</div>
+          <div ng-show="value.status === 'checked out'" class="col-xs-12 text-left">
+            <h4 class="border-bottom"> <strong>Customer Info</strong> </h4>
+            <div ng-if="value.customerInfo.name">      <strong> Name: </strong> {{value.customerInfo.name}}</div>
+            <div ng-if="value.customerInfo.email">     <strong> Email: </strong> {{value.customerInfo.email}}</div>
+            <div ng-if="value.customerInfo.phoneNum">  <strong> Phone: </strong> {{value.customerInfo.phoneNum}}</div>
+            <div ng-if="value.customerInfo.repairNum"> <strong> Repair: </strong> {{value.customerInfo.repairNum}}</div>
+            <div ng-if="value.customerInfo.notes">     <strong> Notes: </strong> {{value.customerInfo.notes}}</div>
           </div>
         </div>
       </uib-accordion>

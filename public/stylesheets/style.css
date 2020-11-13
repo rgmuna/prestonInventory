@@ -414,33 +414,6 @@ button:focus {
   font-size: 30px;
 }
 /*=========================================fifth tab items=======================================*/
-#loanerCheck .checkTitle{
-  color: #CCFF00;
-}
-#loanerCheck .checkSubTitle{
-  color: #CCFF00;
-}
-
-#loanerCheck .loginButton{
-  color: #CCFF00;
-}
-/*loading animation*/
-#loanerCheck .loginLoading{
-  color: #CCFF00;
-  border-right: .15em solid #CCFF00; /* The typwriter cursor */
-}
-
-/*loading animation*/
-#loanerCheck .loading{
-  color: #CCFF00;
- border-right: .15em solid #CCFF00; /* The typwriter cursor */
-}
-
-#loanerCheck .barcode-input{
-  color: #CCFF00;
-  border: 1px solid #CCFF00;
-
-}
 
 .removeScanned{
   color: red;
@@ -448,71 +421,7 @@ button:focus {
   margin-right: 6px;
 }
 
-.loanEntry{
-  font-size: 25px;
-  background-color: black;
-  max-width: 100px;
-  border: 1px solid #CCFF00;
-  text-align: center;
-  height: 30px;
-}
 
-.notesBox{
-  background-color: black;
-  color: #CCFF00;
-  width: 100%;
-  font-size: 20px;
-  border: 1px solid #CCFF00;
-}
-
-.loanSelect{
-  text-align: center;
-  font-size: 20px;
-  background-color: black;
-  border: 1px solid #CCFF00;
-}
-
-.loanerStyle{
-  background-color: black;
-  border: 2px solid #CCFF00;
-  color: #CCFF00;
-  font-size: 20px;
-  padding: 15px;
-  border-radius: 20px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 0 20px rgba(204,	255,	0, .5);
-
-}
-
-.submittedStyle{
-  background-color: #00FF00;
-  border: 2px solid black;
-  color: black;
-  font-size: 30px;
-  padding: 5px;
-  border-radius: 20px;
-  margin-top: 20px;
-  font-weight: 600;
-}
-
-.submitButton{
-  color: black;
-  font-weight: 600;
-  margin: 20px 0px;
-  font-size: 20px;
-  background-color: red;
-  border-radius: 5px;
-}
-
-.loanerTitle{
-  font-weight: 600;
-  color: white;
-}
-
-.loanerToDate{
-  font-size: 20px;
-}
 
 .btnDisabled{
   opacity: .5;
@@ -588,63 +497,6 @@ button:focus {
 }
 
 /*-------------------------------loaner inventory------------------------*/
-
-#loanerInv .checkTitle{
-  color: #FF6600;
-}
-#loanerInv .checkSubTitle{
-  color: #FF6600;
-}
-
-#loanerInv .loginButton{
-  color: #FF6600;
-}
-/*loading animation*/
-#loanerInv .loginLoading{
-  color: #FF6600;
-  border-right: .15em solid #FF6600; /* The typwriter cursor */
-}
-
-/*loading animation*/
-#loanerInv .loading{
-  color: #FF6600;
- border-right: .15em solid #FF6600; /* The typwriter cursor */
-}
-
-#loanerInv .barcode-input{
-  color: #FF6600;
-  border: 1px solid #FF6600;
-
-}
-
-.loanInvSelect{
-  text-align: center;
-  font-size: 30px;
-  background-color: black;
-  border: 1px solid #FF6600;
-  color: #FF6600;
-  width: 180px;
-}
-
-.filterTitle{
-  color: #FF6600;
-  font-size: 30px;
-}
-
-.wholeSerial{
-  color: #FF6600;
-  cursor: pointer;
-}
-.wholeSerial:hover{
-  color: #A54200;
-  text-decoration: none;
-}
-
-.listSelector{
-  background-color: transparent;
-  border: none;
-  color: #ff6600;
-}
 
 .listSelector.activeList{
   border-bottom: 2px solid #ff6600;
@@ -776,60 +628,6 @@ button:focus {
   font-weight: 600;
   font-size: 50px;
   color: #33ff00;
-}
-
-.edit-unit {
-  background-color: #fff;
-}
-
-.edit-unit > ul {
-  list-style: none;
-  padding: 0px;
-}
-
-.edit-unit > ul > li > button {
-  font-size: 20px;
-  padding: 10px;
-  width: 250px;
-  margin: 5px;
-  border-radius: 10px;
-  border: 1px solid gray;
-  background-color: lightcyan;
-  font-weight: 600;
-  color: black;
-}
-
-.edit-unit > ul > li > button.active{
-  background: cyan;
-  outline: none;
-}
-
-.edit-unit ul button:hover{
-  background-color: cyan;
-}
-
-.edit-unit button {
-  font-size: 20px;
-  padding: 10px;
-  width: 160px;
-  margin: 5px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 600;
-  color: white;
-}
-
-.edit-unit button:focus {
-  outline: none;
-}
-
-.edit-unit #savebutton.enabled {
-  opacity: 1;
-}
-
-.edit-unit #savebutton{
-  background-color: green;
-  opacity: 0.5;
 }
 
 /*animations------------------------------------------------------------------*/

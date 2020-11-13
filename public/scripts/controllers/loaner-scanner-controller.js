@@ -1,145 +1,160 @@
-barcodeApp.controller('LoanerScannerController', [
-  'authService',
-  '$scope',
-  '$rootScope',
-  '$firebaseArray',
-  '$firebaseObject',
-  '$timeout',
-  '$http',
-  '$firebaseAuth',
-  '$window',
-  '$filter',
-  function (authService, $scope, $rootScope, $firebaseArray, $firebaseObject, $timeout, $http, $firebaseAuth, $window, $filter) {
+barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$firebaseArray','$firebaseObject','$timeout','$http','$window', function ($scope, $rootScope, $firebaseArray, $firebaseObject, $timeout, $http, $window) {
 
-  $scope.customerArray = ['reset'];
+  //
+  // Controller Model
+  //
 
-  //firebase loaner load
-  $scope.loanerInfo  = firebase.database().ref().child('loaners');
-  $scope.loaners     = $firebaseObject($scope.loanerInfo);
-  $scope.loanerArray = $firebaseArray($scope.loanerInfo);
-
-  $scope.showUnitList = true;
-
-  $scope.loaners.$loaded().then(function() {
-    $scope.loaded = true;
-    $scope.createCustArray();
-  });
-
-  $scope.createCustArray = function() {
-    //for each item in loaner array
-    for (var item in $scope.loanerArray) {
-      //find units that are checked out
-      if ($scope.loanerArray[item].status === 'checked out') {
-        //if object is NOT already in customer array
-        if ($scope.objNotInArray($scope.loanerArray[item].customerInfo, $scope.customerArray)) {
-          //add customer to customer array
-          $scope.customerArray.push($scope.loanerArray[item].customerInfo);
-        }
-      }
-    }
+  var model = {
+    loanerReference: null,
+    loanerObject   : null,
+    loanerArray    : null
   };
 
-  $scope.objNotInArray = function(obj, arr) {
-    for (var i in arr) {
-      if (obj.name === arr[i].name) {
-        return false;
-      }
-    }
-    return true;
+  //
+  // View Model
+  //
+
+  $scope.model = {
+    loaded        : false,
+    barcodeScanned: '',
+    pendingLoaners: {},
+    customerList  : [],
+    loanerProducts: [
+      'FI',
+      'HU3',
+      'MDR2',
+      'MDR3',
+      'MDR4',
+      'LR2',
+      'VIU',
+      'DMF3',
+      'DMF2',
+      'RMF',
+      'VF3',
+      'DM1X',
+      'DM2X',
+      'DM5',
+      'DM4X',
+      'DM2',
+      'VLC',
+      'BM',
+      'LR2W',
+      'LR2M',
+      'HU4'
+    ]
+  };
+
+  /**
+   * Initializes page
+   * @return {undefined}
+   */
+  function renderPage() {
+    model.loanerReference = firebase.database().ref().child('loaners');;
+    model.loanerObject    = $firebaseObject(model.loanerReference);
+    model.loanerArray     = $firebaseArray(model.loanerReference);
+
+    model.loanerArray.$loaded().then(function() {
+      $scope.model.loaded = true;
+      createListOfCustomers();
+    });
   }
 
-  //scanned input
-  $scope.loanerScan = {
-    barcodeNum: "",
-    test      : ''
-  };
+  renderPage();
 
-  //loaner products
-  $scope.loanerProducts = [
-    'FI',
-    'HU3',
-    'MDR2',
-    'MDR3',
-    'MDR4',
-    'LR2',
-    'VIU',
-    'DMF3',
-    'DMF2',
-    'RMF',
-    'VF3',
-    'DM1X',
-    'DM2X',
-    'DM5',
-    'DM4X',
-    'DM2',
-    'VLC',
-    'BM',
-    'LR2W',
-    'LR2M',
-    'HU4'
-  ];
+  /**
+   * Creates list of customers after loaners are loaded
+   * @return {undefined}
+   */
+  function createListOfCustomers() {
+    //for each item in loaner array
+    for (var i = 0; i < model.loanerArray.length; i++) {
+      var singleLoaner = model.loanerArray[i];
 
-  //keeps tracked of scanned inputs
-  $scope.pendingLoaners = {};
-
-//-------------------------------------------------------------------------------------------------------------------------------------------
-//--------------------------MAIN WATCHER FOR SCANNED INPUT-----------------------------------------------------------------------------------
-    $scope.$watch('loanerScan.barcodeNum', function (newValue, oldValue) {
-      if (newValue === oldValue) {
-        return;
-      }
-
-      if ($scope.loanerScan.barcodeNum.length < 7 && $scope.loanerScan.barcodeNum.length !== 0) {
-        alert('Please roq enter a real loaner barcode');
-        $scope.loanerScan.barcodeNum = '';
-      } else {
-        if ($rootScope.authenticated) {
-          if ($scope.loanerScan.barcodeNum) {
-            //if barcode is correct format
-            if ($scope.authenticateInput($scope.loanerScan.barcodeNum)) {
-              var barcode = $scope.loanerScan.barcodeNum;
-              var numbers = Number(barcode.substring(3));
-              // if item is stored in loaner database
-              if ($scope.loaners[numbers]) {
-                // create loaner in pending obj
-                $scope.pendingLoaners[numbers] = deepObjCopy($scope.loaners[numbers]);
-                //if unit is motor, hide fw stuff
-                if ($scope.isMotor($scope.pendingLoaners[numbers].unit) || $scope.pendingLoaners[numbers].unit === 'LR2W' || $scope.pendingLoaners[numbers].unit === 'LR2M') { //roq - remove after matt updates firmware
-                  $scope.pendingLoaners[numbers].firmware = "NA";
-                  $scope.pendingLoaners[numbers].radio    = "NA";
-                  $scope.pendingLoaners[numbers].mods     = "NA";
-                  $scope.setStatus($scope.pendingLoaners[numbers], false);
-                } else { //for all non-motors, properly sort out firmware
-                  $scope.getFirmware($scope.pendingLoaners[numbers], 'checkInOut');
-                }
-              } else { //if item isn't in loaner database
-                $scope.createLoaner(numbers);
-              }
-              //reset input to empty
-              $scope.loanerScan.barcodeNum = '';
-            } else {
-              alert('Please enter a real loaner barcode');
-              $scope.loanerScan.barcodeNum = '';
-            }
-          }
-        } else {
-          if ($scope.loanerScan.barcodeNum) {
-            alert("Please login first");
-            $scope.loanerScan.barcodeNum = '';
-          }
+      //find units that are checked out
+      if (singleLoaner.status === 'checked out') {
+        //if object is NOT already in customer array
+        if (!customerInCustomerList(singleLoaner.customerInfo, $scope.model.customerList)) {
+          //add customer to customer array
+          $scope.model.customerList.push(singleLoaner.customerInfo);
         }
       }
-    });
-//--------------------------MAIN WATCHER FOR SCANNED INPUT---------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------------------------------------
+    }
+  };
 
+  /**
+   * Checks if input customerInfo has a name that matches something existing in the customer array
+   * @param {object} customerInfo
+   * @param {array} customerArray
+   * @return {undefined}
+   */
+  function customerInCustomerList(customerInfo, customerArray) {
+    var customerName = customerInfo.name;
 
-  var deepObjCopy = function(obj) {
+    for (var i = 0; i < customerArray.length; i++) {
+      var customerNameInArray = customerArray[i].name;
+
+      if (customerName === customerNameInArray) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Main watcher for barcode scanner
+   */
+  $scope.$watch('model.barcodeScanned', function (newValue, oldValue) {
+    if (newValue === oldValue) {
+      return;
+    }
+
+    if ($scope.model.barcodeScanned.length < 7 && $scope.model.barcodeScanned.length !== 0) {
+      alert('Please enter a real loaner barcode');
+      $scope.model.barcodeScanned = '';
+    } else {
+      if ($scope.model.barcodeScanned) {
+        //if barcode is correct format
+        if ($scope.authenticateInput($scope.model.barcodeScanned)) {
+          var barcode = $scope.model.barcodeScanned;
+          var numbers = Number(barcode.substring(3));
+          // if item is stored in loaner database
+          if (model.loanerObject[numbers]) {
+            // create loaner in pending obj
+            $scope.model.pendingLoaners[numbers] = deepObjCopy(model.loanerObject[numbers]);
+            //if unit is motor, hide fw stuff
+            if ($scope.isMotor($scope.model.pendingLoaners[numbers].unit) || $scope.model.pendingLoaners[numbers].unit === 'LR2W' || $scope.model.pendingLoaners[numbers].unit === 'LR2M') { //roq - remove after matt updates firmware
+              $scope.model.pendingLoaners[numbers].firmware = "NA";
+              $scope.model.pendingLoaners[numbers].radio    = "NA";
+              $scope.model.pendingLoaners[numbers].mods     = "NA";
+              $scope.setStatus($scope.model.pendingLoaners[numbers], false);
+            } else { //for all non-motors, properly sort out firmware
+              $scope.getFirmware($scope.model.pendingLoaners[numbers], 'checkInOut');
+            }
+          } else { //if item isn't in loaner database
+            $scope.createLoaner(numbers);
+          }
+          //reset input to empty
+          $scope.model.barcodeScanned = '';
+        } else {
+          alert('Please enter a real loaner barcode');
+          $scope.model.barcodeScanned = '';
+        }
+      }
+    }
+  });
+
+  /**
+   * Copes input object and returns a copy be value (not reference). Must be one level deep
+   * @param {object} obj
+   * @return {object}
+   */
+  function deepObjCopy(input) {
     var secondObj = {};
 
-    for (var prop in obj) {
-      if (obj.hasOwnProperty(prop)) {
-          secondObj[prop] = obj[prop];
+    for (var prop in input) {
+      if (input.hasOwnProperty(prop)) {
+          secondObj[prop] = input[prop];
       }
     }
 
@@ -193,27 +208,27 @@ barcodeApp.controller('LoanerScannerController', [
         shippingAddress: ''
       }
     }
-    $scope.pendingLoaners[newBarcode] = newItem;
+    $scope.model.pendingLoaners[newBarcode] = newItem;
   }
 
   //populates serial number field w/ right prefix
   $scope.unitSelect = function(unit, type) {
     if(type === 'DMF3') {
-      $scope.pendingLoaners[unit.unitBarcode].serialNum = 'D3-';
+      $scope.model.pendingLoaners[unit.unitBarcode].serialNum = 'D3-';
     } else if(type === 'LR2') {
-      $scope.pendingLoaners[unit.unitBarcode].serialNum = 'LR';
+      $scope.model.pendingLoaners[unit.unitBarcode].serialNum = 'LR';
     } else if(type === 'VIU') {
-      $scope.pendingLoaners[unit.unitBarcode].serialNum = 'VOU';
+      $scope.model.pendingLoaners[unit.unitBarcode].serialNum = 'VOU';
     } else if(type === 'VF3') {
-      $scope.pendingLoaners[unit.unitBarcode].serialNum = 'MF';
+      $scope.model.pendingLoaners[unit.unitBarcode].serialNum = 'MF';
     } else if(type === 'DM2X') {
-      $scope.pendingLoaners[unit.unitBarcode].serialNum = '2X';
+      $scope.model.pendingLoaners[unit.unitBarcode].serialNum = '2X';
     } else if(type === "DMF2") {
-      $scope.pendingLoaners[unit.unitBarcode].serialNum = 'D';
+      $scope.model.pendingLoaners[unit.unitBarcode].serialNum = 'D';
     } else if(type === "VLC") {
-      $scope.pendingLoaners[unit.unitBarcode].serialNum = 'V';
+      $scope.model.pendingLoaners[unit.unitBarcode].serialNum = 'V';
     } else {
-      $scope.pendingLoaners[unit.unitBarcode].serialNum = '';
+      $scope.model.pendingLoaners[unit.unitBarcode].serialNum = '';
     }
 
     $scope.setFocus(unit.unitBarcode);
@@ -228,7 +243,7 @@ barcodeApp.controller('LoanerScannerController', [
   //checks if serial number if valid
   $scope.serialNumCheck = function(unit) {
     var validSerial = $scope.checkSerialNum(unit.unit, unit.serialNum);
-    $scope.pendingLoaners[unit.unitBarcode].valid = validSerial;
+    $scope.model.pendingLoaners[unit.unitBarcode].valid = validSerial;
   }
 
   //submits serial nubmer to database
@@ -257,11 +272,11 @@ barcodeApp.controller('LoanerScannerController', [
     }
 
     unit.timestamp = firebase.database.ServerValue.TIMESTAMP;
-    $scope.loanerInfo.child(unit.unitBarcode).set(unit).then(function() {
-      $scope.pendingLoaners[unit.unitBarcode].status = "Submitted";
+    model.loanerReference.child(unit.unitBarcode).set(unit).then(function() {
+      $scope.model.pendingLoaners[unit.unitBarcode].status = "Submitted";
 
       $timeout(function(){
-        delete $scope.pendingLoaners[unit.unitBarcode];
+        delete $scope.model.pendingLoaners[unit.unitBarcode];
         if (angular.equals($scope.pendingBarcodes, {})) {
         }
       }, 1300)
@@ -343,7 +358,7 @@ barcodeApp.controller('LoanerScannerController', [
 
   //removes item from list of pending loaner scans
   $scope.removeItem = function(unit) {
-    delete $scope.pendingLoaners[unit.unitBarcode];
+    delete $scope.model.pendingLoaners[unit.unitBarcode];
   }
 
   //checks if unit is motor
@@ -362,11 +377,11 @@ barcodeApp.controller('LoanerScannerController', [
     var serialNum = unit.serialNum;
 
     if (source !== 'checkInOut') {
-      var unitIndex = $scope.loanerArray.indexOf(unit);
+      var unitIndex = model.loanerArray.indexOf(unit);
 
-      $scope.loanerArray[unitIndex].firmware = 'pending';
-      $scope.loanerArray[unitIndex].mods     = 'pending';
-      $scope.loanerArray[unitIndex].radio    = 'pending';
+      model.loanerArray[unitIndex].firmware = 'pending';
+      model.loanerArray[unitIndex].mods     = 'pending';
+      model.loanerArray[unitIndex].radio    = 'pending';
     }
 
     //prepare unit type for api
@@ -409,20 +424,20 @@ barcodeApp.controller('LoanerScannerController', [
 
     if (response.data == null) {
       alert("Unit not in internal database. Enter into database then redo check in of unit.");
-      delete $scope.pendingLoaners[unit.unitBarcode];
+      delete $scope.model.pendingLoaners[unit.unitBarcode];
     } else {
       var noRadio   = ["LR2", "DMF3", "DMF2", "BM", "LR2W", "LR2M"];
       var withRadio = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC", "HU4"];
       var hasRadio  = (withRadio.indexOf(unitType)!==-1);
 
       if (!hasRadio) {
-        $scope.pendingLoaners[unit.unitBarcode].radio = "NA";
+        $scope.model.pendingLoaners[unit.unitBarcode].radio = "NA";
       } else {
-        $scope.pendingLoaners[unit.unitBarcode].radio = response.data.radio_fw_latest;
+        $scope.model.pendingLoaners[unit.unitBarcode].radio = response.data.radio_fw_latest;
       }
 
-      $scope.pendingLoaners[unit.unitBarcode].firmware = response.data.main_fw_latest;
-      $scope.pendingLoaners[unit.unitBarcode].mods     = response.data.mods_latest;
+      $scope.model.pendingLoaners[unit.unitBarcode].firmware = response.data.main_fw_latest;
+      $scope.model.pendingLoaners[unit.unitBarcode].mods     = response.data.mods_latest;
 
       $scope.setStatus(unit, hasRadio);
     }
@@ -435,58 +450,58 @@ barcodeApp.controller('LoanerScannerController', [
 
     if (unitStatus === "ready") {
       if ($scope.isMotor(unit.unit) || unit.unit === "LR2W" || unit.unit === "LR2M") {
-        $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
+        $scope.model.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
       } else if(((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods){
-        $scope.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
+        $scope.model.pendingLoaners[unit.unitBarcode].status = "Ready to loan";
       } else{
-        $scope.pendingLoaners[unit.unitBarcode].status = "Needs updates";
+        $scope.model.pendingLoaners[unit.unitBarcode].status = "Needs updates";
       }
     } else if (unitStatus === 'needs QA') {
       if ($scope.isMotor(unit.unit)) {
-        $scope.pendingLoaners[unit.unitBarcode].status = "Needs QA";
+        $scope.model.pendingLoaners[unit.unitBarcode].status = "Needs QA";
       } else if (((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods) {
-        $scope.pendingLoaners[unit.unitBarcode].status = "Needs QA";
+        $scope.model.pendingLoaners[unit.unitBarcode].status = "Needs QA";
       } else {
-        $scope.pendingLoaners[unit.unitBarcode].status = "Needs updates & QA";
+        $scope.model.pendingLoaners[unit.unitBarcode].status = "Needs updates & QA";
       }
     } else if (unitStatus === 'checked Out') {
-      $scope.pendingLoaners[unit.unitBarcode].status = "Ready to be checked in";
+      $scope.model.pendingLoaners[unit.unitBarcode].status = "Ready to be checked in";
     }
   }
 
   $scope.invApiResponse = function(unit, response) {
     //get index of unit in loaner array
-    var unitIndex = $scope.loanerArray.indexOf(unit);
-    var unitType  = $scope.loanerArray[unitIndex].unit;
+    var unitIndex = model.loanerArray.indexOf(unit);
+    var unitType  = model.loanerArray[unitIndex].unit;
 
     if (response.data === null) {
       if (!(unitType === 'DM1X' || unitType === 'DM2X' || unitType === 'DM2' || unitType === 'DM5' || unitType === 'DM4' || unitType === 'DM4X')) {
         alert("Unit not in internal database. Enter into database then redo check in of unit.");
       }
 
-      $scope.loanerArray[unitIndex].firmware = 'NA';
-      $scope.loanerArray[unitIndex].mods     = 'NA';
-      $scope.loanerArray[unitIndex].radio    = 'NA';
+      model.loanerArray[unitIndex].firmware = 'NA';
+      model.loanerArray[unitIndex].mods     = 'NA';
+      model.loanerArray[unitIndex].radio    = 'NA';
     } else {
       var all = ["FI", "HU3", "MDR3", "MDR2", "MDR4", "VIU", "RMF", "VLC", "HU4"];
       var hasRadio = all.indexOf(unitType) !== -1;
 
       if (!hasRadio) {
-        $scope.loanerArray[unitIndex].radio = "NA";
-                           hasRadio         = false;
+        model.loanerArray[unitIndex].radio = "NA";
+                          hasRadio         = false;
       } else { //else if unit does have a radio
-        $scope.loanerArray[unitIndex].radio = response.data.radio_fw_latest ? response.data.radio_fw_latest : false;
-                           hasRadio         = $scope.loanerArray[unitIndex].radio;
+        model.loanerArray[unitIndex].radio = response.data.radio_fw_latest ? response.data.radio_fw_latest : false;
+                          hasRadio         = model.loanerArray[unitIndex].radio;
       }
       //update firmware and mods info for unit
-      $scope.loanerArray[unitIndex].firmware = response.data.main_fw_latest ? response.data.main_fw_latest : false;
-      $scope.loanerArray[unitIndex].mods     = response.data.mods_latest    ? response.data.mods_latest    : false;
+      model.loanerArray[unitIndex].firmware = response.data.main_fw_latest ? response.data.main_fw_latest : false;
+      model.loanerArray[unitIndex].mods     = response.data.mods_latest    ? response.data.mods_latest    : false;
     }
   };
 
 
   $scope.custImport = function(unit, custInfo) {
-    var singleLoaner = $scope.pendingLoaners[unit.unitBarcode].customerInfo;
+    var singleLoaner = $scope.model.pendingLoaners[unit.unitBarcode].customerInfo;
 
     if (custInfo === 'reset') {
       singleLoaner.name = '';
@@ -526,9 +541,8 @@ barcodeApp.controller('LoanerScannerController', [
     var confirmDelete = window.confirm('Are you sure you want to delete this unit?');
 
     if (confirmDelete) {
-      $scope.loanerInfo.child(unit.unitBarcode).remove();
-      delete $scope.pendingLoaners[unit.unitBarcode];
+      model.loanerReference.child(unit.unitBarcode).remove();
+      delete $scope.model.pendingLoaners[unit.unitBarcode];
     }
   }
-
 }]);
