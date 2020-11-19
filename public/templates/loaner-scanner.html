@@ -24,13 +24,13 @@
         <!-- unit status -->
 
         <div class="loaner-scanner-thumbnail-title">
-          <h3>{{unit.status | uppercase}}</h3>
+          <h2>{{ unit.viewStatus }}</h2>
           <span class="clear-thumbnail" ng-click="removeItem(unit)"><i class="fa fa-times-circle" aria-hidden="true"></i> </span>
         </div>
 
         <!-- template for units that aren't in database -->
 
-        <div class="row text-left" ng-show="unit.location==='not in database'">
+        <div class="row text-left" ng-show="unit.location === 'not in database'">
           <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
             <span> Barcode: </span> PCS{{unit.unitBarcode}}
           </div>
@@ -53,35 +53,40 @@
 
         <!-- template for units that aren in database -->
 
-        <div class="row" ng-show="unit.location !== 'not in database'">
-          <div class="col-xs-12">
-            Unit Info
+        <div class="row text-left" ng-show="unit.location !== 'not in database'">
+          <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
+            <span> Barcode: </span> PCS{{ unit.unitBarcode }}
           </div>
-
-          <div class="col-sm-4 col-xs-12">
-            <span> Barcode: </span> PCS{{unit.unitBarcode}}
+          <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
+            <span> Location: </span> {{ unit.location }}
           </div>
-          <div class="col-sm-8 col-xs-12">
-            <span> Location: </span> {{unit.location}}
+          <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
+            <span> Unit: </span> {{ unit.unit }}
           </div>
-          <div class="col-sm-4 col-xs-12">
-            <span> Unit: </span> {{unit.unit}}
-          </div>
-          <div class="col-sm-8 col-xs-12">
-            <span> S/N: </span> {{unit.serialNum}}
+          <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
+            <span> S/N: </span> {{ unit.serialNum }}
           </div>
 
           <!-- firmware items (hide for motors) -->
-          <div class="col-xs-12" ng-hide="unit.firmware === 'NA' && unit.radio === 'NA' && unit.mods === 'NA' ">
-            <span> Up to date: </span>
-            <span class="loanerToDate" ng-show="unit.firmware !== 'NA'">Firmware <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="unit.firmware"></i> <i ng-if="!unit.firmware" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i>&nbsp;&nbsp;</span>
-            <span class="loanerToDate"  ng-show="unit.radio !== 'NA'">Radio <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="unit.radio"></i> <i ng-if="!unit.radio" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i> &nbsp;&nbsp;</span>
-            <span class="loanerToDate"  ng-show="unit.mods !== 'NA'">Mods <i class="fa fa-check-square" style="color: #00FF00" aria-hidden="true" ng-if="unit.mods"></i> <i ng-if="!unit.mods" style="color: #FF0000" class="fa fa-window-close" aria-hidden="true"></i> &nbsp;&nbsp;</span>
+          <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle" ng-hide="unit.firmware === 'NA' && unit.radio === 'NA' && unit.mods === 'NA' ">
+            <span>Update Information:</span>
+            <ul>
+              <li ng-show="unit.firmware !== 'NA'">
+                Firmware <i class="fa fa-check-square" aria-hidden="true" ng-style="{'color' : unit.firmware ? '#5cb85c' : '#FF0000'}" ng-class="unit.firmware ? 'fa-check-square' : 'fa-window-close'"></i>
+              </li>
+              <li ng-show="unit.radio !== 'NA'">
+                Radio <i class="fa fa-check-square" aria-hidden="true" ng-style="{'color' : unit.radio ? '#5cb85c' : '#FF0000'}" ng-class="unit.radio ? 'fa-check-square' : 'fa-window-close'"></i>
+              </li>
+              <li ng-show="unit.mods !== 'NA'">
+                Mods <i class="fa fa-check-square" aria-hidden="true" ng-style="{'color' : unit.mods ? '#5cb85c' : '#FF0000'}" ng-class="unit.mods ? 'fa-check-square' : 'fa-window-close'"></i>
+              </li>
+            </ul>
           </div>
 
-          <div class="col-xs-12">
-            <span> Unit Notes: </span> <input class="notesBox" placeholder=" ex. w/o motor rod, missing LED cover, etc." ng-model="unit.notes" />
+          <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
+            <span> Unit Notes: </span> <textarea rows="3" class="loaner-scanner-notes" ng-model="unit.notes"/>
           </div>
+
           <div ng-show="unit.status==='Ready to loan' || unit.location==='checked out' || unit.status==='Needs QA'">
             <div class="col-xs-12">
               Customer Info
