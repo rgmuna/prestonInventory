@@ -24,11 +24,11 @@ barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$fireba
   //
 
   $scope.model = {
-    loaded        : false,
-    barcodeScanned: '',
-    pendingLoaners: {},
-    customerList  : [],
-    loanerProducts: [
+    loaded          : false,
+    barcodeScanned  : '',
+    pendingLoaners  : {},
+    customerList    : [],
+    loanerProducts  : [
       'FI',
       'HU3',
       'MDR2',
@@ -134,11 +134,16 @@ barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$fireba
         if (model.loanerObject[numbers]) {
           // create loaner in pending obj
           $scope.model.pendingLoaners[numbers] = deepObjCopy(model.loanerObject[numbers]);
+
+          // Set to loading
+          $scope.model.pendingLoaners[numbers].loading = true;
+
           //if unit is motor, hide fw stuff
           if (isMotor($scope.model.pendingLoaners[numbers].unit) || $scope.model.pendingLoaners[numbers].unit === 'LR2W' || $scope.model.pendingLoaners[numbers].unit === 'LR2M') { //roq - remove after matt updates firmware
             $scope.model.pendingLoaners[numbers].firmware = 'NA';
             $scope.model.pendingLoaners[numbers].radio    = 'NA';
             $scope.model.pendingLoaners[numbers].mods     = 'NA';
+            $scope.model.pendingLoaners[numbers].loading  = false;
 
             setViewStatus($scope.model.pendingLoaners[numbers], false);
           } else { //for all non-motors, properly sort out firmware
@@ -299,6 +304,8 @@ barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$fireba
    * @return {undefined}
    */
   $scope.submitToDatabase = function(unit, newStatus) {
+    $scope.model.pendingLoaners[unit.unitBarcode].loading = true;
+
     if (newStatus === 'makeUnit') {
       unit.location = "in house";
       unit.status   = "ready";
@@ -325,7 +332,7 @@ barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$fireba
     unit.timestamp = firebase.database.ServerValue.TIMESTAMP;
 
     model.loanerReference.child(unit.unitBarcode).set(unit).then(function() {
-      $scope.model.pendingLoaners[unit.unitBarcode].status = "Submitted";
+      $scope.removeItem(unit);
     });
   }
 
@@ -486,12 +493,14 @@ barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$fireba
           $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.NEEDS_UPDATES_QA;
         }
         break;
-      case 'checked Out':
+      case 'checked out':
         $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.READY_CHECK_IN;
+        break;
       default:
         break;
     }
 
+    $scope.model.pendingLoaners[unit.unitBarcode].loading      = false;
     $scope.model.pendingLoaners[unit.unitBarcode].showCustomer = setShowCustomerInfo($scope.model.pendingLoaners[unit.unitBarcode].viewStatus);
   }
 
@@ -535,6 +544,7 @@ barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$fireba
     var singleLoaner = $scope.model.pendingLoaners[unit.unitBarcode].customerInfo;
 
     if (custInfo === 'reset') {
+      $scope.model.pendingLoaners[unit.unitBarcode].selectedCustomer = '';
       singleLoaner.name = '';
       singleLoaner.phoneNum = '';
       singleLoaner.email = '';

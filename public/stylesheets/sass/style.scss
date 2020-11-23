@@ -428,6 +428,10 @@ body {
 
     input {
       width: 100%;
+
+      &.loaner-scanner-serial {
+        width: auto;
+      }
     }
 
     textarea {

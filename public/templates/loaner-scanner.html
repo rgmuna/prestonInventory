@@ -21,16 +21,20 @@
 
     <div class="loaner-scanner-thumbnail col-xs-12" ng-repeat="unit in model.pendingLoaners">
 
+      <div class="row" ng-if="unit.loading">
+        <img src="../assets/loading.svg" alt="" />
+      </div>
+
       <!-- unit status -->
 
-      <div class="row loaner-scanner-thumbnail-title">
+      <div class="row loaner-scanner-thumbnail-title" ng-if="!unit.loading">
         <h2>{{ unit.viewStatus }}</h2>
         <span class="clear-thumbnail" ng-click="removeItem(unit)"><i class="fa fa-times-circle" aria-hidden="true"></i> </span>
       </div>
 
       <!-- template for units that aren't in database -->
 
-      <div class="row text-left" ng-show="unit.location === 'not in database'">
+      <div class="row text-left" ng-show="unit.location === 'not in database' && !unit.loading">
         <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
           <span> Barcode: </span> PCS{{unit.unitBarcode}}
         </div>
@@ -41,7 +45,7 @@
           <span> Unit: </span> <select name="unitSelect" value="test" ng-model="unit.unit" ng-options="x for x in model.loanerProducts" ng-change="unitSelect(unit, unit.unit)"> </select>
         </div>
         <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
-          <span> S/N: </span> <input id="{{unit.unitBarcode}}" ng-model="unit.serialNum" ng-change="serialNumCheck(unit)"/>
+          <span> S/N: </span> <input class="loaner-scanner-serial" id="{{unit.unitBarcode}}" ng-model="unit.serialNum" ng-change="serialNumCheck(unit)"/>
         </div>
         <div class="col-xs-12 loaner-scanner-subtitle">
           <span> Notes: </span> <input class="loaner-scanner-notes" placeholder=" ex. w/o motor rod, missing LED cover, etc." ng-model="unit.notes" />
@@ -53,7 +57,7 @@
 
       <!-- template for units that are in database -->
 
-      <div class="row text-left" ng-show="unit.location !== 'not in database'">
+      <div class="row text-left" ng-show="unit.location !== 'not in database' && !unit.loading">
 
         <h4 class="loaner-scanner-title col-xs-12">Unit Info</h4>
 
@@ -97,7 +101,8 @@
           <h4 class="loaner-scanner-title col-xs-12">Customer Info</h4>
 
           <div class="col-xs-12 loaner-scanner-subtitle">
-            Add to Customer: <select value="test" ng-model="importSelect" ng-options="x.name for x in model.customerList" ng-change="custImport(unit, importSelect)"> </select>
+            Add to Customer: <select ng-model="unit.selectedCustomer" ng-options="x.name for x in model.customerList" ng-change="custImport(unit, selectedCustomer)"> </select>
+            <button class="btn btn-secondary" ng-if="unit.selectedCustomer" ng-click="custImport(unit, 'reset')">Reset</button>
           </div>
 
           <div class="col-sm-6 col-xs-12 loaner-scanner-subtitle">
@@ -126,12 +131,17 @@
         </div>
 
         <div class="col-xs-12 text-center">
-          <button class="submitButton blueButton" ng-click="submitToDatabase(unit, 'checkOut')" ng-show="unit.location==='checked out'">Update Info</button>
-          <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkBackIn')" ng-show="unit.location==='checked out'">Check In</button>
-          <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkIn')" ng-show="unit.status==='Needs QA'">Check In: QA'd</button>
-          <button class="submitButton yellowButton" ng-click="removeItem(unit)" ng-show="unit.status==='Needs updates' || unit.status==='Needs updates & QA'">Close</button>
-          <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkOut')" ng-show="unit.status==='Ready to loan'" ng-class="{'btnDisabled' : unit.customerInfo.name==='' || unit.customerInfo.email==='' || unit.customerInfo.phoneNum==='' }" ng-disabled="unit.customerInfo.name==='' || unit.customerInfo.email==='' || unit.customerInfo.phoneNum===''">Check Out</button>
-          <button class="submitButton" ng-if="adminLoggedIn" ng-click="deleteFromDatabase(unit)"> DELETE </button>
+          <button class="btn btn-lg btn-info"      ng-if="unit.location === 'checked out'" ng-click="submitToDatabase(unit, 'checkOut')">Update Info</button>
+          <button class="btn btn-lg btn-primary"   ng-if="unit.location === 'checked out'" ng-click="submitToDatabase(unit, 'checkBackIn')">Check In</button>
+          <button class="btn btn-lg btn-success"   ng-if="unit.viewStatus === 'Needs QA'" ng-click="submitToDatabase(unit, 'checkIn')">Check In: QA'd</button>
+          <button class="btn btn-lg btn-secondary" ng-if="unit.viewStatus === 'Needs Updates' || unit.viewStatus === 'Needs Updates & QA'" ng-click="removeItem(unit)">Close</button>
+          <button class="btn btn-lg btn-success"
+            ng-if="unit.viewStatus === 'Ready to Loan'"
+            ng-click="submitToDatabase(unit, 'checkOut')"
+            ng-disabled="unit.customerInfo.name === '' || unit.customerInfo.email === '' || unit.customerInfo.phoneNum === ''">
+            Check Out
+          </button>
+          <button class="btn btn-lg btn-danger" ng-if="adminLoggedIn" ng-click="deleteFromDatabase(unit)"> DELETE </button>
         </div>
       </div>
 
