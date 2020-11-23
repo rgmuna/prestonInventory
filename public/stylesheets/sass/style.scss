@@ -413,12 +413,26 @@ body {
     font-size: 20px;
   }
 
+  &-textarea {
+    display: inline-block;
+    width: 100%;
+  }
+
   &-subtitle {
     font-size: 18px;
     margin-bottom: 15px;
 
     span {
       font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+    }
+
+    textarea {
+      width: 100%;
+      display: inline-block;
     }
   }
 
