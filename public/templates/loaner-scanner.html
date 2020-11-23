@@ -6,7 +6,7 @@
   </div>
 
   <div class="row text-center" ng-show="!model.loaded">
-    <img src="../assets/loading.svg" alt="">
+    <img src="../assets/loading.svg" alt="" />
   </div>
 
   <!-- Scanner -->
@@ -19,109 +19,123 @@
 
   <div class="row text-center" ng-show="model.loaded">
 
-      <div class="loaner-scanner-thumbnail col-xs-12" ng-repeat="unit in model.pendingLoaners">
+    <div class="loaner-scanner-thumbnail col-xs-12" ng-repeat="unit in model.pendingLoaners">
 
-        <!-- unit status -->
+      <!-- unit status -->
 
-        <div class="loaner-scanner-thumbnail-title">
-          <h2>{{ unit.viewStatus }}</h2>
-          <span class="clear-thumbnail" ng-click="removeItem(unit)"><i class="fa fa-times-circle" aria-hidden="true"></i> </span>
-        </div>
-
-        <!-- template for units that aren't in database -->
-
-        <div class="row text-left" ng-show="unit.location === 'not in database'">
-          <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
-            <span> Barcode: </span> PCS{{unit.unitBarcode}}
-          </div>
-          <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
-            <span> Location: </span> not in database
-          </div>
-          <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
-            <span> Unit: </span> <select class="loanSelect" name="unitSelect" value="test" ng-model="unit.unit" ng-options="x for x in model.loanerProducts" ng-change="unitSelect(unit, unit.unit)"> </select>
-          </div>
-          <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
-            <span> S/N: </span> <input id="{{unit.unitBarcode}}" ng-model="unit.serialNum" ng-change="serialNumCheck(unit)"/>
-          </div>
-          <div class="col-xs-12 loaner-scanner-subtitle">
-            <span> Notes: </span> <input class="loaner-scanner-notes" placeholder=" ex. w/o motor rod, missing LED cover, etc." ng-model="unit.notes" />
-          </div>
-          <div class="col-xs-12 text-center">
-            <button class="btn btn-lg btn-success" ng-click="submitToDatabase(unit, 'makeUnit')" ng-class="{'btnDisabled' : !unit.valid}" ng-disabled="!unit.valid">Enter In Database</button>
-          </div>
-        </div>
-
-        <!-- template for units that aren in database -->
-
-        <div class="row text-left" ng-show="unit.location !== 'not in database'">
-          <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
-            <span> Barcode: </span> PCS{{ unit.unitBarcode }}
-          </div>
-          <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
-            <span> Location: </span> {{ unit.location }}
-          </div>
-          <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
-            <span> Unit: </span> {{ unit.unit }}
-          </div>
-          <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
-            <span> S/N: </span> {{ unit.serialNum }}
-          </div>
-
-          <!-- firmware items (hide for motors) -->
-          <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle" ng-hide="unit.firmware === 'NA' && unit.radio === 'NA' && unit.mods === 'NA' ">
-            <span>Update Information:</span>
-            <ul>
-              <li ng-show="unit.firmware !== 'NA'">
-                Firmware <i class="fa fa-check-square" aria-hidden="true" ng-style="{'color' : unit.firmware ? '#5cb85c' : '#FF0000'}" ng-class="unit.firmware ? 'fa-check-square' : 'fa-window-close'"></i>
-              </li>
-              <li ng-show="unit.radio !== 'NA'">
-                Radio <i class="fa fa-check-square" aria-hidden="true" ng-style="{'color' : unit.radio ? '#5cb85c' : '#FF0000'}" ng-class="unit.radio ? 'fa-check-square' : 'fa-window-close'"></i>
-              </li>
-              <li ng-show="unit.mods !== 'NA'">
-                Mods <i class="fa fa-check-square" aria-hidden="true" ng-style="{'color' : unit.mods ? '#5cb85c' : '#FF0000'}" ng-class="unit.mods ? 'fa-check-square' : 'fa-window-close'"></i>
-              </li>
-            </ul>
-          </div>
-
-          <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
-            <span> Unit Notes: </span> <textarea rows="3" class="loaner-scanner-notes" ng-model="unit.notes"/>
-          </div>
-
-          <div ng-show="unit.status==='Ready to loan' || unit.location==='checked out' || unit.status==='Needs QA'">
-            <div class="col-xs-12">
-              Customer Info
-              <span class="custImportInfo"> Add to Customer: &nbsp <select class="custInfoSelect" value="test" ng-model="importSelect" ng-options="x.name for x in model.customerList" ng-change="custImport(unit, importSelect)"> </select> </span>
-            </div>
-            <div class="col-sm-6 col-xs-12">
-              <span> Name: </span> <input class="customerEntry" placeholder="required" ng-model="unit.customerInfo.name"/>
-            </div>
-            <div class="col-sm-6 col-xs-12">
-              <span> Phone #: </span> <input class="customerEntry" placeholder="required" ng-model="unit.customerInfo.phoneNum"/>
-            </div>
-            <div class="col-sm-6 col-xs-12">
-              <span> Email: </span> <input class="customerEntry" placeholder="required" ng-model="unit.customerInfo.email"/>
-            </div>
-            <div class="col-sm-6 col-xs-12">
-              <span> Repair #: </span> <input class="customerEntry" ng-model="unit.customerInfo.repairNum"/>
-            </div>
-            <div class="col-xs-12">
-              <span> Shipping Address: </span> <textarea rows="4" class="addressEntry" ng-model="unit.customerInfo.shippingAddress"></textarea>
-            </div>
-            <div class="col-xs-12">
-              <span> Notes: </span> <textarea rows="4" class="addressEntry" ng-model="unit.customerInfo.notes"></textarea>
-            </div>
-          </div>
-          <div class="col-xs-12 text-center">
-            <button class="submitButton blueButton" ng-click="submitToDatabase(unit, 'checkOut')" ng-show="unit.location==='checked out'">Update Info</button>
-            <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkBackIn')" ng-show="unit.location==='checked out'">Check In</button>
-            <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkIn')" ng-show="unit.status==='Needs QA'">Check In: QA'd</button>
-            <button class="submitButton yellowButton" ng-click="removeItem(unit)" ng-show="unit.status==='Needs updates' || unit.status==='Needs updates & QA'">Close</button>
-            <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkOut')" ng-show="unit.status==='Ready to loan'" ng-class="{'btnDisabled' : unit.customerInfo.name==='' || unit.customerInfo.email==='' || unit.customerInfo.phoneNum==='' }" ng-disabled="unit.customerInfo.name==='' || unit.customerInfo.email==='' || unit.customerInfo.phoneNum===''">Check Out</button>
-            <button class="submitButton" ng-if="adminLoggedIn" ng-click="deleteFromDatabase(unit)"> DELETE </button>
-          </div>
-        </div>
-
+      <div class="row loaner-scanner-thumbnail-title">
+        <h2>{{ unit.viewStatus }}</h2>
+        <span class="clear-thumbnail" ng-click="removeItem(unit)"><i class="fa fa-times-circle" aria-hidden="true"></i> </span>
       </div>
+
+      <!-- template for units that aren't in database -->
+
+      <div class="row text-left" ng-show="unit.location === 'not in database'">
+        <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
+          <span> Barcode: </span> PCS{{unit.unitBarcode}}
+        </div>
+        <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
+          <span> Location: </span> not in database
+        </div>
+        <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
+          <span> Unit: </span> <select name="unitSelect" value="test" ng-model="unit.unit" ng-options="x for x in model.loanerProducts" ng-change="unitSelect(unit, unit.unit)"> </select>
+        </div>
+        <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
+          <span> S/N: </span> <input id="{{unit.unitBarcode}}" ng-model="unit.serialNum" ng-change="serialNumCheck(unit)"/>
+        </div>
+        <div class="col-xs-12 loaner-scanner-subtitle">
+          <span> Notes: </span> <input class="loaner-scanner-notes" placeholder=" ex. w/o motor rod, missing LED cover, etc." ng-model="unit.notes" />
+        </div>
+        <div class="col-xs-12 text-center">
+          <button class="btn btn-lg btn-success" ng-click="submitToDatabase(unit, 'makeUnit')" ng-class="{'btnDisabled' : !unit.valid}" ng-disabled="!unit.valid">Enter In Database</button>
+        </div>
+      </div>
+
+      <!-- template for units that are in database -->
+
+      <div class="row text-left" ng-show="unit.location !== 'not in database'">
+
+        <h4 class="loaner-scanner-title col-xs-12">Unit Info</h4>
+
+        <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
+          <span> Barcode: </span> PCS{{ unit.unitBarcode }}
+        </div>
+        <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
+          <span> Location: </span> {{ unit.location }}
+        </div>
+        <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle">
+          <span> Unit: </span> {{ unit.unit }}
+        </div>
+        <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
+          <span> S/N: </span> {{ unit.serialNum }}
+        </div>
+
+        <!-- firmware items (hide for motors) -->
+
+        <div class="col-sm-5 col-xs-12 loaner-scanner-subtitle" ng-hide="unit.firmware === 'NA' && unit.radio === 'NA' && unit.mods === 'NA' ">
+          <span>Update Information:</span>
+          <ul>
+            <li ng-show="unit.firmware !== 'NA'">
+              Firmware <i class="fa fa-check-square" aria-hidden="true" ng-style="{'color' : unit.firmware ? '#5cb85c' : '#FF0000'}" ng-class="unit.firmware ? 'fa-check-square' : 'fa-window-close'"></i>
+            </li>
+            <li ng-show="unit.radio !== 'NA'">
+              Radio <i class="fa fa-check-square" aria-hidden="true" ng-style="{'color' : unit.radio ? '#5cb85c' : '#FF0000'}" ng-class="unit.radio ? 'fa-check-square' : 'fa-window-close'"></i>
+            </li>
+            <li ng-show="unit.mods !== 'NA'">
+              Mods <i class="fa fa-check-square" aria-hidden="true" ng-style="{'color' : unit.mods ? '#5cb85c' : '#FF0000'}" ng-class="unit.mods ? 'fa-check-square' : 'fa-window-close'"></i>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-sm-7 col-xs-12 loaner-scanner-subtitle">
+          <span> Unit Notes: </span> <textarea rows="3" class="loaner-scanner-notes" ng-model="unit.notes"></textarea>
+        </div>
+
+        <!-- customer info -->
+
+        <div ng-if="unit.showCustomer">
+          <h4 class="loaner-scanner-title col-xs-12">Customer Info</h4>
+
+          <div class="col-xs-12 loaner-scanner-subtitle">
+            Add to Customer: <select value="test" ng-model="importSelect" ng-options="x.name for x in model.customerList" ng-change="custImport(unit, importSelect)"> </select>
+          </div>
+
+          <div class="col-sm-6 col-xs-12 loaner-scanner-subtitle">
+            <span> Name: </span> <input placeholder="required" ng-model="unit.customerInfo.name"/>
+          </div>
+
+          <div class="col-sm-6 col-xs-12 loaner-scanner-subtitle">
+            <span> Phone #: </span> <input placeholder="required" ng-model="unit.customerInfo.phoneNum"/>
+          </div>
+
+          <div class="col-sm-6 col-xs-12 loaner-scanner-subtitle">
+            <span> Email: </span> <input placeholder="required" ng-model="unit.customerInfo.email"/>
+          </div>
+
+          <div class="col-sm-6 col-xs-12 loaner-scanner-subtitle">
+            <span> Repair #: </span> <input ng-model="unit.customerInfo.repairNum"/>
+          </div>
+
+          <div class="col-sm-6 col-xs-12 loaner-scanner-subtitle">
+            <span> Shipping Address: </span> <textarea rows="4" ng-model="unit.customerInfo.shippingAddress"></textarea>
+          </div>
+
+          <div class="col-sm-6 col-xs-12 loaner-scanner-subtitle">
+            <span> Notes: </span> <textarea rows="4" ng-model="unit.customerInfo.notes"></textarea>
+          </div>
+        </div>
+
+        <div class="col-xs-12 text-center">
+          <button class="submitButton blueButton" ng-click="submitToDatabase(unit, 'checkOut')" ng-show="unit.location==='checked out'">Update Info</button>
+          <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkBackIn')" ng-show="unit.location==='checked out'">Check In</button>
+          <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkIn')" ng-show="unit.status==='Needs QA'">Check In: QA'd</button>
+          <button class="submitButton yellowButton" ng-click="removeItem(unit)" ng-show="unit.status==='Needs updates' || unit.status==='Needs updates & QA'">Close</button>
+          <button class="submitButton greenButton" ng-click="submitToDatabase(unit, 'checkOut')" ng-show="unit.status==='Ready to loan'" ng-class="{'btnDisabled' : unit.customerInfo.name==='' || unit.customerInfo.email==='' || unit.customerInfo.phoneNum==='' }" ng-disabled="unit.customerInfo.name==='' || unit.customerInfo.email==='' || unit.customerInfo.phoneNum===''">Check Out</button>
+          <button class="submitButton" ng-if="adminLoggedIn" ng-click="deleteFromDatabase(unit)"> DELETE </button>
+        </div>
+      </div>
+
+    </div>
 
   </div>
 

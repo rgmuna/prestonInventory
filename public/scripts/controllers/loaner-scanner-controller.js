@@ -467,33 +467,41 @@ barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$fireba
   function setViewStatus(unit, hasRadio) {
     var unitStatus = unit.status;
 
-    if (unitStatus === "ready") {
-      if (isMotor(unit.unit) || unit.unit === "LR2W" || unit.unit === "LR2M") { // ROQ - remove this after matt adds firmware for this
-        $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.READY_TO_LOAN;
-      } else if(((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods){
-        $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.READY_TO_LOAN;
-      } else{
-        $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.NEEDS_UPDATES;
-      }
-
-      return;
+    switch (unitStatus) {
+      case 'ready':
+        if (isMotor(unit.unit) || unit.unit === "LR2W" || unit.unit === "LR2M") { // ROQ - remove this after matt adds firmware for this
+          $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.READY_TO_LOAN;
+        } else if(((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods){
+          $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.READY_TO_LOAN;
+        } else {
+          $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.NEEDS_UPDATES;
+        }
+        break;
+      case 'needs QA':
+        if (isMotor(unit.unit)) {
+          $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.NEEDS_QA;
+        } else if (((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods) {
+          $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.NEEDS_QA;
+        } else {
+          $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.NEEDS_UPDATES_QA;
+        }
+        break;
+      case 'checked Out':
+        $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.READY_CHECK_IN;
+      default:
+        break;
     }
 
-    if (unitStatus === 'needs QA') {
-      if (isMotor(unit.unit)) {
-        $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.NEEDS_QA;
-      } else if (((hasRadio && unit.radio) || !hasRadio) && unit.firmware && unit.mods) {
-        $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.NEEDS_QA;
-      } else {
-        $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.NEEDS_UPDATES_QA;
-      }
+    $scope.model.pendingLoaners[unit.unitBarcode].showCustomer = setShowCustomerInfo($scope.model.pendingLoaners[unit.unitBarcode].viewStatus);
+  }
 
-      return;
-    }
-
-    if (unitStatus === 'checked Out') {
-      $scope.model.pendingLoaners[unit.unitBarcode].viewStatus = model.VIEW_STATUS.READY_CHECK_IN;
-    }
+  /**
+   * Shows customer info depending on view status
+   * @param {string} viewStatus
+   * @return {bool}
+   */
+  function setShowCustomerInfo(viewStatus) {
+    return viewStatus !== model.VIEW_STATUS.NEEDS_UPDATES;
   }
 
   /**
