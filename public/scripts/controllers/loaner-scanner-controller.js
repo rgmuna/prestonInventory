@@ -330,7 +330,7 @@ barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$fireba
     }
 
     unit.timestamp = firebase.database.ServerValue.TIMESTAMP;
-console.log(unit);
+
     model.loanerReference.child(unit.unitBarcode).set(unit).then(function() {
       $scope.removeItem(unit);
     });
@@ -430,9 +430,11 @@ console.log(unit);
     return motors.indexOf(unitType) !== -1;
   }
 
-  //get firmware from API
-    //key = key of loaner array (used only for inventory purposes, not check in/out)
-    //unit = particular unit object
+  /**
+   * Get unit's firmware from API
+   * @param {object} unit
+   * @return {undefined}
+   */
   function getFirmware(unit) {
     var unitType  = unit.unit;
     var serialNum = unit.serialNum;
@@ -546,7 +548,6 @@ console.log(unit);
    * @return {undefined}
    */
   $scope.custImport = function(unit, custInfo) {
-    console.log(custInfo);
     var singleLoaner = $scope.model.pendingLoaners[unit.unitBarcode].customerInfo;
 
     if (custInfo === 'reset') {
