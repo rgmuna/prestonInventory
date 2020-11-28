@@ -330,7 +330,7 @@ barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$fireba
     }
 
     unit.timestamp = firebase.database.ServerValue.TIMESTAMP;
-
+console.log(unit);
     model.loanerReference.child(unit.unitBarcode).set(unit).then(function() {
       $scope.removeItem(unit);
     });
@@ -539,8 +539,14 @@ barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$fireba
   };
 
 
-
+  /**
+   * Import existing customer info to unit
+   * @param {object} unit
+   * @param {object} custInfo
+   * @return {undefined}
+   */
   $scope.custImport = function(unit, custInfo) {
+    console.log(custInfo);
     var singleLoaner = $scope.model.pendingLoaners[unit.unitBarcode].customerInfo;
 
     if (custInfo === 'reset') {
@@ -551,6 +557,7 @@ barcodeApp.controller('LoanerScannerController', ['$scope','$rootScope','$fireba
       singleLoaner.repairNum = '';
       singleLoaner.shippingAddress = '';
       singleLoaner.notes = '';
+      return;
     }
 
     if (custInfo.name) {

@@ -101,7 +101,7 @@
           <h4 class="loaner-scanner-title col-xs-12">Customer Info</h4>
 
           <div class="col-xs-12 loaner-scanner-subtitle">
-            Add to Customer: <select ng-model="unit.selectedCustomer" ng-options="x.name for x in model.customerList" ng-change="custImport(unit, selectedCustomer)"> </select>
+            Add to Customer: <select ng-model="unit.selectedCustomer" ng-options="x.name for x in model.customerList" ng-change="custImport(unit, unit.selectedCustomer)"> </select>
             <button class="btn btn-secondary" ng-if="unit.selectedCustomer" ng-click="custImport(unit, 'reset')">Reset</button>
           </div>
 
