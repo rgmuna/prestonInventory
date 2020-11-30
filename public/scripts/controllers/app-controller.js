@@ -1,4 +1,4 @@
-barcodeApp.controller('AppController', ['$rootScope', 'authService', function($rootScope, authService) {
+barcodeApp.controller('AppController', ['$rootScope', 'authService', '$state', function($rootScope, authService, $state) {
 
   //
   // $rootScope model
@@ -17,5 +17,14 @@ barcodeApp.controller('AppController', ['$rootScope', 'authService', function($r
     authService.setAuthState();
   }
 
+  /**
+   * Check if user is logged in on each state change
+   * @return {undefined}
+   */
+  $rootScope.$on('$stateChangeSuccess', function() {
+    if (!$rootScope.loggedIn.user && !$rootScope.loggedIn.admin) {
+      $state.go('login');
+    }
+  });
   renderPage();
 }]);

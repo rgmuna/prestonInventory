@@ -1,5 +1,5 @@
 
-barcodeApp.service('authService', ['$firebaseAuth', '$q', '$firebaseObject', '$rootScope', function ($firebaseAuth, $q, $firebaseObject, $rootScope) {
+barcodeApp.service('authService', ['$firebaseAuth', '$q', '$firebaseObject', '$rootScope', '$state', function ($firebaseAuth, $q, $firebaseObject, $rootScope, $state) {
 
   //
   // Service Model
@@ -62,6 +62,7 @@ barcodeApp.service('authService', ['$firebaseAuth', '$q', '$firebaseObject', '$r
     }
 
     if (!model.userInfo) {
+      $state.go('login');
       reset();
       return;
     }
@@ -69,6 +70,9 @@ barcodeApp.service('authService', ['$firebaseAuth', '$q', '$firebaseObject', '$r
     $rootScope.loggedIn.user  = true;
     $rootScope.loggedIn.admin = userIsAdmin();
     $rootScope.userEmail      = model.userInfo.email;
+
+    // After setting statuses, redirect to home
+    $state.go('inventory-list');
   }
 
   /**

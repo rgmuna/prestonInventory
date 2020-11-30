@@ -4,6 +4,15 @@ barcodeApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvid
 
   $stateProvider
 
+  .state('login', {
+    url  : '/login',
+    views: {
+      main: {
+        templateUrl: '/templates/home.html'
+      }
+    }
+  })
+
   // Inventory List
   .state('inventory-list', {
     url  : '/inventory-list',
