@@ -17,6 +17,7 @@ barcodeApp.controller('AppController', ['$rootScope', 'authService', '$state', f
     authService.setAuthState();
   }
 
+
   /**
    * Check if user is logged in on each state change
    * @return {undefined}
@@ -26,5 +27,6 @@ barcodeApp.controller('AppController', ['$rootScope', 'authService', '$state', f
       $state.go('login');
     }
   });
+
   renderPage();
 }]);

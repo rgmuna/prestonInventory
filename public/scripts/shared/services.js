@@ -70,6 +70,7 @@ barcodeApp.service('authService', ['$firebaseAuth', '$q', '$firebaseObject', '$r
     $rootScope.loggedIn.user  = true;
     $rootScope.loggedIn.admin = userIsAdmin();
     $rootScope.userEmail      = model.userInfo.email;
+    $rootScope.onHomePage     = false;
 
     // After setting statuses, redirect to home
     $state.go('inventory-list');

@@ -40,6 +40,7 @@
       <script type="text/javascript" src="./scripts/shared/productService.js"></script>
       <!-- Controllers JS files -->
       <script type="text/javascript" src="./scripts/controllers/app-controller.js"></script>
+      <script type="text/javascript" src="./scripts/controllers/home-controller.js"></script>
       <script type="text/javascript" src="./scripts/controllers/generate-barcode-controller.js"></script>
       <script type="text/javascript" src="./scripts/controllers/inventory-scanner-controller.js"></script>
       <script type="text/javascript" src="./scripts/controllers/inventory-list-controller.js"></script>
@@ -49,7 +50,8 @@
 
       <!-- style related items -->
       <!-- <link href="./stylesheets/lib/bootstrap.min.css" rel="stylesheet"> -->
-      <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+      <!-- <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"> -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
       <script src="./scripts/lib/ui-bootstrap-tpls-2.5.0.min.js"></script>
       <link rel="stylesheet" href="./stylesheets/style.css">
       <link rel="stylesheet" href="./stylesheets/compiled/style.css">
@@ -100,8 +102,7 @@
     </nav>
 
     <div ng-controller="AuthController">
-      <div class="col-xs-12 text-right login-control">
-
+      <div class="col-xs-12 text-right login-control" ng-if="!onHomePage">
         <div ng-if="loggedIn.admin || loggedIn.user">
           <div>
             <strong>{{ userEmail }}</strong>

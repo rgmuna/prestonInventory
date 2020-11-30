@@ -274,7 +274,7 @@ button:focus {
 }
 
 .keypad tbody {
-  background-color: #00ffff;
+  background-color: #fff;
 }
 
 .keypad td {
@@ -306,7 +306,7 @@ button:focus {
 }
 
 .keypad-modal {
-  background-color: #00ffff;
+  background-color: #fff;
   padding: 10px;
   border-radius: 15px;
 }

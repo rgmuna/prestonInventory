@@ -8,7 +8,8 @@ barcodeApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvid
     url  : '/login',
     views: {
       main: {
-        templateUrl: '/templates/home.html'
+        templateUrl: '/templates/home.html',
+        controller : 'HomeController'
       }
     }
   })
