@@ -1,101 +1,9 @@
-
-
-
-
-
-
-
-
 .title-container{
   z-index: -1;
 }
 
-
-.title{
-  font-weight: 600;
-  text-align: center;
-  margin: 50px 0px;
-  font-family: 'Rajdhani', sans-serif !important;
-}
-
-
 .table-container{
   max-width: 600px;
-}
-
-.barcode-graphic{
-  font-weight: 400;
-  font-size: 80px;
-  color: #33ff00;
-  height: 70px;
-  margin: 30px 0px 0px 0px;
-}
-
-.subtitle{
-  color: #33FF00;
-}
-
-.cableNumEntry {
-  background-color: black;
-  height: 40px;
-  font-size: 30px;
-  width: 100px;
-  border-radius: 10px;
-  text-align: center;
-  border-color: #33FF00;
-}
-
-.cableNumEntry:focus{
-  outline: none;
-}
-
-.numEntry{
-  letter-spacing: 2px;
-  background-color: black;
-  font-size: 40px;
-  font-weight: 500;
-  color: #33FF00;
-  text-align: center;
-  width: 180px;
-  height: 63px;
-  display: inline-block;
-
-}
-.prodEntry{
-  background-color: black;
-  font-size: 30px;
-  font-weight: 500;
-  color: #33FF00;
-  text-align: center;
-  width: 180px;
-  height: 63px;
-}
-
-.addEntry{
-  font-size: 30px;
-  color: #33FF00;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.addEntry:hover{
-  color: white;
-  text-decoration: none;
-}
-
-
-
-.enteredItems{
-  color: #33FF00;
-  text-align: center;
-  background-color: black;
-  font-size: 18px;
-}
-.removeButton{
-  background-color: #33FF00;
-  color: black;
-  border: 1px solid black;
-  font-weight: 600;
 }
 
 .removeAll{
@@ -104,46 +12,6 @@
   cursor: pointer;
 }
 
-.removeButton:hover{
-  background-color: #FF0000;
-}
-
-.noBars{
-  padding: 30px;
-  border: 3px solid gray;
-  font-size: 30px;
-  background-color: lightgray;
-  color: gray;
-  border-radius: 5px;
-  margin: 20px;
-}
-.noBars:hover{
-  text-decoration: none;
-  color: gray;
-}
-.noBars:focus{
-  text-decoration: none;
-  color: gray;
-}
-.generateBars{
-  padding: 30px;
-  border: 3px solid #33FF00;
-  font-size: 30px;
-  background-color: black;
-  color: #33FF00;
-  border-radius: 5px;
-  margin: 20px;
-}
-.generateBars:hover{
-  background-color: #FF0000;
-  color: white;
-  border: 3px solid #AE0000;
-  text-decoration: none;
-}
-.generateBars:focus{
-  text-decoration: none;
-  color: #33ff00;
-}
 .btn-container{
   height: 150px;
   margin-top: 100px;
@@ -300,70 +168,6 @@ padding-top: 26px;
 
 button:focus {
   outline: none;
-}
-
-/*=========================================third tab items=======================================*/
-.invTitle{
-  color: #ff00cc;
-  font-weight: 300;
-  font-size: 35px;
-  margin-top: 50px;
-  outline: none;
-}
-
-.invTitle.active{
-  color: black;
-  background-color: #ff00cc;
-  border-radius: 5px;
-}
-
-.invTitle button {
-  background-color: transparent;
-  border: none;
-  outline: none;
-
-}
-
-.invSubtitle{
-  color: #ff00cc;
-  font-weight: 300;
-  font-size: 18px;
-  margin-bottom: 30px;
-}
-
-.invLoading{
-  color: #ff00cc;
-  overflow: hidden; /* Ensures the content is not revealed until the animation */
-  border-right: .15em solid #ff00cc; /* The typwriter cursor */
-  white-space: nowrap; /* Keeps the content on a single line */
-  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
-  letter-spacing: .15em; /* Adjust as needed */
-  animation:
-  typing 3s steps(40, end) infinite,
-  blink-caret .75s step-end infinite;
-}
-
-
-
-
-.itemHeader{
-  font-size: 30px;
-  font-weight: 300;
-}
-
-.listSelector.inventorySelect{
-  color: #ff00cc;
-  margin-bottom: 30px;
-}
-
-.listSelector.inventorySelect.activeList{
-  border-bottom: 2px solid #ff00cc;
-}
-
-#inventoryCheck .barcode-input{
-  color: #ff00cc;
-  border: 1px solid #ff00cc;
-
 }
 
 .invCheckLabels{

@@ -229,9 +229,6 @@
   <!-- units view -->
   <div ng-if="model.view === 'units'">
 
-
-    <h3 ng-show="inventoryList" class="invSubtitle"></h3>
-
     <div class="col-xs-12 stockButtons" ng-if="adminLoggedIn" style="margin-bottom: 10px;">
       <button ng-if="!model.stockEditable" ng-click="model.stockEditable = true">Edit Stock List</button>
       <button ng-if="model.stockEditable" ng-click="saveStockEdits()">Save Changes</button>

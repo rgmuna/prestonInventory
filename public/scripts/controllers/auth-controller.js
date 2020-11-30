@@ -1,30 +1,32 @@
-barcodeApp.controller('AuthController', ['$scope', '$rootScope', 'authService', function($scope, $rootScope, authService) {
+barcodeApp.controller('AuthController', ['$scope', 'authService', function($scope, authService) {
 
-  $rootScope.authenticated = authService.userLoggedIn;
-  $rootScope.adminLoggedIn = authService.adminLoggedIn;
+  //
+  // View Model
+  //
 
-  //login function
-  $scope.login = function(runAuth){
-    $scope.authenticating = true;
+  $scope.model = {
+    loadingAuth  : false
+  }
 
-    authService.login().then(function(result){
-      $rootScope.authenticated = true;
-      $scope.authenticating = false;
-      $rootScope.adminLoggedIn = authService.adminLoggedIn;
-      if (result.additionalUserInfo.profile.picture) {
-        $scope.userPicture = result.additionalUserInfo.profile.picture;
-      }
+  /**
+   * Login controller function
+   * @return {undefined}
+   */
+  $scope.login = function() {
+    $scope.model.loadingAuth = true;
+
+    authService.login().then(function() {
+      $scope.model.loadingAuth = false;
     }, function() {
-      $scope.authenticated = false;
-      $scope.authenticating = false;
+      $scope.model.loadingAuth = false;
     });
   };
 
-  $scope.logout = function(){
-    authService.logOut().then(function(){
-      $rootScope.authenticated = false;
-      $rootScope.adminLoggedIn = false;
-    });
+  /**
+   * Log user out
+   * @return {undefinee}
+   */
+  $scope.logout = function() {
+    authService.logOut();
   };
-
 }])

@@ -686,11 +686,6 @@ barcodeApp.controller('InventoryScannerController', ['$scope','$rootScope','$fir
    * @return {undefined}
    */
   $scope.checkIn = function(unit) {
-    if (!$rootScope.authenticated) {
-      alert('Please login before checking items in or out!');
-      return;
-    }
-
     setFocus();
 
     if (!unit.type) {
@@ -713,11 +708,6 @@ barcodeApp.controller('InventoryScannerController', ['$scope','$rootScope','$fir
    * @return {undefined}
    */
   $scope.checkOut = function(unit, option) {
-    if(!$rootScope.authenticated) {
-      alert('Please login before checking items in or out!');
-      return;
-    }
-
     setFocus();
 
     if (!unit.type) {
@@ -775,7 +765,6 @@ barcodeApp.controller('InventoryScannerController', ['$scope','$rootScope','$fir
    */
   function setFocus() {
     var input = $window.document.getElementById('scanInput');
-    console.log('IN HERE');
     input.focus();
   }
 

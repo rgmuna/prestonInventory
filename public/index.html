@@ -39,6 +39,7 @@
       <script type="text/javascript" src="./scripts/shared/services.js"></script>
       <script type="text/javascript" src="./scripts/shared/productService.js"></script>
       <!-- Controllers JS files -->
+      <script type="text/javascript" src="./scripts/controllers/app-controller.js"></script>
       <script type="text/javascript" src="./scripts/controllers/generate-barcode-controller.js"></script>
       <script type="text/javascript" src="./scripts/controllers/inventory-scanner-controller.js"></script>
       <script type="text/javascript" src="./scripts/controllers/inventory-list-controller.js"></script>
@@ -68,7 +69,7 @@
       </script>
   </head>
 
-  <body>
+  <body ng-controller="AppController">
     <nav class="navbar navbar-default" role="navigation">
       <div class="navbar-header container-fluid">
         <button type="button" class="navbar-toggle" ng-click="isNavCollapsed = !isNavCollapsed">
@@ -100,19 +101,24 @@
 
     <div ng-controller="AuthController">
       <div class="col-xs-12 text-right login-control">
-        <div ng-if="adminLoggedIn && authenticated">
-          <img style="height: 20px;" src="{{userPicture}}">
-          <strong>Admin Logged In</strong>
+
+        <div ng-if="loggedIn.admin || loggedIn.user">
+          <div>
+            <strong>{{ userEmail }}</strong>
+          </div>
+          <div>
+            {{ loggedIn.admin ? 'Admin' : 'User' }} Logged In
+          </div>
         </div>
-        <div ng-if="!adminLoggedIn && authenticated">
-          <img style="height: 20px;" src="{{userPicture}}">
-          <strong>User Logged In</strong>
-        </div>
-        <div class="loginLoading" ng-show="authenticating">
+
+        <div class="loginLoading" ng-show="model.loadingAuth">
           Authenticating...
         </div>
-        <a ng-if="!authenticated && !authenticating" ng-click="login()">Login</a>
-        <a ng-if="authenticated && !authenticating" ng-click="logout()">Logout</a>
+
+        <div style="margin-top: 10px;" ng-if="!model.loadingAuth">
+          <button class="btn btn-light" ng-if="!loggedIn.admin && !loggedIn.user" ng-click="login()">Login</button>
+          <button class="btn btn-light" ng-if="loggedIn.admin || loggedIn.user" ng-click="logout()">Logout</button>
+        </div>
       </div>
     </div>
 
