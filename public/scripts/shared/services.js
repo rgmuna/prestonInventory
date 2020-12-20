@@ -6,11 +6,12 @@ barcodeApp.service('authService', ['$firebaseAuth', '$q', '$firebaseObject', '$r
   //
 
   var model = {
-    adminUsers    : firebase.database().ref().child('adminUsers'),
-    adminObject   : null,
-    adminsLoaded  : false,
-    loggedInLoaded: false,
-    userInfo      : null
+    adminUsers     : firebase.database().ref().child('adminUsers'),
+    adminObject    : null,
+    adminsLoaded   : false,
+    loggedInLoaded : false,
+    userInfo       : null,
+    loggedAttempted: false
   }
 
   /**
@@ -26,9 +27,13 @@ barcodeApp.service('authService', ['$firebaseAuth', '$q', '$firebaseObject', '$r
    * @return {Promise}
    */
   function getListAdminUsers() {
-    model.adminObject.$loaded().then(function(response) {
+    model.adminObject.$loaded().then(function() {
       model.adminsLoaded = true;
       setStatuses();
+    }, function() {
+      if (model.loggedAttempted) {
+        $rootScope.loggedIn.userDenied = true;
+      }
     })
   }
 
@@ -39,7 +44,7 @@ barcodeApp.service('authService', ['$firebaseAuth', '$q', '$firebaseObject', '$r
   function userIsAdmin() {
     for (var key in model.adminObject) {
       if (model.adminObject.hasOwnProperty(key)) {
-        if (model.userInfo.uid === model.adminObject[key]) {
+        if (model.userInfo.uid === key && model.adminObject[key].role === 'admin') {
           return true;
         }
       }
@@ -81,11 +86,12 @@ barcodeApp.service('authService', ['$firebaseAuth', '$q', '$firebaseObject', '$r
    * @return {undefined}
    */
   function reset() {
-    $rootScope.loggedIn.admin = false
-    $rootScope.loggedIn.user  = false
-    model.userInfo            = null;
-    model.adminsLoaded        = false;
-    model.loggedInLoaded      = false;
+    $rootScope.loggedIn.admin      = false;
+    $rootScope.loggedIn.user       = false;
+    $rootScope.loggedIn.userDenied = false;
+    model.userInfo                 = null;
+    model.adminsLoaded             = false;
+    model.loggedInLoaded           = false;
   }
 
   renderService();
@@ -114,8 +120,9 @@ barcodeApp.service('authService', ['$firebaseAuth', '$q', '$firebaseObject', '$r
       var deferred = $q.defer();
       reset();
 
-      $firebaseAuth().$signInWithPopup("google").then(function(result){
+      $firebaseAuth().$signInWithPopup("google").then(function(result) {
         deferred.resolve(result);
+        model.loggedAttempted = true;
         authService.setAuthState();
       }, function(error) {
         alert('User not logged in.')

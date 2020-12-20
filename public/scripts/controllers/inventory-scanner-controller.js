@@ -595,7 +595,7 @@ barcodeApp.controller('InventoryScannerController', ['$scope','$rootScope','$fir
       status   : unitStatus,
       unit     : unitType,
       timestamp: firebase.database.ServerValue.TIMESTAMP
-    }).then(successCallback(unit), failCallback());
+    }).then(successCallback(unit), failCallback);
   }
 
 
@@ -667,15 +667,16 @@ barcodeApp.controller('InventoryScannerController', ['$scope','$rootScope','$fir
    */
   function successCallback(unit) {
     $timeout(function() {
-      $scope.model.pendingBarcodes[unit.barcode].checkingUnit = false;
-      delete $scope.model.pendingBarcodes[unit.barcode];
+      $scope.model.pendingBarcodes[unit.serial].checkingUnit = false;
+      delete $scope.model.pendingBarcodes[unit.serial];
       if(angular.equals($scope.model.pendingBarcodes, {})) {
         $scope.model.barcodeEntered = false;
       }
-    }, 3000)
+    }, 2000)
   }
 
-  function failCallback() {
+  function failCallback(error) {
+    console.log(error);
     alert('Oops, something happened. Please refresh and try again.');
   }
 
