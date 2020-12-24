@@ -28,7 +28,8 @@ barcodeApp.service('authService', ['$firebaseAuth', '$q', '$firebaseObject', '$r
    */
   function getListAdminUsers() {
     model.adminObject.$loaded().then(function() {
-      model.adminsLoaded = true;
+      model.adminsLoaded             = true;
+      $rootScope.loggedIn.userDenied = false;
       setStatuses();
     }, function() {
       if (model.loggedAttempted) {

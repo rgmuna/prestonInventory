@@ -1,6 +1,32 @@
 {
   "rules": {
-    ".read": "true",
-    ".write": "true"
+    "accessoryInventory": {
+      ".read": "data.child('adminUsers').child(auth.uid).exists()",
+      ".write": "data.child('adminUsers').child(auth.uid).exists()"
+    },
+    "adminUsers": {
+      ".read": "data.child('adminUsers').child(auth.uid).exists()",
+      ".write": "data.child('adminUsers').child(auth.uid).exists()"
+    },
+    "cableInventory": {
+      ".read": "data.child('adminUsers').child(auth.uid).exists()",
+      ".write": "data.child('adminUsers').child(auth.uid).exists()"
+    },
+    "inventory": {
+      ".read": "data.child('adminUsers').child(auth.uid).exists()",
+      ".write": "data.child('adminUsers').child(auth.uid).exists()"
+    },
+    "inventoryMinThreshold": {
+      ".read": "data.child('adminUsers').child(auth.uid).exists()",
+      ".write": "data.child('adminUsers').child(auth.uid).exists()"
+    },
+    "loaners": {
+      ".read": "data.child('adminUsers').child(auth.uid).exists()",
+      ".write": "data.child('adminUsers').child(auth.uid).exists()"
+    },
+    "tests": {
+      ".read": "true",
+      ".write": "true"
+    }
   }
 }
